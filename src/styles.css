@@ -1,0 +1,10 @@
+/* Define the colors of the pegs and the ball */
+.peg {
+    fill: green;
+}
+
+.ball {
+    fill: red;
+}
+
+

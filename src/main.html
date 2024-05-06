@@ -1,0 +1,98 @@
+<html>
+<head>
+    <style>
+        /* Style the canvas element */
+        canvas {
+            border: 1px solid black;
+
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 1000px;
+  
+        }
+
+        /* Style the buttons */
+        button {
+            margin: 1%;
+            border-radius: 12px;
+            font-size: 50px;
+            align-content: center;
+            text-align: center;
+            background-color: greenyellow; /* Green */
+        }
+        .rangeField {
+            align-content: center;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+
+        input[type=range] {
+            -webkit-appearance: none; /* Hides the default styling */
+            width: 100%; /* Set the width to fill the container */
+            height: 20px; /* Set the height */
+            background: #def4cf; /* Gray background */
+            outline: none; /* Remove outline */
+            opacity: 0.7; /* Set transparency (adjust as needed) */
+            -webkit-transition: opacity .2s; /* Transition on hover (optional) */
+            transition: opacity .2s; /* Transition on hover (optional) */
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Hides the default styling */
+            appearance: none;
+            width: 50px; /* Set the width */
+            height: 50px; /* Set the height */
+            background: #4CAF50; /* Green background */
+            cursor: pointer; /* Add cursor on hover */
+        }
+
+        /* Hover state */
+        input[type=range]:hover {
+            opacity: 1; /* Set opacity to full on hover (adjust as needed) */
+        }
+        
+
+    </style>
+</head>
+<body>
+    <!-- Create a canvas element to draw the galton board -->
+    <!-- <canvas id="canvas" width="600" height="100"></canvas> -->
+    <canvas id="canvas"></canvas>
+    <!-- Create buttons to start and stop the simulation -->
+    <div class="button-container" style="margin-bottom: 2%;">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <div class="rangeField">
+            <p id="rangeValue">Anzahl Reihen: 10</p>
+            <input  style="margin-bottom:10%;" type="range" id="rangeInput" min="1" max="24" value="5" step="1">
+            <button id="confirm">Bestätigen</button>
+        </div>
+    </div>
+
+
+    <div class = "button-container" >
+
+        <div class ="rangeField">
+            <p id="rangeValue2">Fallgeschwindigkeit = 1%</p>
+            <input type="range" id="rangeInput2" min="1" max="300" value="1" step="1">        
+        </div>
+
+        <div class ="rangeField" style="margin-left:5%;" >
+            <p id="rangeValue3"> Anzahl Durchläufe = 1</p>
+            <input type="range" id="rangeInput3" min="1" max="1000" value="1" step="1">        
+        </div>
+
+    </div>
+
+    <!-- Load the script that contains the logic of the simulation -->
+    <script src="script.js"></script>
+</body>
+</html>
