@@ -11,6 +11,7 @@ var stop = false;
 var pause = false; //stop execution
 var active = false; //animation is not active 
 var rows = 5;//Number of rows of pegs
+var balls = 100;
 var cols = 2; // Number of columns of pegs it is a constant
 var gap = 250/rows; // Gap between pegs // standard value = 250/rows / update: dynamic size based on rows
 var radius = 50/rows; // Radius of pegs and balls //standard value = 50/rows  // same
@@ -256,17 +257,29 @@ var speedRangeInput = document.getElementById("rangeInput2"); //speed adjustment
 var speedRangeValue = document.getElementById("rangeValue2"); //current speed display
 var ballsAmountRangeInput = document.getElementById("rangeInput3"); //TODO
 var ballsAmountRangeValue = document.getElementById("rangeValue3"); //TODO
-
+var probabilityRangeInput = document.getElementById("rangeInput4"); //TODO
+var probabilityRangeValue = document.getElementById("rangeValue4"); //TODO
 
 var newRowValue = rows; // temp save of the rows
-rangeValue.textContent = "Anzahl Reihen = " + rangeInput.value;
-
+var newBallValue = balls;
+var probabilityRight = 0;
+var probabilityLeft = 0;
 
 ballsAmountRangeInput.addEventListener("input", () => 
 {
-    // TODO 
-    return;
+    ballsAmountRangeValue.textContent = "Anzahl Bälle = " + ballsAmountRangeInput.value;
+    newBallValue = Number(ballsAmountRangeInput.value); 
+   
 });
+
+probabilityRangeInput.addEventListener("input", () => 
+    {
+        probabilityLeft = Number(probabilityRangeInput.value); 
+        probabilityRight = 100 - probabilityLeft;
+        probabilityRangeValue.innerHTML = "Wahrscheinlichkeit <br> links "+ probabilityLeft + " % | rechts "+ probabilityRight +" % ";
+        
+       
+    });
 
 
 
@@ -280,12 +293,12 @@ rangeInput.addEventListener("input", () => {
     newRowValue = Number(rangeInput.value);
 });
 
-
+// alternative= integrate with start button, or do it dynamically like speed?
 confirmButton.addEventListener("click", () => {
     if (!active)
     {
-        rows = newRowValue;
-        rangeValue.textContent = "Anzahl Reihen = " + rows;
+        //balls = newBallValue;
+        rows = newRowValue;  
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         resetValues();
         drawPegs();

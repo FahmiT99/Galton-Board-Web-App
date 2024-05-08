@@ -7,10 +7,10 @@
     <!-- <canvas id="canvas" width="600" height="100"></canvas> -->
     <div class="container">
         <canvas id="canvas"></canvas>
-        <div class="button-container" style="margin-bottom: 2%;">
-            <button class="button" style="left: 10px;" id="start">&#9658;</button> <!-- Play button -->
-            <button class="button" style="left: 50px;" id="pause">&#10074;&#10074;</button> <!-- Pause button -->
-            <button class="button" style="left: 90px;" id="stop">&#9724;</button> <!-- Stop button -->
+        <div class="button-container" >
+            <button class="button"  id="start">&#9658;</button> <!-- Play button -->
+            <button class="button"  id="pause">&#10074;&#10074;</button> <!-- Pause button -->
+            <button class="button"  id="stop">&#9724;</button> <!-- Stop button -->
         
         
         
@@ -22,26 +22,31 @@
     
     <!-- Create buttons to start and stop the simulation -->
          
-    <div class="button-container" style="margin-bottom: 2%;">
+    <div class="range-container" >
              
-        <div class="rangeField">
-            <p id="rangeValue">Anzahl Reihen: 10</p>
-            <input  style="margin-bottom:10%;" type="range" id="rangeInput" min="1" max="24" value="5" step="1">
+        <div class="rangeField"  >
+            <p id="rangeValue">Anzahl Reihen: 5</p>
+            <input  style="margin-bottom:10%;" type="range" id="rangeInput" min="1" max="10" value="5" step="1">
             <button id="confirm">Bestätigen</button>
         </div>
+        <div class ="rangeField"  style="margin-left:5%">
+            <p id="rangeValue3"> Anzahl Bälle = 1</p>
+            <input type="range" id="rangeInput3" min="1" max="500" value="1" step="1">        
+        </div>
+        
     </div>
 
 
-    <div class = "button-container" >
+    <div class = "range-container" >
 
         <div class ="rangeField">
             <p id="rangeValue2">Fallgeschwindigkeit = 1%</p>
             <input type="range" id="rangeInput2" min="1" max="300" value="1" step="1">        
         </div>
 
-        <div class ="rangeField" style="margin-left:5%;" >
-            <p id="rangeValue3"> Anzahl Durchläufe = 1</p>
-            <input type="range" id="rangeInput3" min="1" max="1000" value="1" step="1">        
+        <div class ="rangeField" style="margin-left:5%" >
+            <p id="rangeValue4"> Wahrscheinlichkeit<br>links 0 %  | rechts 100 %  </p>
+            <input type="range" id="rangeInput4" min="0" max="100" value="0" step="1">        
         </div>
 
     </div>

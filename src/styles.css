@@ -17,8 +17,8 @@
     margin-left: auto;
     margin-right: auto;
     display: block;
-    max-width: 95%;
-    width: 1000px;
+    width: 90%;
+    max-width: 1000px;
   }
   
   .button {
@@ -48,7 +48,7 @@
 
 
 .rangeField {
-    align-content: center;
+    align-content: left;
     text-align: center;
     font-size: 30px;
 }
@@ -58,6 +58,10 @@
     justify-content: center;
 }
 
+.range-container {
+  display: flex;
+  justify-content: center;
+}
 
 input[type=range] {
     -webkit-appearance: none; /* Hides the default styling */
