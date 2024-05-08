@@ -17,7 +17,7 @@ var gap = 250/rows; // Gap between pegs // standard value = 250/rows / update: d
 var radius = 50/rows; // Radius of pegs and balls //standard value = 50/rows  // same
 var bins = []; // Array to store the number of balls in each bin
 var timer = null;// Variable to store the timer
-var speed = 300; //canot be reseted unsing resetValues()
+var speed = 1000; //canot be reseted unsing resetValues()
 var animate; // Variable to hold the function that animates one step of the simulation
 var coordinates = []; //deepest level pegs coordinates
 var statsWatcher = {}; // contains the x postion of the buckets as keys and 
@@ -129,7 +129,7 @@ async function mainAnimationLoop() {
 
 // createAnimation is a higher-order function that returns animateOneStep,
 // which uses closures to remember its state between calls so that we can pause the animation
-function createAnimation(n = 100, initial_n = 100) {  
+function createAnimation(n = 500, initial_n = 500) {  
     var j = 0; // Platz zwischen pegs //standard Value: 0, also Mitte 
     var i = 1; //j gerade falls i ungerade und umgekehrt //Höhenebene
     var xPos = canvas.width / 2 - 0.5 * gap * j;
@@ -234,7 +234,12 @@ function drawStatsCount(x, y)
     ctx.clearRect(x-gap/2, y-gap/2, gap, gap*1.5);
     if (statsWatcher[x][1]<10)
     ctx.fillText(statsWatcher[x][1], x-gap/6, y+gap/6);
-    else ctx.fillText(statsWatcher[x][1], x-gap/3, y);
+    else if(statsWatcher[x][1]<100) ctx.fillText(statsWatcher[x][1], x-gap/3, y+gap/6);
+    else
+    {
+        ctx.font ="bold " + fontSize* 0.7 + "px Arial"; // 30% weniger größe bei Zahlen ab 100
+        ctx.fillText(statsWatcher[x][1], x-gap/3, y+gap/8);
+    }
 }
 
 
@@ -243,8 +248,8 @@ function drawStatsCount(x, y)
 
 
 
-/*                                                      Eventhandlers
-********************************************************************************************************************************** */
+/*                                                     Eventhandlers
+**********************************************************************************************************************************/
 
 
 var startButton = document.getElementById("start");
@@ -284,8 +289,9 @@ probabilityRangeInput.addEventListener("input", () =>
 
 
 speedRangeInput.addEventListener("input", () => {
-    speed = 300 - Number(speedRangeInput.value) ;
-    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.floor((speedRangeInput.value*100)/300) + "%";
+    speed = 990 - Number(speedRangeInput.value) ;
+    console.log(speedRangeInput.value);
+    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value*100)/1000) + "%"; //changed from floor to ceil
 });
 
 rangeInput.addEventListener("input", () => {
@@ -348,7 +354,7 @@ stopButton.addEventListener("click", async () => {
 
 
 
- /*                                                         Main
+ /*                                                       Main
 ************************************************************************************************************************************/
 
 
