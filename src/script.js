@@ -7,6 +7,7 @@ canvas.width = window.innerHeight * 0.3; //ca. 500px
 canvas.height = window.innerHeight*0.4;
 console.log(window.innerWidth);
  
+var stop = false;
 var pause = false; //stop execution
 var active = false; //animation is not active 
 var rows = 5;//Number of rows of pegs
@@ -246,6 +247,7 @@ function drawStatsCount(x, y)
 
 
 var startButton = document.getElementById("start");
+var stopButton = document.getElementById("stop");
 var pauseButton = document.getElementById("pause");
 var rangeInput = document.getElementById("rangeInput"); //rows adjustment control
 var rangeValue = document.getElementById("rangeValue"); //current rows display
@@ -315,6 +317,19 @@ pauseButton.addEventListener("click",  () => {
         pause = true;
     }
 });
+stopButton.addEventListener("click", async () => {
+    
+       // stop = true;
+        active = false;
+        await wait(400);
+        statsWatcher = {};
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        resetValues();
+        drawPegs();
+        return;
+    
+});
+
 
 
 

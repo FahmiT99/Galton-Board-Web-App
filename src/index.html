@@ -5,11 +5,25 @@
 <body>
   <!-- Create a canvas element to draw the galton board -->
     <!-- <canvas id="canvas" width="600" height="100"></canvas> -->
-    <canvas id="canvas"></canvas>
+    <div class="container">
+        <canvas id="canvas"></canvas>
+        <div class="button-container" style="margin-bottom: 2%;">
+            <button class="button" style="left: 10px;" id="start">&#9658;</button> <!-- Play button -->
+            <button class="button" style="left: 50px;" id="pause">&#10074;&#10074;</button> <!-- Pause button -->
+            <button class="button" style="left: 90px;" id="stop">&#9724;</button> <!-- Stop button -->
+        
+        
+        
+        
+        </div>
+       
+ 
+    </div>
+    
     <!-- Create buttons to start and stop the simulation -->
+         
     <div class="button-container" style="margin-bottom: 2%;">
-        <button id="start">Start</button>
-        <button id="pause">Pause</button>
+             
         <div class="rangeField">
             <p id="rangeValue">Anzahl Reihen: 10</p>
             <input  style="margin-bottom:10%;" type="range" id="rangeInput" min="1" max="24" value="5" step="1">
