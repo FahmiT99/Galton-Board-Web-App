@@ -1,12 +1,13 @@
-// Get the canvas element and its context
+
+
+
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerHeight * 0.3; //ca. 500px
 canvas.height = window.innerHeight*0.4;
 console.log(window.innerWidth);
-
-// Define some constants for the simulation
-var stop = false; //stop execution
+ 
+var pause = false; //stop execution
 var active = false; //animation is not active 
 var rows = 5;//Number of rows of pegs
 var cols = 2; // Number of columns of pegs it is a constant
@@ -15,10 +16,26 @@ var radius = 50/rows; // Radius of pegs and balls //standard value = 50/rows  //
 var bins = []; // Array to store the number of balls in each bin
 var timer = null;// Variable to store the timer
 var speed = 300; //canot be reseted unsing resetValues()
+var animate; // Variable to hold the function that animates one step of the simulation
+var coordinates = []; //deepest level pegs coordinates
+var statsWatcher = {}; // contains the x postion of the buckets as keys and 
+                            // an array of corresponding length and how often the ball entered the bucket
+                            // as a second value x:[corresponding length, count]
+
+
+
+
+
+
+                            /*                                                      Animation
+********************************************************************************************************************************** */
+
+
+
 
 function resetValues()
 {
-    stop = false; //stop execution
+    pause = false; //stop execution
     active = false; //animation is not active 
     cols = 2; // Number of columns of pegs it is a constant
     gap = 250/rows; // Gap between pegs // standard value = 250/rows / update: dynamic size based on rows
@@ -71,7 +88,7 @@ function drawHorizontalLine(x, y) {
 
 }
 
-var coordinates = []; //deepest level pegs coordinates
+
 
 function drawVerticalLine(x, y)
 {
@@ -97,74 +114,84 @@ function wait(ms)
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// n / initial_n ratio is 2/7 optimally!
-async function ballProbabilityMotion(n = 100, initial_n = 100) {  //muss n mal durchlaufen
-    if (n<0) {active= false; statsWatcher ={}; return;}
+// mainAnimationLoop is an asynchronous function that repeatedly calls the animate function
+// as long as the animation is active and not paused. This function is responsible for 
+// continuously updating the animation.
+async function mainAnimationLoop() {
+    while (active && !pause) {
+        await animate();
+    }
+}
+
+
+
+// createAnimation is a higher-order function that returns animateOneStep,
+// which uses closures to remember its state between calls so that we can pause the animation
+function createAnimation(n = 100, initial_n = 100) {  
     var j = 0; // Platz zwischen pegs //standard Value: 0, also Mitte 
     var i = 1; //j gerade falls i ungerade und umgekehrt //Höhenebene
     var xPos = canvas.width / 2 - 0.5 * gap * j;
     var yPos = gap * i;
     var arr = [];
     var y = gap * rows;
-    while (i <= rows+1)
-    {
-        if (!stop)
-        {
-            ctx.clearRect(0, 0, canvas.width, y +radius); //clear the upper half only
+
+    return async function animateOneStep() {
+        
+        if (n < 0) {
+            active = false; 
+            statsWatcher = {}; 
+            return;
+        }
+        if (i <= rows+1) {
+           
+            
+            ctx.clearRect(0, 0, canvas.width, y + radius); //clear the upper half only
             drawball(xPos, yPos);
             drawPegs();
             await wait(speed);
             cols = 2;
-            console.log("i is " + i + " but row is " + Number(Number(rows)+1));
-            if(i==Number(Number(rows)+1)) //the last level? 
+            console.log(rows+1);
+            if(i == rows+1) //the last level? 
             {
-                
-
                 //use statLength to draw the how often a ball fits 
                 //between nth pegs. Implement and call drawStats() from here
                 drawStats(xPos, y , initial_n);  
                 drawStatsCount(xPos, y);     
                 //await wait(300);   
-                break;
+                
             }
-  
-
-
-            var xPos = canvas.width / 2 - 0.5 * gap * j;
-            var yPos = gap * i;
+            xPos = canvas.width / 2 - 0.5 * gap * j;
+            yPos = gap * i;
             var random = Math.random(); //Muss angepasst wegen Variationsm�glichkeit 3
             arr.push(random);           // Dazu muss die 0,5 in If-statement angepasst 
             if (random <= 0.5) {
-                j += 1; //going right 
+                j += 1;                 //going right 
             }
-            else j -= 1; //going left
-
-
-            i += 1;  //go to the next level(downwards)
-            //console.log("i is " + i);
+            else j -= 1;                 //going left
+            i += 1;  
         }
-        else 
-        {
-            stop = false;
-            active = false;
-            statsWatcher= {};
-            return;
+        if (i > rows+1) {
+            n -= 1;
+            j = 0; 
+            i = 1; 
+            xPos = canvas.width / 2 - 0.5 * gap * j;
+            yPos = gap * i;
+            arr = [];
+            y = gap * rows;
         }
-        //console.log("row nr. " + rows);
+         
     }
-    console.log("recursion round!");
-    ballProbabilityMotion(n-1);
 }
 
-var statsWatcher = {}; // contains the x postion of the buckets as keys and 
-// an array of corresponding length and how often the ball entered the bucket
-// as a second value x:[corresponding length, count]
+
+
+
 
 function drawStats(x, y, n)
 {
     console.log("drawSTATS() entered!");
     ctx.lineWidth = gap-2;
-    let = startingPoint = y * 2.25;
+    let startingPoint = y * 2.25;
     var length = (y + radius)/ n; 
     ctx.beginPath();
 
@@ -211,9 +238,15 @@ function drawStatsCount(x, y)
 
 
 
-// Get the start and stop buttons
+
+
+
+/*                                                      Eventhandlers
+********************************************************************************************************************************** */
+
+
 var startButton = document.getElementById("start");
-var stopButton = document.getElementById("stop");
+var pauseButton = document.getElementById("pause");
 var rangeInput = document.getElementById("rangeInput"); //rows adjustment control
 var rangeValue = document.getElementById("rangeValue"); //current rows display
 var confirmButton = document.getElementById("confirm");
@@ -236,13 +269,13 @@ ballsAmountRangeInput.addEventListener("input", () =>
 
 
 speedRangeInput.addEventListener("input", () => {
-    speed = 300 - speedRangeInput.value ;
+    speed = 300 - Number(speedRangeInput.value) ;
     speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.floor((speedRangeInput.value*100)/300) + "%";
 });
 
 rangeInput.addEventListener("input", () => {
     rangeValue.textContent = "Anzahl Reihen = " + rangeInput.value;
-    newRowValue = rangeInput.value;
+    newRowValue = Number(rangeInput.value);
 });
 
 
@@ -258,28 +291,43 @@ confirmButton.addEventListener("click", () => {
 });
 
 
-// Add event listeners to the buttons
+
 startButton.addEventListener("click", () => {
 
-    if (!active) //assert the function runs only once at a time
-    {
+     if (pause) {
+        // If the animation was paused, resume it
+        pause = false;
+        mainAnimationLoop();
+        
+    } else if (!active) {
+        // If the animation was not active, start it
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         cols= 2;
         active = true;
-        ballProbabilityMotion(); 
+        animate = createAnimation(); 
+        mainAnimationLoop();
     }
 
 });
-stopButton.addEventListener("click", async () => {
+pauseButton.addEventListener("click",  () => {
     if (active)
     {
-        stop = true;
-        await wait(200);
-        statsWatcher = {};
+        pause = true;
     }
 });
 
 
-// Draw the galton board for the first time
+
+
+
+ /*                                                         Main
+************************************************************************************************************************************/
+
+
 //Initialization
 drawPegs();
+
+ 
+
+
+
