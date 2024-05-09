@@ -11,7 +11,7 @@ var stop = false;
 var pause = false; //stop execution
 var active = false; //animation is not active 
 var rows = 5;//Number of rows of pegs
-var balls = 0;
+var balls = 249;
 var cols = 2; // Number of columns of pegs it is a constant
 var gap = 250/rows; // Gap between pegs // standard value = 250/rows / update: dynamic size based on rows
 var radius = 50/rows; // Radius of pegs and balls //standard value = 50/rows  // same
@@ -27,11 +27,6 @@ var newRowValue = rows; // temp save of the rows
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-
-
-
-
-
 
                             /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -168,13 +163,14 @@ function drawStatsCount(x, y) {
 async function mainAnimationLoop() {
     while (active && !pause) {
         await animate();
+        await wait(speed);
     }
 }
 
 
 // createAnimation is a higher-order function that returns animateOneStep,
 // which uses closures to remember its state between calls so that we can pause the animation
-function createAnimation(n, initial_n ) {  
+function createAnimation(n, initial_n,probability ) {  
     var j = 0; // Platz zwischen pegs //standard Value: 0, also Mitte 
     var i = 1; //j gerade falls i ungerade und umgekehrt //Höhenebene
     var xPos = canvas.width / 2 - 0.5 * gap * j;
@@ -184,8 +180,10 @@ function createAnimation(n, initial_n ) {
 
     return async function animateOneStep() {  
         if (n < 0) {
-            active = false; 
-            statsWatcher = {}; 
+            active = false;
+            rowRangeInput.disabled = false;
+            ballsAmountRangeInput.disabled = false;
+            probabilityRangeInput.disabled = false; 
             return;
         }
 
@@ -193,7 +191,6 @@ function createAnimation(n, initial_n ) {
             ctx.clearRect(0, 0, canvas.width, y + radius); //clear the upper half only
             drawball(xPos, yPos);
             drawPegs();
-            await wait(speed);
             cols = 2;
             console.log(rows);
 
@@ -208,7 +205,7 @@ function createAnimation(n, initial_n ) {
             yPos = gap * i;
             var random = Math.random(); //Muss angepasst wegen Variationsm�glichkeit 3
             arr.push(random);           // Dazu muss die 0,5 in If-statement angepasst 
-            if (random <= 0.5) {
+            if (random <= probability) {
                 j += 1;                 //going right 
             } else j -= 1;                 //going left
             i += 1;  
@@ -249,7 +246,7 @@ var probabilityRangeValue = document.getElementById("rangeValue4"); //TODO
 
 ballsAmountRangeInput.addEventListener("input", () => {
     newBallValue = Number(ballsAmountRangeInput.value);
-    ballsAmountRangeValue.textContent = "Anzahl Bälle = " + Number(newBallValue+1);
+    ballsAmountRangeValue.textContent = "Anzahl Bälle = " + Number(newBallValue);
     balls = newBallValue; 
    
 });
@@ -261,7 +258,7 @@ probabilityRangeInput.addEventListener("input", () => {
     });
 
 speedRangeInput.addEventListener("input", () => {
-    speed = 990 - Number(speedRangeInput.value);
+    speed = 990 - (Number(speedRangeInput.value));
     console.log(speedRangeInput.value);
     speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value*100)/1000) + "%"; //changed from floor to ceil
 });
@@ -279,13 +276,14 @@ startButton.addEventListener("click", () => {
         pause = false;
         mainAnimationLoop();   
     } else if (!active) {
-        // If the animation was not active, start it 
+        // If the animation was not active, start it
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
         resetValues();
         active = true;
         rowRangeInput.disabled = true;
         ballsAmountRangeInput.disabled = true;
         probabilityRangeInput.disabled = true;
-        animate = createAnimation(balls,balls); 
+        animate = createAnimation(balls-1,balls-1,probabilityLeft/100); 
         mainAnimationLoop();
     }
 });
@@ -305,8 +303,6 @@ stopButton.addEventListener("click", async () => {
         statsWatcher = {};
         reloadCanvas();
 });
-
-
 
 
 
