@@ -1,10 +1,88 @@
-/* Define the colors of the pegs and the ball */
-.peg {
-    fill: green;
+ /* Style the canvas element */
+
+
+ 
+
+ .container {
+    
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .container canvas {
+    border: 1px solid rgb(20, 18, 18);
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 90%;
+    max-width: 1000px;
+  }
+  
+  .button {
+     
+    margin: 10px;
+    padding: 5px 10px;
+    font-size: 30px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+  }
+  
+  .button:hover {background-color: #3e8e41}
+  
+  .button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  
+
+
+.rangeField {
+    align-content: left;
+    text-align: center;
+    font-size: 30px;
 }
 
-.ball {
-    fill: red;
+.button-container {
+    display: flex;
+    justify-content: center;
 }
 
+.range-container {
+  display: flex;
+  justify-content: center;
+}
 
+input[type=range] {
+    -webkit-appearance: none; /* Hides the default styling */
+    width: 100%; /* Set the width to fill the container */
+    height: 20px; /* Set the height */
+    background: #def4cf; /* Gray background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (adjust as needed) */
+    -webkit-transition: opacity .2s; /* Transition on hover (optional) */
+    transition: opacity .2s; /* Transition on hover (optional) */
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Hides the default styling */
+    appearance: none;
+    width: 50px; /* Set the width */
+    height: 50px; /* Set the height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Add cursor on hover */
+}
+
+/* Hover state */
+input[type=range]:hover {
+    opacity: 1; /* Set opacity to full on hover (adjust as needed) */
+}
