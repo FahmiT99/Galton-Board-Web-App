@@ -5,7 +5,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerHeight * 0.3; //ca. 500px
 canvas.height = window.innerHeight*0.4;
-console.log(window.innerWidth);
+//console.log(window.innerWidth);
  
 var stop = false;
 var pause = false; //stop execution
@@ -27,6 +27,7 @@ var newRowValue = rows; // temp save of the rows
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
+var data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
 
                             /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -71,8 +72,7 @@ function drawPegs() {
             ctx.fillStyle = "green";
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fill();
-           // console.log("i is "+ i);   
+            ctx.fill(); 
             if (i == rows - 1) {
                 drawVerticalLine(x, y);
             }
@@ -112,7 +112,6 @@ function wait(ms) {
 }
 
 function drawStats(x, y, n) {
-    console.log("drawSTATS() entered!");
     ctx.lineWidth = gap-2;
     let startingPoint = y * 2.25;
     var length = (y + radius)/ n; 
@@ -127,15 +126,12 @@ function drawStats(x, y, n) {
 
         statsWatcher[x] = [length, 1];
         ctx.moveTo(x, startingPoint);
-        console.log("n is " +n );
         ctx.lineTo(x, startingPoint - length);       
     } else {
 
         ctx.moveTo(x,startingPoint - statsWatcher[x][0]);
         statsWatcher[x][0]+=length;
         statsWatcher[x][1]+=1;
-        console.log("statswateher has " + statsWatcher[x][1]);
-        console.log("n is " +n );
         ctx.lineTo(x, startingPoint - statsWatcher[x][0]);
     }
     ctx.stroke(); 
@@ -181,6 +177,8 @@ function createAnimation(n, initial_n,probability ) {
     return async function animateOneStep() {  
         if (n < 0) {
             active = false;
+            saveData();
+            submitButton.disabled = false;
             rowRangeInput.disabled = false;
             ballsAmountRangeInput.disabled = false;
             probabilityRangeInput.disabled = false; 
@@ -192,7 +190,7 @@ function createAnimation(n, initial_n,probability ) {
             drawball(xPos, yPos);
             drawPegs();
             cols = 2;
-            console.log(rows);
+
 
             if(i == rows+1) { //the last level? 
                 //use statLength to draw the how often a ball fits 
@@ -223,7 +221,13 @@ function createAnimation(n, initial_n,probability ) {
     }
 }
 
-
+function saveData() {
+    data.balls = balls;
+    data.rows = rows;
+    data.probabilityLeft = probabilityLeft/100;
+    data.probabilityRight = probabilityRight/100;
+    data.statswatcher = statsWatcher;
+}
 
 
 /*                                                     Eventhandlers
@@ -233,6 +237,7 @@ function createAnimation(n, initial_n,probability ) {
 var startButton = document.getElementById("start");
 var stopButton = document.getElementById("stop");
 var pauseButton = document.getElementById("pause");
+var submitButton = document.getElementById("sendData")
 var rowRangeInput = document.getElementById("rangeInput"); //rows adjustment control
 var rowRangeValue = document.getElementById("rangeValue"); //current rows display
 var speedRangeInput = document.getElementById("rangeInput2"); //speed adjustment control
@@ -259,7 +264,6 @@ probabilityRangeInput.addEventListener("input", () => {
 
 speedRangeInput.addEventListener("input", () => {
     speed = 990 - (Number(speedRangeInput.value));
-    console.log(speedRangeInput.value);
     speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value*100)/1000) + "%"; //changed from floor to ceil
 });
 
@@ -304,7 +308,19 @@ stopButton.addEventListener("click", async () => {
         reloadCanvas();
 });
 
-
+submitButton.addEventListener("click", async () => {
+    const response = await fetch('http://localhost:8000/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)  
+    });
+        submitButton.disabled = true;
+        data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+        const res = await response.json();
+        console.log(res);
+});
 
 
  /*                                                       Main
@@ -313,7 +329,7 @@ stopButton.addEventListener("click", async () => {
 
 //Initialization
 drawPegs();
-
+submitButton.disabled = true;
  
 
 
