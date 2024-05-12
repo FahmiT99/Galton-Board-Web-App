@@ -237,7 +237,8 @@ function saveData() {
 var startButton = document.getElementById("start");
 var stopButton = document.getElementById("stop");
 var pauseButton = document.getElementById("pause");
-var submitButton = document.getElementById("sendData")
+var submitButton = document.getElementById("sendData");
+var exportButton = document.getElementById("exportData");
 var rowRangeInput = document.getElementById("rangeInput"); //rows adjustment control
 var rowRangeValue = document.getElementById("rangeValue"); //current rows display
 var speedRangeInput = document.getElementById("rangeInput2"); //speed adjustment control
@@ -309,6 +310,7 @@ stopButton.addEventListener("click", async () => {
 });
 
 submitButton.addEventListener("click", async () => {
+     
     const response = await fetch('http://localhost:8000/', {
         method: 'POST',
         headers: {
@@ -320,6 +322,28 @@ submitButton.addEventListener("click", async () => {
         data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
         const res = await response.json();
         console.log(res);
+});
+
+
+exportButton.addEventListener("click", async () => {
+    try {
+        // Send a GET request
+        const response = await fetch('http://localhost:8000/export', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        // Parse the response as JSON
+        const data = await response.json();
+
+        // Log the data
+        console.log(data);
+    } catch (error) {
+        // Log any errors
+        console.error('Error:', error);
+    }
 });
 
 

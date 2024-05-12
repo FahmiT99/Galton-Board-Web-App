@@ -32,6 +32,9 @@ app.add_middleware(
 def read_root():
     return FileResponse('frontend/index.html')
 
+@app.get("/export")
+def export_data():
+    return  db.get_table()
 
 @app.post("/")
 async def submit_data(data: dict):

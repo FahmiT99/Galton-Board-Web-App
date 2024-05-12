@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, create_engine, JSON
+from sqlalchemy import Column, Integer, String, create_engine, JSON, Table, select
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -45,4 +45,15 @@ class Database:
             raise
         finally:
             session.close()            # Close the session
+        return data
+    
+    def get_table(self):
+        session = self.session()
+        table = Table("data",Base.metadata,autoload_with=self.engine)
+        query = select(table)
+        result = session.execute(query)
+        rows = result.fetchall()
+        
+        data = [list(row) for row in rows]
+
         return data

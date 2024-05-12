@@ -1,6 +1,8 @@
+<!doctype html>
 <html>
 <head>
     <link rel="stylesheet"  href="frontend/styles.css">  
+   
 </head>
 <body>
   <!-- Create a canvas element to draw the galton board -->
@@ -15,6 +17,9 @@
             <div  style="margin-left:6%">
                 <button class="button"  id="sendData">Absenden</button>
             </div>
+            <div  style="margin-left:0%">
+                <button class="button"  id="exportData">Ergebnisse</button>
+            </div>
         
         
         </div>
@@ -27,10 +32,10 @@
     <div class="range-container" >
              
         <div class="rangeField"  >
-            <p id="rangeValue">Anzahl Reihen: 5</p>
-            <input  style="margin-bottom:10%;" type="range" id="rangeInput" min="1" max="10" value="5" step="1">
+            <p id="rangeValue" >Anzahl Reihen: 5</p>
+            <input type="range" id="rangeInput" min="1" max="10" value="5" step="1">
         </div>
-        <div class ="rangeField"  style="margin-left:5%">
+        <div class ="rangeField"  style="margin-left:8%">
             <p id="rangeValue3"> Anzahl Bälle = 250</p>
             <input type="range" id="rangeInput3" min="10" max="1000" value="250" step="10">        
         </div>
@@ -53,5 +58,7 @@
     </div>
 
     <script  src="frontend/script.js"></script>
+    
+    
 </body>
 </html>
