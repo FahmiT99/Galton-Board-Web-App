@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, create_engine, JSON, Table, select
+from sqlalchemy import Column, Integer, String, create_engine, JSON, Table, select, delete
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -57,3 +57,16 @@ class Database:
         data = [list(row) for row in rows]
 
         return data
+    
+    def reset_data(self):
+        session = self.session()
+        table = Table("data", Base.metadata, autoload_with=self.engine)
+        query = delete(table)
+        try:
+            session.execute(query)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()

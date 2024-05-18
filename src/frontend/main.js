@@ -321,7 +321,7 @@ submitButton.addEventListener("click", async () => {
         submitButton.disabled = true;
         data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
         const res = await response.json();
-        console.log(res);
+        console.log(res.message);
 });
 
 
@@ -334,16 +334,16 @@ exportButton.addEventListener("click", async () => {
                 'Content-Type': 'application/json'
             },
         });
-
         // Parse the response as JSON
         const data = await response.json();
-
         // Log the data
-        console.log(data);
     } catch (error) {
         // Log any errors
         console.error('Error:', error);
     }
+
+
+    
 });
 
 
