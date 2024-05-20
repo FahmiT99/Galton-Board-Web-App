@@ -6,7 +6,10 @@ var ctx = canvas.getContext("2d");
 canvas.width = window.innerHeight * 0.3; //ca. 500px
 canvas.height = window.innerHeight*0.4;
 //console.log(window.innerWidth);
- 
+
+var superSpeed = false; // active only when 100% speed reached
+var skip = 0; // variable for skipping frames in case the speed increases
+
 var stop = false;
 var pause = false; //stop execution
 var active = false; //animation is not active 
@@ -32,14 +35,18 @@ var data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0}
                             /*                                                      Animation
 ********************************************************************************************************************************** */
 
-function reloadCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
+    if (x1==y1==0 & x2==canvas.width & y2==canvas.height)
+    {
+        ctx.clearRect(x1, y1, x2, y2);
         resetValues();
         drawPegs();
+    }
+    else ctx.clearRect(x1, y1, x2, y2);
 }
 
 
-function resetValues() {
+function resetValues() { 
     pause = false; //stop execution
     active = false; //animation is not active 
     cols = 2; // Number of columns of pegs it is a constant
@@ -79,6 +86,7 @@ function drawPegs() {
         }
         cols += 1; // increasing the column content incrementally
     }
+    
     drawHorizontalLine(x, y); //�bergabe der letzten Peg's Position
 }
 
@@ -111,10 +119,23 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function drawStats(x, y, n) {
+//TODO:
+
+/*function len(y, n, p, c = rows+1)
+{
+    let h = -p * Math.log2(p) - (1 - p)* Math.log2(1-p);
+    console.log("h = "+ h);
+    return (c*h*(y+radius))/n;
+}*/
+
+function drawStats(x, y, n, p) { //p = W'keit
     ctx.lineWidth = gap-2;
-    let startingPoint = y * 2.25;
-    var length = (y + radius)/ n; 
+    let startingPoint = y * 2.25 - 2; //2 is the horizontal line width
+
+    var length = 1.1*(y + radius)/ n; // TODO: Muss zusätzlich neben Anzahl Bälle, von W'keit und Anzahl Urnen abhängen
+                                      //dazu muss len() implementiert werden
+    console.log(length);
+
     ctx.beginPath();
     const gradient = ctx.createLinearGradient(0,0,canvas.width, 0);
     gradient.addColorStop("0", "magenta");
@@ -129,10 +150,15 @@ function drawStats(x, y, n) {
         ctx.lineTo(x, startingPoint - length);       
     } else {
 
-        ctx.moveTo(x,startingPoint - statsWatcher[x][0]);
+        ctx.moveTo(x, startingPoint); //ctx.moveTo(x,startingPoint - statsWatcher[x][0]);
         statsWatcher[x][0]+=length;
         statsWatcher[x][1]+=1;
+
+        reloadCanvas(x-gap/2+2, startingPoint-2, gap-3, -statsWatcher[x][0]);//Speicherüberflussvermeidung
+
         ctx.lineTo(x, startingPoint - statsWatcher[x][0]);
+
+        //console.log("x is "  +x +`,  Used js heap size: ${performance.memory.usedJSHeapSize}`); // Speicherüberflusskontrolle
     }
     ctx.stroke(); 
     ctx.strokeStyle = "black";
@@ -159,14 +185,24 @@ function drawStatsCount(x, y) {
 async function mainAnimationLoop() {
     while (active && !pause) {
         await animate();
-        await wait(speed);
+        if (skip>0)
+        {
+            skip--;
+            if (skip==0 && superSpeed) 
+            {    
+                skip = 7; 
+                await wait(speed);
+            }
+        }
+        else await wait(speed);
+        
     }
 }
 
 
 // createAnimation is a higher-order function that returns animateOneStep,
 // which uses closures to remember its state between calls so that we can pause the animation
-function createAnimation(n, initial_n,probability ) {  
+function createAnimation(n, initial_n, probability) {  
     var j = 0; // Platz zwischen pegs //standard Value: 0, also Mitte 
     var i = 1; //j gerade falls i ungerade und umgekehrt //Höhenebene
     var xPos = canvas.width / 2 - 0.5 * gap * j;
@@ -184,7 +220,7 @@ function createAnimation(n, initial_n,probability ) {
             probabilityRangeInput.disabled = false; 
             return;
         }
-
+ 
         if (i <= rows+1) { 
             ctx.clearRect(0, 0, canvas.width, y + radius); //clear the upper half only
             drawball(xPos, yPos);
@@ -195,7 +231,7 @@ function createAnimation(n, initial_n,probability ) {
             if(i == rows+1) { //the last level? 
                 //use statLength to draw the how often a ball fits 
                 //between nth pegs. Implement and call drawStats() from here
-                drawStats(xPos, y , initial_n);  
+                drawStats(xPos, y , initial_n, probability);  
                 drawStatsCount(xPos, y);             
             }
 
@@ -206,7 +242,7 @@ function createAnimation(n, initial_n,probability ) {
             if (random <= probability) {
                 j += 1;                 //going right 
             } else j -= 1;                 //going left
-            i += 1;  
+            i += 1; 
         }
 
         if (i > rows+1) {
@@ -264,8 +300,22 @@ probabilityRangeInput.addEventListener("input", () => {
     });
 
 speedRangeInput.addEventListener("input", () => {
-    speed = 990 - (Number(speedRangeInput.value));
+    speed = 1000 - (Number(speedRangeInput.value));
     speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value*100)/1000) + "%"; //changed from floor to ceil
+
+    //console.log("value is " +speedRangeInput.value+ " speed is " + speed);
+
+
+    if (speedRangeInput.value == 1000)
+    {
+        superSpeed=true;
+        skip = 7;
+    }
+    else
+    {
+        superSpeed=false;
+        skip = 0;
+    }
 });
 
 rowRangeInput.addEventListener("input", () => {       

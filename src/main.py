@@ -5,6 +5,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import asyncio
 
+
+
 app = FastAPI()
 db = Database('sqlite:///database.db')
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
@@ -67,4 +69,3 @@ async def submit_data(data: dict):
     data.get("statswatcher")
     )  
     return {"message": "Stats submitted successfully"}
- 
