@@ -2,10 +2,10 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from database import Database   
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 import asyncio
-
-
+import os
+import plot
 
 app = FastAPI()
 db = Database('sqlite:///database.db')
@@ -69,3 +69,22 @@ async def submit_data(data: dict):
     data.get("statswatcher")
     )  
     return {"message": "Stats submitted successfully"}
+
+
+
+
+
+#Testing plot Generation
+
+@app.get("/test")
+def load_main():
+    return FileResponse('frontend/test.html')
+ 
+
+@app.get("/plot")
+async def get_plot():
+    plot_path = plot.generate_plot()
+    return JSONResponse(content={"plot_path": f"/frontend/plots/{plot_path}"})
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)

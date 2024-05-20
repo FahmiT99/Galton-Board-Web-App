@@ -1,6 +1,7 @@
 
 
 
+
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 canvas.width = window.innerHeight * 0.3; //ca. 500px
@@ -26,14 +27,44 @@ var coordinates = []; //deepest level pegs coordinates
 var statsWatcher = {}; // contains the x postion of the buckets as keys and 
                             // an array of corresponding length and how often the ball entered the bucket
                             // as a second value x:[corresponding length, count]
+
+var simplifiedStats = []; // is a simplified version of statswatcher which only includes the amount of balls stored in the indices of bins
+
+
 var newRowValue = rows; // temp save of the rows
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-var data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+var data = {statswatcher:[],rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
 
                             /*                                                      Animation
 ********************************************************************************************************************************** */
+
+function generateLastArray(size) {
+    let array = [];
+    for(let i = -size+1; i < size; i+=2) {
+        array.push(i);
+    }
+    return array;
+}
+
+
+function filterStats(stats)
+{
+
+    var arr = [];
+    console.log(stats);
+    var keys = Object.keys(stats).map(Number).sort((a, b) => a - b);
+    console.log("stats= " , keys.length);
+    for (let i = 0; i< keys.length; i++)
+    {
+        let key = keys[i];
+        arr.push(stats[key][1]);
+    }
+    console.log("simplified array ", arr, "array size = ", arr.length);
+    return arr;
+}
+
 
 function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
     if (x1==y1==0 & x2==canvas.width & y2==canvas.height)
@@ -60,6 +91,7 @@ function resetValues() {
     }
 
     statsWatcher = {};
+    simplifiedStats = [];
 }
 
 // Initialize the bins array with zeros
@@ -134,7 +166,7 @@ function drawStats(x, y, n, p) { //p = W'keit
 
     var length = 1.1*(y + radius)/ n; // TODO: Muss zusätzlich neben Anzahl Bälle, von W'keit und Anzahl Urnen abhängen
                                       //dazu muss len() implementiert werden
-    console.log(length);
+    //console.log(length);
 
     ctx.beginPath();
     const gradient = ctx.createLinearGradient(0,0,canvas.width, 0);
@@ -210,6 +242,8 @@ function createAnimation(n, initial_n, probability) {
     var arr = [];
     var y = gap * rows;
 
+
+
     return async function animateOneStep() {  
         if (n < 0) {
             active = false;
@@ -262,7 +296,8 @@ function saveData() {
     data.rows = rows;
     data.probabilityLeft = probabilityLeft/100;
     data.probabilityRight = probabilityRight/100;
-    data.statswatcher = statsWatcher;
+    simplifiedStats = filterStats(statsWatcher);
+    data.statswatcher = simplifiedStats;
 }
 
 
@@ -332,12 +367,21 @@ startButton.addEventListener("click", () => {
         mainAnimationLoop();   
     } else if (!active) {
         // If the animation was not active, start it
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        reloadCanvas();
         resetValues();
         active = true;
         rowRangeInput.disabled = true;
         ballsAmountRangeInput.disabled = true;
         probabilityRangeInput.disabled = true;
+
+        //intialisiere Statswatcher mit Nullen
+        var binsArray = generateLastArray(rows);
+        for (let s = 0; s<binsArray.length; s++)
+        {
+            statsWatcher[canvas.width / 2 - 0.5 * gap * binsArray[s]] = [null, 0];
+        }
+        console.log(statsWatcher);
+
         animate = createAnimation(balls-1,balls-1,probabilityLeft/100); 
         mainAnimationLoop();
     }
@@ -386,13 +430,14 @@ exportButton.addEventListener("click", async () => {
         });
         // Parse the response as JSON
         const data = await response.json();
+        window.location.href = 'http://localhost:8000/test'
         // Log the data
     } catch (error) {
         // Log any errors
         console.error('Error:', error);
     }
 
-
+    
     
 });
 

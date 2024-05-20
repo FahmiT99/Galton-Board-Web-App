@@ -17,7 +17,7 @@ class Data(Base):
     stats = Column(JSON)
 
     def __repr__(self, rows, balls, probabilityLeft, probabilityRight, stats):
-        self.rows = rows 
+        self.rows = rows
         self.balls = balls
         self.probabilityLeft = probabilityLeft
         self.probabilityRight = probabilityRight
