@@ -1,4 +1,5 @@
-
+ 
+ 
 
 
 
@@ -35,7 +36,8 @@ var newRowValue = rows; // temp save of the rows
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-var data = {statswatcher:[],rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+const group_name = localStorage.getItem('group_name');
+var data = {group_id: group_name , statswatcher:[],rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
 
                             /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -404,41 +406,22 @@ stopButton.addEventListener("click", async () => {
 });
 
 submitButton.addEventListener("click", async () => {
-     
     const response = await fetch('http://localhost:8000/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)  
+        body: JSON.stringify(data)     
     });
         submitButton.disabled = true;
-        data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+        data = {group_id: group_name,statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
         const res = await response.json();
         console.log(res.message);
 });
 
 
 exportButton.addEventListener("click", async () => {
-    try {
-        // Send a GET request
-        const response = await fetch('http://localhost:8000/export', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-        // Parse the response as JSON
-        const data = await response.json();
-        window.location.href = 'http://localhost:8000/test'
-        // Log the data
-    } catch (error) {
-        // Log any errors
-        console.error('Error:', error);
-    }
-
-    
-    
+     window.location.href = 'http://localhost:8000/test'
 });
 
 
