@@ -2,15 +2,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        .plots {
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        h1   {color: gray;}
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matplotlib Plot</title>
+    <script src="frontend/test.js"></script>
 </head>
 <body>
     <h1>Matplotlib Plot</h1>
-    <button id="generate-plot-btn">Generate Plot</button>
-    <br>
-    <img id="plot-img" src="" alt="Plot will appear here">
-    <script src="frontend/test.js"></script>
+    <h1>Plot Preview</h1>
+    <div id="plot-container" class="plots"></div>
 </body>
 </html>

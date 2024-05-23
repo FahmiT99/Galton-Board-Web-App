@@ -36,8 +36,14 @@ var newRowValue = rows; // temp save of the rows
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-const group_name = localStorage.getItem('group_name');
+
+// Extract 'group_id' from the current URL
+const urlParams = new URLSearchParams(window.location.search);
+const group_name = urlParams.get('group_id');
+
+
 var data = {group_id: group_name , statswatcher:[],rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+console.log(group_name);
 
                             /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -421,7 +427,16 @@ submitButton.addEventListener("click", async () => {
 
 
 exportButton.addEventListener("click", async () => {
-     window.location.href = 'http://localhost:8000/test'
+        const response = await fetch(`http://localhost:8000/plot?group_id=${group_name}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        window.location.href = `http://localhost:8000/test?group_id=${group_name}`; //maybe wrong?
+            
+    
 });
 
 

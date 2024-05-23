@@ -5,7 +5,7 @@ var groupID = document.getElementById("group-id");
 var groupIdInput = document.getElementById("groupID_input");
 var idDisplay = document.getElementById('id-display');
 var idDisplay2 = document.getElementById('id-display2');
-var group_name;
+
 
 
 createGroupButton.addEventListener('click', async () => {
@@ -38,9 +38,7 @@ withGroupButton.addEventListener('click', async () => {
         });
         const res = await response.json();
         if(res.ok) {
-            group_name  = groupID.value;
-            localStorage.setItem('group_name', group_name);
-            window.location.href = 'http://localhost:8000/main'
+            window.location.href = `http://localhost:8000/main?group_id=${encodeURIComponent(groupID.value)}`;
             return;
         }
         idDisplay2.textContent =  res.message;

@@ -3,10 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import Database   
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
-import asyncio, os, plot, uvicorn
+import asyncio, os, plot ,uvicorn
 from pydantic import BaseModel
 from starlette.requests import Request
 from typing import Optional
+import plot, time
+
+
+
 
 app = FastAPI()
 db = Database('sqlite:///database.db')
@@ -73,6 +77,10 @@ async def submit_data(data: dict):
     data.get("probabilityRight"), 
     data.get("statswatcher")
     )  
+
+    # Cleanup plots if necessary
+    cleanup_plots_and_db()
+
     return {"message": "Stats submitted successfully"}
 
 #Testing plot Generation
@@ -83,9 +91,46 @@ def load_test():
  
 
 @app.get("/plot")
-async def get_plot():
-    plot_path = plot.generate_plot()
-    return JSONResponse(content={"plot_path": f"/frontend/plots/{plot_path}"})
+async def get_plot(group_id: str):
+    #print(db.get_group_data(group_id))
+    plot_paths = plot.generate_plots(group_id, db.get_group_data(group_id))
+    #return JSONResponse(content={"plot_path": f"/frontend/plots/{plot_path}"})
+    return JSONResponse(content={"plot_paths": f"/frontend/plots/{plot_paths}"})
+
+
+@app.get("/list-plots")
+async def list_plots(group_id: str):
+    plot_dir = "frontend/plots"
+    plot_files = [f"/frontend/plots/{file}" for file in os.listdir(plot_dir) if file.startswith(f"{group_id}_")]
+    return JSONResponse(content={"plot_paths": plot_files})
+
+
+def cleanup_plots_and_db():
+    plot_dir = "frontend/plots"
+    plot_files = [file for file in os.listdir(plot_dir) if os.path.isfile(os.path.join(plot_dir, file))]
+
+    if len(plot_files) > 100:
+        # Sort files by modification time (oldest first)
+        plot_files.sort(key=lambda x: os.path.getmtime(os.path.join(plot_dir, x)))
+
+        # Identify the oldest group_id and remove corresponding files and database rows
+        oldest_file = plot_files[0]
+        oldest_group_id = oldest_file.split('_')[0]
+
+        # Remove all files with the oldest group_id
+        for file in plot_files:
+            if file.startswith(f"{oldest_group_id}_"):
+                os.remove(os.path.join(plot_dir, file))
+
+        # Remove corresponding rows from the database
+        db.delete_group_data(oldest_group_id)
+
+
+
 
 if __name__ == "__main__":
     os.system("uvicorn main:app --reload")
+
+
+# for x in db.get_group_data("g"):
+#     print(x.id)

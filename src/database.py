@@ -21,16 +21,21 @@ class Data(Base):
     probabilityRight = Column(Integer)
     stats = Column(JSON)
 
-    def __repr__(self, group_id, rows, balls, probabilityLeft, probabilityRight, stats):
-        self.group_id = group_id
-        self.rows = rows
-        self.balls = balls
-        self.probabilityLeft = probabilityLeft
-        self.probabilityRight = probabilityRight
-        self.stats = stats
+    # def __repr__(self, group_id, rows, balls, probabilityLeft, probabilityRight, stats):
+    #     self.group_id = group_id
+    #     self.rows = rows
+    #     self.balls = balls
+    #     self.probabilityLeft = probabilityLeft
+    #     self.probabilityRight = probabilityRight
+    #     self.stats = stats
 
 
-        
+    def __repr__(self):
+        return (f"<Data(id={self.id}, group_id={self.group_id}, rows={self.rows}, "
+                f"balls={self.balls}, probabilityLeft={self.probabilityLeft}, "
+                f"probabilityRight={self.probabilityRight}, stats={self.stats})>")
+
+
 
 
 
@@ -45,9 +50,11 @@ class Database:
         session = self.session() 
         return session.query(GroupIDs).filter_by(group_id=group_id).first() is not None
 
-    def get_group_data(self, group_id): 
+    def get_group_data(self, group_id:str): 
         session = self.session()  
-        return session.query(Data).filter_by(group_id=group_id).all()  
+        data = session.query(Data).filter_by(group_id=group_id).all() 
+        session.close()
+        return data 
     
 
     def create_group(self, group_id: str, **kwargs):
@@ -97,3 +104,19 @@ class Database:
             raise
         finally:
             session.close()
+
+    # delete rows of a group after a certain time
+    def delete_group_data(self, group_id):
+        session = self.session()
+        try:
+            query = delete(Data).where(Data.group_id == group_id)
+            query_2 = delete(GroupIDs).where(GroupIDs.group_id == group_id)
+            session.execute(query)
+            session.commit()
+            session.execute(query_2)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()     
