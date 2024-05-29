@@ -2,12 +2,17 @@
 <html>
 <head>
     <link rel="stylesheet" href="frontend/styles.css">  
+    <link rel="apple-touch-icon" sizes="180x180" href="frontend/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="frontend/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="frontend/favicon/favicon-16x16.png">
+    <link rel="manifest" href="frontend/favicon/site.webmanifest">
 </head>
 <body>
 
     <div class="container2">
         <div >
             <h1>Erstellen Sie eine Gruppe</h1>
+            <input class="inputField" type="text" id="groupID_input" placeholder="Gruppenname eingeben">
             <button class="button" id="create-group">Gruppe erstellen</button>
             <p class="inputField" id="id-display"></p>
 
@@ -17,12 +22,13 @@
                 <div>
                     <input class="inputField" type="text" id="group-id" placeholder="Gruppenname eingeben">
                     <button style="margin-top: 10%;" class="button" id="continue">Fortfahren</button>
+                    <p class="inputField" id="id-display2"></p>
                 </div>
             </div>
         </div>
     </div>    
     
 
-    <script src="frontend/homepage.js"></script>
+    <script   src="frontend/homepage.js"></script>
 </body>
 </html>

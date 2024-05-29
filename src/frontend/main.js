@@ -1,4 +1,5 @@
-
+ 
+ 
 
 
 
@@ -35,7 +36,14 @@ var newRowValue = rows; // temp save of the rows
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-var data = {statswatcher:[],rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+
+// Extract 'group_id' from the current URL
+const urlParams = new URLSearchParams(window.location.search);
+const group_name = urlParams.get('group_id');
+
+
+var data = {group_id: group_name,rows:0,balls:0,probabilityLeft:0,probabilityRight:0, stats:[]};
+console.log(group_name);
 
                             /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -297,7 +305,7 @@ function saveData() {
     data.probabilityLeft = probabilityLeft/100;
     data.probabilityRight = probabilityRight/100;
     simplifiedStats = filterStats(statsWatcher);
-    data.statswatcher = simplifiedStats;
+    data.stats = simplifiedStats;
 }
 
 
@@ -404,40 +412,30 @@ stopButton.addEventListener("click", async () => {
 });
 
 submitButton.addEventListener("click", async () => {
-     
     const response = await fetch('http://localhost:8000/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)  
+        body: JSON.stringify(data)     
     });
         submitButton.disabled = true;
-        data = {statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+        data = {group_id: group_name,rows:0,balls:0,probabilityLeft:0,probabilityRight:0,stats:[]};
         const res = await response.json();
         console.log(res.message);
 });
 
 
 exportButton.addEventListener("click", async () => {
-    try {
-        // Send a GET request
-        const response = await fetch('http://localhost:8000/export', {
+        const response = await fetch(`http://localhost:8000/plot?group_id=${group_name}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }
         });
-        // Parse the response as JSON
-        const data = await response.json();
-        window.location.href = 'http://localhost:8000/test'
-        // Log the data
-    } catch (error) {
-        // Log any errors
-        console.error('Error:', error);
-    }
-
-    
+        
+        window.location.href = `http://localhost:8000/test?group_id=${group_name}`; //maybe wrong?
+            
     
 });
 
