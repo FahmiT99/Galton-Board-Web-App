@@ -1,21 +1,26 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from database import Database   
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
-import asyncio, os, plot ,uvicorn
-from pydantic import BaseModel
-from starlette.requests import Request
-from typing import Optional
-import plot, time
+import asyncio, os, plot, crud, models, schemas
+from database import SessionLocal, engine
 
 
+models.Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 app = FastAPI()
-db = Database('sqlite:///database.db')
-app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
  
 app.add_middleware(
     CORSMiddleware,
@@ -24,19 +29,14 @@ app.add_middleware(
     allow_methods=["*"], #TODO write necessary ones
     allow_headers=["*"],
 )
-# class GroupID(BaseModel):
-#     group_id: str
+
+# async def reset_db(delay):
+#     while True:
+#         await asyncio.sleep(delay)
+#         db.reset_data()
 
 
-async def reset_db(delay):
-    while True:
-        await asyncio.sleep(delay)
-        db.reset_data()
 
-# @app.on_event("startup")
-# async def startup_event():
-#     # Schedule the reset_id function to run in 24 hours
-#     asyncio.create_task(reset_db(24 * 60 * 60))
 
 @app.get("/")
 def read_root():
@@ -46,9 +46,10 @@ def read_root():
 def load_main():
     return FileResponse('frontend/main.html')
 
-@app.get("/check_groupID")
-def check_groupID(group_id: str):
-    if db.check_group_id_exists(group_id): 
+
+@app.get("/check_groupID/")
+def check_groupID(group_id: str, db: Session = Depends(get_db)):
+    if crud.check_group_id_exists(db, group_id): 
         ok = True
         return {"ok": ok}
     else:
@@ -57,31 +58,27 @@ def check_groupID(group_id: str):
 
 
 
-@app.post("/create_groupID")
-async def create_groupID(data: dict): 
-    if db.create_group(data.get("group_id")): 
-        return{"message" : "Gruppe wurde erstellt!"}
+@app.post("/create_groupID/")
+async def create_group_id(group_create: schemas.GroupCreate, db: Session = Depends(get_db)):
+    if crud.create_group(db, group_create):
+        return {"message": "Gruppe wurde erstellt!"}
     else:
-        return{"message": "Gruppe existiert bereits. Bitte einen anderen Namen eingeben"}
-    
+        return {"message": "Gruppe existiert bereits. Bitte einen anderen Namen eingeben"}
 
  
 
 @app.post("/")
-async def submit_data(data: dict):
-    db.saveData(
-    data.get("group_id"),
-    data.get("rows"), 
-    data.get("balls"), 
-    data.get("probabilityLeft"), 
-    data.get("probabilityRight"), 
-    data.get("statswatcher")
-    )  
+async def submit_data(data_create: schemas.DataCreate, db: Session = Depends(get_db)):
 
+    crud.save_data(db, data_create)
+    
     # Cleanup plots if necessary
-    cleanup_plots_and_db()
+    #cleanup_plots_and_db()
 
     return {"message": "Stats submitted successfully"}
+
+
+
 
 #Testing plot Generation
 
@@ -90,22 +87,33 @@ def load_test():
     return FileResponse('frontend/test.html')
  
 
-@app.get("/plot")
-async def get_plot(group_id: str):
-    #print(db.get_group_data(group_id))
-    plot_paths = plot.generate_plots(group_id, db.get_group_data(group_id))
-    #return JSONResponse(content={"plot_path": f"/frontend/plots/{plot_path}"})
+
+
+@app.get("/plot/")
+async def get_plot(group_id: str, db: Session = Depends(get_db)):
+
+    plot_paths = plot.generate_plots(group_id, crud.get_group_data(db, group_id))
+
     return JSONResponse(content={"plot_paths": f"/frontend/plots/{plot_paths}"})
 
 
-@app.get("/list-plots")
+
+
+
+@app.get("/list-plots/")
 async def list_plots(group_id: str):
+
     plot_dir = "frontend/plots"
     plot_files = [f"/frontend/plots/{file}" for file in os.listdir(plot_dir) if file.startswith(f"{group_id}_")]
+
     return JSONResponse(content={"plot_paths": plot_files})
 
 
-def cleanup_plots_and_db():
+
+
+
+def cleanup_plots_and_db(db: Session = Depends(get_db)):
+
     plot_dir = "frontend/plots"
     plot_files = [file for file in os.listdir(plot_dir) if os.path.isfile(os.path.join(plot_dir, file))]
 
@@ -123,7 +131,7 @@ def cleanup_plots_and_db():
                 os.remove(os.path.join(plot_dir, file))
 
         # Remove corresponding rows from the database
-        db.delete_group_data(oldest_group_id)
+        crud.delete_group_data(db, oldest_group_id)
 
 
 
@@ -132,5 +140,4 @@ if __name__ == "__main__":
     os.system("uvicorn main:app --reload")
 
 
-# for x in db.get_group_data("g"):
-#     print(x.id)
+ 

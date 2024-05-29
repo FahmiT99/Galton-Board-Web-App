@@ -3,4 +3,4 @@ venv/
 src/__pycache__/
 database.db
 .vscode/
-src/frontend/plots
+src/frontend/plots/*.png

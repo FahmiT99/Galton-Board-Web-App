@@ -42,7 +42,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const group_name = urlParams.get('group_id');
 
 
-var data = {group_id: group_name , statswatcher:[],rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+var data = {group_id: group_name,rows:0,balls:0,probabilityLeft:0,probabilityRight:0, stats:[]};
 console.log(group_name);
 
                             /*                                                      Animation
@@ -305,7 +305,7 @@ function saveData() {
     data.probabilityLeft = probabilityLeft/100;
     data.probabilityRight = probabilityRight/100;
     simplifiedStats = filterStats(statsWatcher);
-    data.statswatcher = simplifiedStats;
+    data.stats = simplifiedStats;
 }
 
 
@@ -420,7 +420,7 @@ submitButton.addEventListener("click", async () => {
         body: JSON.stringify(data)     
     });
         submitButton.disabled = true;
-        data = {group_id: group_name,statswatcher:{},rows:0,balls:0,probabilityLeft:0,probabilityRight:0};
+        data = {group_id: group_name,rows:0,balls:0,probabilityLeft:0,probabilityRight:0,stats:[]};
         const res = await response.json();
         console.log(res.message);
 });
