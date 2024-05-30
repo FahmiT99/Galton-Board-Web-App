@@ -326,7 +326,7 @@ var ballsAmountRangeInput = document.getElementById("rangeInput3"); //TODO
 var ballsAmountRangeValue = document.getElementById("rangeValue3"); //TODO
 var probabilityRangeInput = document.getElementById("rangeInput4"); //TODO
 var probabilityRangeValue = document.getElementById("rangeValue4"); //TODO
-
+var statusSymbol = document.getElementById("statusSymbol");
 
 
 ballsAmountRangeInput.addEventListener("input", () => {
@@ -378,6 +378,7 @@ startButton.addEventListener("click", () => {
         reloadCanvas();
         resetValues();
         active = true;
+        submitButton.disabled = true;
         rowRangeInput.disabled = true;
         ballsAmountRangeInput.disabled = true;
         probabilityRangeInput.disabled = true;
@@ -402,41 +403,76 @@ pauseButton.addEventListener("click",  () => {
 });
 
 stopButton.addEventListener("click", async () => {  
-        active = false;
-        rowRangeInput.disabled = false;
-        ballsAmountRangeInput.disabled = false;
-        probabilityRangeInput.disabled = false;
-        await wait(300);
-        statsWatcher = {};
-        reloadCanvas();
+    active = false;
+    rowRangeInput.disabled = false;
+    ballsAmountRangeInput.disabled = false;
+    probabilityRangeInput.disabled = false;
+    await wait(300);
+    statsWatcher = {};
+    reloadCanvas();
 });
 
 submitButton.addEventListener("click", async () => {
-    const response = await fetch('http://localhost:8000/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)     
-    });
-        submitButton.disabled = true;
-        data = {group_id: group_name,rows:0,balls:0,probabilityLeft:0,probabilityRight:0,stats:[]};
-        const res = await response.json();
-        console.log(res.message);
+    try {
+        const response = await fetch('http://localhost:8000/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)     
+        });
+
+        const jsonResponse = await response.json();
+
+        if (response.status === 201) {
+
+            submitButton.disabled = true;
+            data = {group_id: group_name,rows:0,balls:0,probabilityLeft:0,probabilityRight:0,stats:[]};
+            
+            // Display success symbol (checkmark)
+            statusSymbol.classList.remove("error-style");
+            statusSymbol.innerHTML = "&#10003;"; // Checkmark symbol
+            statusSymbol.classList.add("success-style");
+            statusSymbol.style.visibility = "visible";
+            // Remove the symbol after 5 seconds (5000 milliseconds)
+            setTimeout(() => { statusSymbol.style.visibility = "hidden"; }, 1000);
+            return;
+        
+        } else {
+            // Display error symbol (cross)
+            statusSymbol.classList.remove("success-style");
+            statusSymbol.innerHTML = "&#10007;"; // Cross symbol
+            statusSymbol.classList.add("error-style");
+            statusSymbol.style.visibility = "visible";
+            throw new Error(jsonResponse.detail);
+        }     
+
+    } catch (error) {
+        setTimeout(() => { statusSymbol.style.visibility = "hidden"; }, 1000);
+        console.error(error.message);
+    }
 });
 
 
 exportButton.addEventListener("click", async () => {
+    try {
         const response = await fetch(`http://localhost:8000/plot?group_id=${group_name}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        
-        window.location.href = `http://localhost:8000/test?group_id=${group_name}`; //maybe wrong?
-            
-    
+        const jsonResponse = await response.json();
+        if (response.ok) {
+            window.location.href = `http://localhost:8000/test?group_id=${group_name}`; //maybe wrong?    
+        }
+        else {
+            throw new Error(jsonResponse.detail);
+        }
+     
+    } catch (error) {
+        console.error(error.message);
+    }    
 });
 
 
@@ -447,6 +483,7 @@ exportButton.addEventListener("click", async () => {
 //Initialization
 drawPegs();
 submitButton.disabled = true;
+
  
 
 

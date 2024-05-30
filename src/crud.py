@@ -3,6 +3,7 @@ from sqlalchemy import  Table, delete
 from models import *
 from schemas import *
 from database import engine
+import os
 
 """
 This module includes reusable CRUD functions
@@ -36,13 +37,13 @@ def create_group(db: Session, group_create: GroupCreate) -> bool:
         try:
             db.add(new_group)
             db.commit()
-            db.refresh(new_group)  
-            return True   
+            db.refresh(new_group)    
         except:
             db.rollback()
             raise 
         finally:
             db.close()
+        return True 
     else:
         # If the group ID already exists, return False
         return False
@@ -50,7 +51,7 @@ def create_group(db: Session, group_create: GroupCreate) -> bool:
 
 
 
-def save_data(db: Session, data_create: DataCreate) -> Data:
+def save_data(db: Session, data_create: DataCreate):
 
     new_data = Data(**data_create.model_dump())
     try:
@@ -62,11 +63,9 @@ def save_data(db: Session, data_create: DataCreate) -> Data:
         raise                   
     finally:
         db.close()               
-    return new_data
 
 
     
-
 def reset_data(db : Session):
     table1 = Table("data", Base.metadata, autoload_with=engine)
     table2 = Table("groups", Base.metadata, autoload_with=engine)
@@ -97,4 +96,26 @@ def delete_group_data(db : Session, group_id):
         db.rollback()
         raise
     finally:
-        db.close()     
+        db.close()    
+
+
+def cleanup_plots_and_db(db: Session):
+
+    plot_dir = "frontend/plots"
+    plot_files = [file for file in os.listdir(plot_dir) if os.path.isfile(os.path.join(plot_dir, file))]
+
+    if len(plot_files) > 100:
+        # Sort files by modification time (oldest first)
+        plot_files.sort(key=lambda x: os.path.getmtime(os.path.join(plot_dir, x)))
+
+        # Identify the oldest group_id and remove corresponding files and database rows
+        oldest_file = plot_files[0]
+        oldest_group_id = oldest_file.split('_')[0]
+
+        # Remove all files with the oldest group_id
+        for file in plot_files:
+            if file.startswith(f"{oldest_group_id}_"):
+                os.remove(os.path.join(plot_dir, file))
+
+        # Remove corresponding rows from the database
+        delete_group_data(db, oldest_group_id) 
