@@ -99,3 +99,22 @@ input[type=range]::-webkit-slider-thumb {
 input[type=range]:hover {
   opacity: 1; /* Set opacity to full on hover (adjust as needed) */
 }
+
+
+.success-style {
+  color: green;
+  font-size: 60px;
+
+}
+
+.error-style {
+  color: red;
+  font-size: 60px;
+}
+
+#statusSymbol {
+  /* Reserve space but hide the content */
+  font-size: 60px;
+  visibility: hidden;
+  /* Other styling */
+}
