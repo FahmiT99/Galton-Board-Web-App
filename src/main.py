@@ -5,6 +5,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 import asyncio, os, plot, crud, models, schemas
 from database import SessionLocal, engine
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -18,8 +20,18 @@ def get_db():
     finally:
         db.close()
 
+    
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app:FastAPI):
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(crud.reset_data, "interval", minutes=24*60, args=(SessionLocal(),))
+    scheduler.start()
+    yield
+
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
  
@@ -102,7 +114,8 @@ def list_plots(group_id: str):
 def submit_data(data_create: schemas.DataCreate, db: Session = Depends(get_db)):
 
     try:
-        crud.save_data(db, data_create)
+        if not crud.save_data(db, data_create):
+            return JSONResponse(status_code=404, content={"detail":"Gruppe nicht gefunden. Bitte zur Startseite kehren"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
