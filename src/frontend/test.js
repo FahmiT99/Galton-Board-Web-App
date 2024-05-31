@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (response.ok) {
 
-            const plotPaths = data.plot_paths;
+            const plotPaths = jsonResponse.plot_paths;
 
             const plotContainer = document.getElementById('plot-container');
             plotContainer.innerHTML = ''; // Clear previous plots

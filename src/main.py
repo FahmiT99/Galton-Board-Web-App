@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
-import asyncio, os, plot, crud, models, schemas
+import os, plot, crud, models, schemas
 from database import SessionLocal, engine
 from contextlib import asynccontextmanager
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -24,8 +24,8 @@ def get_db():
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(crud.reset_data, "interval", minutes=24*60, args=(SessionLocal(),))
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(crud.reset_data, "interval", minutes=1, args=(SessionLocal(),))
     scheduler.start()
     yield
 
