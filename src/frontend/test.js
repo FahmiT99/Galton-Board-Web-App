@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await fetch(`http://localhost:8000/list-plots?group_id=${group_name}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json' 
             }
         });
 
