@@ -1,70 +1,50 @@
 <!doctype html>
 <html>
 <head>
-    <link rel="stylesheet"  href="frontend/styles.css"> 
+    <link rel="stylesheet" href="frontend/styles.css"> 
     <link rel="apple-touch-icon" sizes="180x180" href="frontend/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="frontend/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="frontend/favicon/favicon-16x16.png">
     <link rel="manifest" href="frontend/favicon/site.webmanifest"> 
 </head>
 <body>
-  <!-- Create a canvas element to draw the galton board -->
-    <!-- <canvas id="canvas" width="600" height="100"></canvas> -->
     <div class="container">
         <canvas id="canvas"></canvas>
-        <div class="button-container" >
-            <button class="button"  id="start">&#9658;</button> <!-- Play button -->
-            <button class="button"  id="pause">&#10074;&#10074;</button> <!-- Pause button -->
-            <button class="button"  id="stop" style="margin-right:4%">&#9724;</button> <!-- Stop button -->
-        
-            <div id="statusSymbol" >&#10007;</div>
+    </div>
 
-            <div>
-                <button class="button"  id="sendData">Absenden</button>
-            </div>
-
-            <div>
-                <button class="button"  id="exportData">Ergebnisse</button>
-            </div>
-        
-        
+    <div class="container">
+        <div class="button-container">
+            <button class="button" id="start">&#9658;</button> <!-- Play button -->
+            <button class="button" id="pause">&#10074;&#10074;</button> <!-- Pause button -->
+            <button class="button" id="stop">&#9724;</button> <!-- Stop button -->
+            <div id="statusSymbol">&#10007;</div>
+            <button class="button" id="sendData">Absenden</button>
+            <button class="button" id="exportData">Ergebnisse</button>
         </div>
-       
- 
     </div>
     
-    <!-- Create buttons to start and stop the simulation -->
-         
-    <div class="range-container" >
-             
-        <div class="rangeField"  >
-            <p id="rangeValue" >Anzahl Reihen: 5</p>
+    <div class="range-container">
+        <div class="rangeField">
+            <p id="rangeValue">Anzahl Reihen: 5</p>
             <input type="range" id="rangeInput" min="1" max="10" value="5" step="1">
         </div>
-        <div class ="rangeField"  style="margin-left:8%">
-            <p id="rangeValue3"> Anzahl Bälle = 250</p>
+        <div class="rangeField">
+            <p id="rangeValue3">Anzahl Bälle = 250</p>
             <input type="range" id="rangeInput3" min="10" max="1000" value="250" step="10">        
         </div>
-        
     </div>
 
-
-    <div class = "range-container" >
-
-        <div class ="rangeField">
+    <div class="range-container">
+        <div class="rangeField">
             <p id="rangeValue2">Fallgeschwindigkeit = 1%</p>
             <input type="range" id="rangeInput2" min="1" max="1000" value="1" step="1">        
         </div>
-
-        <div class ="rangeField" style="margin-left:5%" >
-            <p id="rangeValue4"> Wahrscheinlichkeit 50 % | 50 % </p>
+        <div class="rangeField">
+            <p id="rangeValue4">Wahrscheinlichkeit 50 % | 50 %</p>
             <input type="range" id="rangeInput4" min="0" max="100" value="50" step="10">        
         </div>
-
     </div>
 
-    <script   src="frontend/main.js"></script>
-    
-    
+    <script src="frontend/main.js"></script>
 </body>
 </html>
