@@ -1,10 +1,98 @@
-document.addEventListener('DOMContentLoaded', function() {
+import { v4 as uuidv4 } from 'https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/esm-browser/index.js';
+
+async function generateUUID() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let userId = urlParams.get('user_id');
+
+    // if there is one check wether its in the db
+    if (userId) {
+        let nexists = await check_userId(userId);
+        if(nexists) {
+            return userId;
+        }
+    }
+
+    userId = uuidv4();
+    let exists = await createUserId(userId);
+    
+    //check if userID already exists
+    while (exists) {
+        userId = uuidv4();
+        console.log(userId);
+        exists = await createUserId(userId);
+    }
+    
+    window.location.search = '?user_id=' + userId;
+    
+    return userId;
+}
+
+
+async function createUserId(userId) {
+    try {    
+        const response = await fetch(`http://localhost:8000/create_userID/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user_id: userId })  
+        });
+        const jsonResponse = await response.json();
+
+        if (response.status === 201) {
+            return false;
+        } 
+        else if (response.status === 400) {
+            return true;
+        }
+        else {
+            throw new Error(jsonResponse.detail);
+        }
+
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+async function check_userId(userId) {
+    try {    
+        const response = await fetch(`http://localhost:8000/check_userID/?user_id=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const jsonResponse = await response.json();
+
+        if (response.ok) {
+            return true;
+        } 
+        else if (response.status === 404) {
+            
+            return false;
+        }
+        else {
+            throw new Error(jsonResponse.detail);
+        }
+
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+
+const userId = await generateUUID();
+
+ 
+    
+
+    
     const getStartedButton = document.getElementById('get-started');
     const hiddenElements = document.getElementById('hidden-elements');
     const ctaContainer = document.getElementById('cta-container');
     // const navToggle = document.getElementById('nav-toggle');
     // const navContent = document.getElementById('nav-content');
-
+    
     getStartedButton.addEventListener('click', function() {
         ctaContainer.innerHTML = hiddenElements.innerHTML;
         console.log('Get Started button clicked');
@@ -50,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial attachment of event listeners
     attachEventListeners();
-});
+ 
 
 function attachEventListeners() {
     const createGroupButton = document.getElementById("create-group");
@@ -90,7 +178,11 @@ function attachEventListeners() {
     });
 
     withoutGrouptButton.addEventListener('click', async () => {
-        window.location.href = 'http://localhost:8000/main/'
+
+        if (userId) {
+            window.location.href = `http://localhost:8000/main?user_id=${userId}`;
+        }
+        
     });
 
     withGroupButton.addEventListener('click', async () => {
@@ -105,7 +197,7 @@ function attachEventListeners() {
                 });
                 const jsonResponse = await response.json();
                 if (response.ok) {
-                    window.location.href = `http://localhost:8000/main/?group_id=${encodeURIComponent(groupID.value)}`;
+                    window.location.href = `http://localhost:8000/main/?group_id=${groupID.value}&user_id=${userId}`;
                     return;
                 } 
                 else if (response.status === 404) {

@@ -3,26 +3,34 @@ from sqlalchemy.orm import relationship
 from database import Base
 
 """
-This module defines SQLAlchemy data models for a web application. 
-It includes classes, representing users, user groups, and associated data. 
+This module defines SQLAlchemy data models for our web application. 
+It includes classes, representing users, groups, and associated data. 
 Relationships between these models enable efficient data retrieval and manipulation
 
 """
 class User(Base):
     __tablename__ = 'users'
+    
     id = Column(Integer, primary_key=True)
     user_id = Column(String, index=True, unique=True)
-    data = relationship('Data', back_populates='user')
+    data_count = Column(Integer, default=0)
+
+    data = relationship('Data', backref='users')
+    user_plots = relationship('UserPlots', backref='users')
 
     def __repr__(self) -> str:
-        return f"<User(id={self.id}, user_id={self.user_id})>"
+        return f"<User(id={self.id}, user_id={self.user_id}, data_count={self.data_count})>"
 
 
 class Group(Base):
     __tablename__ = 'groups'
+
     id = Column(Integer, primary_key=True)
     group_id = Column(String, index=True, unique=True)
-    data = relationship('Data', back_populates='group')
+
+    data = relationship('Data', backref='groups')
+    group_plots = relationship('GroupPlots', backref='groups')
+    
 
     def __repr__(self) -> str:
         return f"<Group(id={self.id}, group_id={self.group_id})>"
@@ -30,6 +38,7 @@ class Group(Base):
 
 class Data(Base):
     __tablename__ = "data"
+
     id = Column(Integer, primary_key=True)
     user_id = Column(String, ForeignKey('users.user_id'), index=True)  
     group_id = Column(String, ForeignKey('groups.group_id'), index=True, nullable=True)
@@ -39,14 +48,26 @@ class Data(Base):
     probabilityRight = Column(Float)
     stats = Column(JSON)
 
-    user = relationship('User', back_populates='data')
-    group = relationship('Group', back_populates='data')
-
 
     def __repr__(self) -> str:
         return (f"<Data(id={self.id}, group_id={self.group_id}, user_id={self.user_id}, rows={self.rows}, "
                 f"balls={self.balls}, probabilityLeft={self.probabilityLeft}, "
                 f"probabilityRight={self.probabilityRight}, stats={self.stats})>")
 
+
+class UserPlots(Base):
+    __tablename__ = "user_plots"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(String, ForeignKey("users.user_id"), index=True)
+    plot_path = Column(String)
+
+
+class GroupPlots(Base):
+    __tablename__ = "group_plots"
+
+    id = Column(Integer, primary_key=True)
+    group_id = Column(String, ForeignKey("groups.group_id"), index=True)
+    plot_path = Column(String)
 
 

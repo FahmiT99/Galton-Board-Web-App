@@ -15,6 +15,7 @@ class GroupCreate(BaseModel):
     group_id: str
 
 class DataCreate(BaseModel):
+    user_id: str
     group_id: str
     rows: int
     balls: int
