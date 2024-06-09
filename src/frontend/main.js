@@ -52,6 +52,17 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
+// Extract 'group_id, user_id' from the current URL
+const urlParams = new URLSearchParams(window.location.search);
+var group_name = urlParams.get('group_id');
+const user_id = urlParams.get('user_id');
+if (!group_name) {
+    group_name =".";
+    document.getElementById("exportData").style.visibility ="hidden";
+}
+
+
+
 var superSpeed = false;
 var skip = 0;
 var stop = false;
@@ -73,14 +84,9 @@ var newRowValue = rows;
 var newBallValue = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-
-// Extract 'group_id' from the current URL
-const urlParams = new URLSearchParams(window.location.search);
-const group_name = urlParams.get('group_id');
-
-var data = {group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
+var data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
 console.log(group_name);
-
+console.log(user_id);
 
 /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -322,6 +328,7 @@ var stopButton = document.getElementById("stop");
 var pauseButton = document.getElementById("pause");
 var submitButton = document.getElementById("sendData");
 var exportButton = document.getElementById("exportData");
+var exportButton2 = document.getElementById("exportData2");
 var rowRangeInput = document.getElementById("rangeInput"); // rows adjustment control
 var rowRangeValue = document.getElementById("rangeValue"); // current rows display
 var speedRangeInput = document.getElementById("rangeInput2"); // speed adjusment control
@@ -422,7 +429,7 @@ submitButton.addEventListener("click", async () => {
 
         if (response.status === 201) {
             submitButton.disabled = true;
-            data = {group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
+            data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
 
             statusSymbol.classList.remove("error-style");
             statusSymbol.innerHTML = "&#10003;"; // Checkmark symbol
@@ -438,6 +445,7 @@ submitButton.addEventListener("click", async () => {
             statusSymbol.innerHTML = "&#10007;"; // cross symbol
             statusSymbol.classList.add("error-style");
             statusSymbol.style.visibility = "visible";
+            console.log(jsonResponse.detail);
             throw new Error(jsonResponse.detail);
         }
 
@@ -449,18 +457,17 @@ submitButton.addEventListener("click", async () => {
 
 exportButton.addEventListener("click", async () => {
     try {
-        const response = await fetch(`http://localhost:8000/plot?group_id=${group_name}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const jsonResponse = await response.json();
-        if (response.ok) {
-            window.location.href = `http://localhost:8000/test?group_id=${group_name}`; // maybe wrong
-        } else {
-            throw new Error(jsonResponse.detail);
-        }
+         window.location.href = `http://localhost:8000/results?group_id=${group_name}&user_id=${user_id}`; 
+       
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+exportButton2.addEventListener("click", async () => {
+    try {     
+
+        window.location.href = `http://localhost:8000/results?user_id=${user_id}`; 
 
     } catch (error) {
         console.error(error.message);

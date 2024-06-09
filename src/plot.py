@@ -4,75 +4,38 @@ matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import os
 
- 
-plot_counter = 0
 
 
+def plot_galton_board(rows, balls, probability_left, probability_right, stats):
 
-def plot_galton_board(bin_counts, num_balls, prob_left, prob_right):
-    num_bins = len(bin_counts)
-    x_labels = range(num_bins)
+    x_labels = range(rows)
 
-    additional_info = f"Probability left = {prob_left}\n Probability right = {prob_right}" \
-        f"\nAnzahl Bälle = {num_balls}"
+   # additional_info = f"Wahrscheinlichkeit {int(probability_left*100)} % | {int(probability_right*100)} % " \
+    #    f"           Anzahl Bälle = {balls}"
+    additional_info = f" {int(probability_left*100)} %  |  {int(probability_right*100)} % " \
+       f"\nBälle  =  {balls}"
 
-
-    plt.bar(x_labels, bin_counts, width=0.8, edgecolor='black')
+    plt.bar(x_labels, stats, width=0.8, edgecolor='black')
     plt.xticks(x_labels)  # Set x-axis labels to show both even and odd numbers
-    plt.xlabel('Bins')
-    plt.ylabel('Number of Balls')
-    plt.title('Galton Board Simulation')
+    plt.xlabel("Reihen")
+    plt.ylabel('Bälle')
+    plt.title('Galton Brett Experiment')
 
-    plt.text(num_bins - 1, max(bin_counts), additional_info,
+    plt.text(rows - 1, max(stats),additional_info,
         horizontalalignment='right',
         verticalalignment='top',
         bbox=dict(facecolor='white', alpha=0.5))
 
-    #plt.show()
 
 
-def generate_plots(group_id ,data):
-    # Fetch data from the database
-    global plot_counter
+def generate_plots(data, user_data_counter):
     
-
     plot_dir = "frontend/plots"
     os.makedirs(plot_dir, exist_ok=True)
-    #print(data)
-    plot_paths = []
 
-    # Assuming data is a list of tuples, extract the columns you need
+    plot_galton_board(data.rows, data.balls, data.probabilityLeft, data.probabilityRight, data.stats)
+    plot_path = os.path.join(plot_dir, f"{data.user_id}_{data.group_id}_{user_data_counter}.png")
+    plt.savefig(plot_path)
+    plt.close()
 
-
-    for row in data:
-        plot_counter += 1
-        id = row.id
-        rows = row.rows
-        balls = row.balls
-        probability_left = row.probabilityLeft
-        probability_right = row.probabilityRight#row[5]
-        stats = row.stats
-
-
-        plot_galton_board(stats, balls, probability_left, probability_right)
-
-
-        # Save the plot to the static directory
-        # plot_dir = "frontend/plots"
-        # os.makedirs(plot_dir, exist_ok=True)
-        # plot_path = os.path.join(plot_dir, "plot"+ str(n) +".png")
-        # plt.savefig(plot_path)
-        # plt.close()
-
-        plot_path = os.path.join(plot_dir, f"{group_id}_{id}.png")
-        plt.savefig(plot_path)
-        plt.close()
-
-        plot_paths.append(plot_path)
-    
-    #return "plot"+ str(n)+ ".png"
-
-    return plot_paths
-
-# generated_plots = generate_plots()
-# print(generated_plots)
+    return plot_path
