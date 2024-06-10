@@ -58,7 +58,8 @@ var group_name = urlParams.get('group_id');
 const user_id = urlParams.get('user_id');
 if (!group_name) {
     group_name =".";
-    document.getElementById("exportData").style.visibility ="hidden";
+    // document.getElementById("exportData").style.visibility ="hidden";
+    document.getElementById("exportData").style.display ="none";
 }
 
 
@@ -150,7 +151,7 @@ function drawPegs() {
     // Loop through the rows and columns of pegs
     for (var i = 0; i < rows; i++) {
         for (var j = 0; j < cols; j++) {
-            var x = (canvas.width - gap) / 2 + gap * (j - i / 2);
+            var x = (canvas.width - gap) / 2 + gap * (j - i / 2); 
             var y = gap * (i + 1);
             // Draw a circle with the peg color
 
@@ -298,6 +299,7 @@ function createAnimation(n, initial_n, probability) {
         }
 
         if (i > rows + 1) {
+            //reloadCanvas(xPos, yPos, xPos + gap, yPos + radius);
             n -= 1;
             j = 0;
             i = 1;
@@ -305,6 +307,7 @@ function createAnimation(n, initial_n, probability) {
             yPos = gap * i;
             arr = [];
             y = gap * rows;
+
         }
     }
 }
@@ -370,6 +373,8 @@ rowRangeInput.addEventListener("input", () => {
     rows = newRowValue;
     resizeGalton();
     reloadCanvas();
+    resetValues();
+    drawPegs();
 });
 
 startButton.addEventListener("click", () => {
@@ -413,6 +418,8 @@ stopButton.addEventListener("click", async () => {
     await wait(300);
     statsWatcher = {};
     reloadCanvas();
+    resetValues();
+    drawPegs();
 });
 
 submitButton.addEventListener("click", async () => {
@@ -455,6 +462,7 @@ submitButton.addEventListener("click", async () => {
     }
 });
 
+
 exportButton.addEventListener("click", async () => {
     try {
          window.location.href = `http://localhost:8000/results?group_id=${group_name}&user_id=${user_id}`; 
@@ -463,6 +471,8 @@ exportButton.addEventListener("click", async () => {
         console.error(error.message);
     }
 });
+
+
 
 exportButton2.addEventListener("click", async () => {
     try {     
@@ -473,6 +483,13 @@ exportButton2.addEventListener("click", async () => {
         console.error(error.message);
     }
 });
+
+//Resizing the window, forces redrawing canvas
+window.addEventListener('resize', function(event) { 
+    resizeCanvas();
+    resetValues();
+    drawPegs();
+}, true);
 
 
  /*                                                       Main
