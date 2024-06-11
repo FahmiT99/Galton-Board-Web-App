@@ -248,10 +248,10 @@ async function mainAnimationLoop() {
         await animate();
         if (skip > 0) {
             skip--;
-            if (skip == 0 && superSpeed) {
-                if (rows%2==0) skip = 12;
+            if (skip == 0 && superSpeed && speedRangeInput.value == 1000) {
+                if (rows%2==0) skip =12;
                 else skip = 11;
-                await wait(speed);
+                //await wait(speed);
             }
             else if(skip == 0 && superSpeed && speedRangeInput.value< 1000)
             {
@@ -310,7 +310,6 @@ function createAnimation(n, initial_n, probability) {
         }
 
         if (i > rows + 1) {
-            //reloadCanvas(xPos, yPos, xPos + gap, yPos + radius); TODO Fix red parts
             n -= 1;
             j = 0;
             i = 1;
@@ -368,7 +367,7 @@ probabilityRangeInput.addEventListener("input", () => {
 speedRangeInput.addEventListener("input", () => {
     speed = 1000 - (Number(speedRangeInput.value));
     // speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value * 100) / 7000) + "%"; //((value - min) / (max - min)) * 100;
-    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.max(1 ,Math.ceil((speedRangeInput.value - 700) / (1000 - 700) * 100)) + "%";
+    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.max(1 ,Math.ceil((speedRangeInput.value - 900) / (1000 - 900) * 100)) + "%";
 
     if (speedRangeInput.value == 1000) {
         superSpeed = true;
