@@ -6,33 +6,83 @@
     <link rel="icon" type="image/png" sizes="16x16" href="frontend/favicon/favicon-16x16.png">
     <link rel="manifest" href="frontend/favicon/site.webmanifest"> 
     <style>
-        .plots {
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
-        h1   {color: gray;}
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
 
         .container {
             display: flex;
             justify-content: center;
-            
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container div {
+            margin: 0 20px;
+            font-size: 1.1em;
+        }
+
+        select, input[type="radio"] {
+            margin-left: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        label {
+            margin-left: 10px;
+            font-size: 1em;
+        }
+
+        .plots {
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media screen and (orientation:portrait) {
+            .plots {
+                width: 60vw;
+            }
+        }
+
+        @media screen and (orientation:landscape) {
+            .plots {
+                width: 40vw;
+            }
         }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galton Brett Experiment</title>
-    
-        
-    </script>
 </head>
 <body>
     <h1 id="title">Ergebnisse</h1>
     
-
-    <div class="container" >
-        <div style="margin-right: 10%">Filtern:
-            <select id="filter-select"> <!-- Dropdown-Menü zum Filtern nach Anzahl der Reihen -->
+    <div class="container">
+        <div>Filtern:
+            <select id="filter-select">
                 <option value="0">Alle</option>
                 <option value="1">1 Reihe</option>
                 <option value="2">2 Reihen</option>
@@ -48,21 +98,13 @@
         </div>    
 
         <div>Sortieren nach Abweichung:
-        <label><input type="radio" name="sort-option" id="ascending"  checked> Aufsteigend</label>
-        <label><input type="radio" name="sort-option" > Absteigend</label>
-
+            <label><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+            <label><input type="radio" name="sort-option"> Absteigend</label>
         </div>
-           
-
-
     </div>    
 
-    
-
-
-
-    <div><br><br><br><br></div>
     <div id="plot-container" class="plots"></div>
-</body>
+
     <script src="frontend/test.js"></script>
+</body>
 </html>
