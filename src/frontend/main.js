@@ -249,7 +249,15 @@ async function mainAnimationLoop() {
         if (skip > 0) {
             skip--;
             if (skip == 0 && superSpeed) {
-                skip = 7;
+                if (rows%2==0) skip = 12;
+                else skip = 11;
+                await wait(speed);
+            }
+            else if(skip == 0 && superSpeed && speedRangeInput.value< 1000)
+            {
+                if (rows%2==0) skip = 4;
+                else skip = 5;
+                skip = 4;
                 await wait(speed);
             }
         } else await wait(speed);
@@ -359,12 +367,19 @@ probabilityRangeInput.addEventListener("input", () => {
 
 speedRangeInput.addEventListener("input", () => {
     speed = 1000 - (Number(speedRangeInput.value));
-    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value * 100) / 1000) + "%";
+    // speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value * 100) / 7000) + "%"; //((value - min) / (max - min)) * 100;
+    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.max(1 ,Math.ceil((speedRangeInput.value - 700) / (1000 - 700) * 100)) + "%";
 
     if (speedRangeInput.value == 1000) {
         superSpeed = true;
-        skip = 7;
-    } else {
+        skip = 12;
+    }
+    else if (speedRangeInput.value > 950)
+    {
+        superSpeed = true;
+        skip = 4; 
+    }
+    else {
         superSpeed = false;
         skip = 0;
     }
