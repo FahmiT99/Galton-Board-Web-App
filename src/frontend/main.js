@@ -153,8 +153,8 @@ function drawPegs() {
         for (var j = 0; j < cols; j++) {
             var x = (canvas.width - gap) / 2 + gap * (j - i / 2); 
             var y = gap * (i + 1);
-            // Draw a circle with the peg color
 
+            // Draw a circle with the peg color
             ctx.fillStyle = "green";
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -164,12 +164,14 @@ function drawPegs() {
             }
         }
         cols += 1;
+        console.log("j: ", j, " i:", i );
     }
+    console.log("rows: ", rows, ", cols: ", cols);
     drawHorizontalLine(x, y);
 }
 
-function drawHorizontalLine(x, y) {
-    ctx.lineWidth = 3;
+function drawHorizontalLine(x, y, width = 3) {
+    ctx.lineWidth = width;
     ctx.beginPath();
     ctx.moveTo((canvas.width - gap) / 2 + gap * (-(rows - 1) / 2), y * 2.25);
     ctx.lineTo(x, y * 2.25);
@@ -268,6 +270,7 @@ function createAnimation(n, initial_n, probability) {
 
     return async function animateOneStep() {
         if (n < 0) {
+            drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // Fixed black line mess in the result
             active = false;
             saveData();
             submitButton.disabled = false;
@@ -278,7 +281,7 @@ function createAnimation(n, initial_n, probability) {
         }
 
         if (i <= rows + 1) {
-            ctx.clearRect(0, 0, canvas.width, y + radius);
+            ctx.clearRect(0, 0, canvas.width, y + radius * 1.2);
             drawball(xPos, yPos);
             drawPegs();
             cols = 2;
@@ -299,7 +302,7 @@ function createAnimation(n, initial_n, probability) {
         }
 
         if (i > rows + 1) {
-            //reloadCanvas(xPos, yPos, xPos + gap, yPos + radius);
+            //reloadCanvas(xPos, yPos, xPos + gap, yPos + radius); TODO Fix red parts
             n -= 1;
             j = 0;
             i = 1;
@@ -498,4 +501,5 @@ window.addEventListener('resize', function(event) {
 
 //Initialization
 drawPegs();
+//drawHorizontalLine(290,200); //  x ist der letzte Punkt, y ist einfach die Höhe
 submitButton.disabled = true;
