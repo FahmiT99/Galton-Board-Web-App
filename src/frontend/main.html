@@ -11,16 +11,35 @@
     <link rel="manifest" href="frontend/favicon/site.webmanifest"> 
 </head>
 <body>
-    <div class="containerCanvas">
-        <canvas id="canvas"></canvas>
+    <div class="mainContainer">
+        <div class="containerCanvas">
+            <canvas id="canvas">  </canvas>
+        </div>
+        
+        <div class="prognosis">
+            <p id="rangeFieldVerticalValue"><br>0</p>
+            <input id="rangeFieldVertical" type="range" orient="vertical" min="2" max="10" value="5" step="1"/>
+            <div id="prognosis">
+                <button style="margin-right: 5%; " >&larr;</button>
+                <button style="margin-right: auto; ">&rarr;</button>
+            </div>
+
+        </div>
     </div>
+    <!-- <input id= "prognosis" type="button" style= " position:relative; bottom: 1px; left:0px; font-size:12px;" value ="Prognose"/>
+        
+        <input id= "prognosis" type="button" style= " position:absolute; bottom: 1px; left:70px; font-size:12px;" value ="x"/>
+        <input id= "prognosis" type="button" style= " position:absolute; bottom: 1px; left:100px; font-size:12px;" value ="&#9658;"/>
+        
+         -->
+
 
     <div class="container">
         <div class="button-container">
             <button class="button" id="start">&#9658;</button> <!-- Play button -->
             <button class="button" id="pause">&#10074;&#10074;</button> <!-- Pause button -->
             <button class="button" id="stop">&#9724;</button> <!-- Stop button -->
-            <div id="statusSymbol">&#10007;</div>
+            <div id="statusSymbol" >&#10007;</div>
             <button class="button" id="sendData">Absenden</button>
             <button class="button" id="exportData2">Meine<br>Ergebnisse</button>
             <button class="button" id="exportData">Gruppen<br>Ergebnisse</button>
@@ -40,8 +59,8 @@
 
     <div class="range-container">
         <div class="rangeField">
-            <p id="rangeValue2">Fallgeschwindigkeit = 1%</p>
-            <input type="range" id="rangeInput2" min="900" max="1000" value="900" step="1">        
+            <p id="rangeValue2">Fallgeschwindigkeit = 0%</p>
+            <input type="range" id="rangeInput2" min="0" max="100" value="0" step="1">        
         </div>
         <div class="rangeField">
             <p id="rangeValue4">Wahrscheinlichkeit 50 % | 50 %</p>
