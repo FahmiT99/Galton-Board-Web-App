@@ -76,18 +76,17 @@ var gap = canvas.height / (rows + 2) /galtonSize;
 var radius = gap / 5;
 var bins = [];
 var timer = null;
-var speed = 1000;
+var speed = 0;
 var animate;
 var coordinates = [];
 var statsWatcher = {};
 var simplifiedStats = [];
 var newRowValue = rows;
-var newBallValue = balls;
+var leftBalls = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
 var data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
-console.log(group_name);
-console.log(user_id);
+
 
 /*                                                      Animation
 ********************************************************************************************************************************** */
@@ -103,14 +102,14 @@ function generateLastArray(size) {
 
 function filterStats(stats) {
     var arr = [];
-    console.log(stats);
+    //console.log(stats);
     var keys = Object.keys(stats).map(Number).sort((a, b) => a - b);
-    console.log("stats= ", keys.length);
+   // console.log("stats= ", keys.length);
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         arr.push(stats[key][1]);
     }
-    console.log("simplified array ", arr, "array size = ", arr.length);
+    //console.log("simplified array ", arr, "array size = ", arr.length);
     return arr;
 }
 
@@ -148,6 +147,7 @@ for (var i = 0; i < cols; i++) {
 
 // Draw the pegs on the canvas
 function drawPegs() {
+    coordinates = [];
     // Loop through the rows and columns of pegs
     for (var i = 0; i < rows; i++) {
         for (var j = 0; j < cols; j++) {
@@ -159,15 +159,16 @@ function drawPegs() {
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fill();
-            if (i == rows - 1) {
+            if (i == rows - 1) {               
                 drawVerticalLine(x, y);
             }
         }
         cols += 1;
-        console.log("j: ", j, " i:", i );
+        //console.log("j: ", j, " i:", i );
     }
-    console.log("rows: ", rows, ", cols: ", cols);
+    //console.log("rows: ", rows, ", cols: ", cols);
     drawHorizontalLine(x, y);
+    //console.log(coordinates);
 }
 
 function drawHorizontalLine(x, y, width = 3) {
@@ -179,12 +180,13 @@ function drawHorizontalLine(x, y, width = 3) {
 }
 
 function drawVerticalLine(x, y) {
-    coordinates.push(x);
+    coordinates.push([x,y]);
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x, y + radius);
     ctx.lineTo(x, y * 2.25);
     ctx.stroke();
+    
 }
 
 function drawball(x_position = canvas.width / 2, y_position = gap) {
@@ -192,21 +194,22 @@ function drawball(x_position = canvas.width / 2, y_position = gap) {
     ctx.beginPath();
     ctx.arc(x_position, y_position, radius, 0, Math.PI * 2);
     ctx.fill();
+    
 }
 
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function drawStats(x, y, n, p) {
+function drawStats(x, y, n, col1 = "red", col2 = "magenta") {
     ctx.lineWidth = gap - 2;
     let startingPoint = y * 2.25 - 2;
     var length = 1.1 * (y + radius) / n;
-
+     
     ctx.beginPath();
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    gradient.addColorStop("0", "magenta");
-    gradient.addColorStop("1.0", "red");
+    gradient.addColorStop("0", col2);
+    gradient.addColorStop("1.0", col1);
     ctx.strokeStyle = gradient;
 
     if (!statsWatcher.hasOwnProperty(x)) {
@@ -244,23 +247,24 @@ function drawStatsCount(x, y) {
 // as long as the animation is active and not paused. This function is responsible for 
 // continuously updating the animation.
 async function mainAnimationLoop() {
+    leftBalls = balls;
     while (active && !pause) {
         await animate();
+        
         if (skip > 0) {
             skip--;
-            if (skip == 0 && superSpeed && speedRangeInput.value == 1000) {
-                if (rows%2==0) skip =12;
-                else skip = 11;
-                //await wait(speed);
-            }
-            else if(skip == 0 && superSpeed && speedRangeInput.value< 1000)
-            {
-                if (rows%2==0) skip = 4;
-                else skip = 5;
-                skip = 4;
-                await wait(speed);
-            }
-        } else await wait(speed);
+        }   
+        if (skip <= 0 && speed==0) {
+
+            await wait(200);
+
+        }
+        if (skip <= 0 && speed!=100 && speed!=0) {
+
+            await wait((100-speed)/5);
+            skip = (speed/100) * (leftBalls/10);
+
+        }
     }
 }
 
@@ -285,6 +289,7 @@ function createAnimation(n, initial_n, probability) {
             rowRangeInput.disabled = false;
             ballsAmountRangeInput.disabled = false;
             probabilityRangeInput.disabled = false;
+            console.log("finished");
             return;
         }
 
@@ -295,8 +300,9 @@ function createAnimation(n, initial_n, probability) {
             cols = 2;
 
             if (i == rows + 1) {
-                drawStats(xPos, y, initial_n, probability);
+                drawStats(xPos, y, initial_n);
                 drawStatsCount(xPos, y);
+                leftBalls -= 1; 
             }
 
             xPos = canvas.width / 2 - 0.5 * gap * j;
@@ -353,9 +359,9 @@ var probabilityRangeValue = document.getElementById("rangeValue4");
 var statusSymbol = document.getElementById("statusSymbol");
 
 ballsAmountRangeInput.addEventListener("input", () => {
-    newBallValue = Number(ballsAmountRangeInput.value);
-    ballsAmountRangeValue.textContent = "Anzahl Bälle = " + Number(newBallValue);
-    balls = newBallValue;
+    balls = Number(ballsAmountRangeInput.value);
+    ballsAmountRangeValue.textContent = "Anzahl Bälle = " + Number(balls);
+     
 });
 
 probabilityRangeInput.addEventListener("input", () => {
@@ -365,23 +371,12 @@ probabilityRangeInput.addEventListener("input", () => {
 });
 
 speedRangeInput.addEventListener("input", () => {
-    speed = 1000 - (Number(speedRangeInput.value));
+    speed =  speedRangeInput.value;
+    //console.log(speed);
     // speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value * 100) / 7000) + "%"; //((value - min) / (max - min)) * 100;
-    speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.max(1 ,Math.ceil((speedRangeInput.value - 900) / (1000 - 900) * 100)) + "%";
+    speedRangeValue.textContent = "Fallgeschwindigkeit = " + speed + "%";
 
-    if (speedRangeInput.value == 1000) {
-        superSpeed = true;
-        skip = 12;
-    }
-    else if (speedRangeInput.value > 950)
-    {
-        superSpeed = true;
-        skip = 4; 
-    }
-    else {
-        superSpeed = false;
-        skip = 0;
-    }
+    
 });
 
 rowRangeInput.addEventListener("input", () => {
@@ -414,7 +409,7 @@ startButton.addEventListener("click", () => {
         for (let s = 0; s < binsArray.length; s++) {
             statsWatcher[canvas.width / 2 - 0.5 * gap * binsArray[s]] = [null, 0];
         }
-        console.log(statsWatcher);
+        //console.log(statsWatcher);
 
         animate = createAnimation(balls - 1, balls - 1, probabilityLeft / 100);
         mainAnimationLoop();
@@ -441,7 +436,7 @@ stopButton.addEventListener("click", async () => {
 
 submitButton.addEventListener("click", async () => {
     try {
-        const response = await fetch('http://localhost:8000/', {
+        const response = await fetch("/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -469,7 +464,7 @@ submitButton.addEventListener("click", async () => {
             statusSymbol.innerHTML = "&#10007;"; // cross symbol
             statusSymbol.classList.add("error-style");
             statusSymbol.style.visibility = "visible";
-            console.log(jsonResponse.detail);
+            //console.log(jsonResponse.detail);
             throw new Error(jsonResponse.detail);
         }
 
@@ -482,7 +477,7 @@ submitButton.addEventListener("click", async () => {
 
 exportButton.addEventListener("click", async () => {
     try {
-         window.location.href = `http://localhost:8000/results?group_id=${group_name}&user_id=${user_id}`; 
+         window.location.href = `/results?group_id=${group_name}&user_id=${user_id}`; 
        
     } catch (error) {
         console.error(error.message);
@@ -494,7 +489,7 @@ exportButton.addEventListener("click", async () => {
 exportButton2.addEventListener("click", async () => {
     try {     
 
-        window.location.href = `http://localhost:8000/results?user_id=${user_id}`; 
+        window.location.href = `/results?user_id=${user_id}`; 
 
     } catch (error) {
         console.error(error.message);

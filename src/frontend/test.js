@@ -79,7 +79,7 @@ filterSelect.addEventListener('change', () => {
 
 async function loadGroupPlots() {
     try {
-        const response = await fetch(`http://localhost:8000/list-group-plots?group_id=${group_id}`, {
+        const response = await fetch(`/list-group-plots?group_id=${group_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json' 
@@ -104,7 +104,7 @@ async function loadGroupPlots() {
 
 async function loadUserPlots() {
     try {
-        const response = await fetch(`http://localhost:8000/list-user-plots?user_id=${user_id}`, {
+        const response = await fetch(`/list-user-plots?user_id=${user_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json' 

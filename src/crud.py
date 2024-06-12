@@ -36,6 +36,7 @@ def get_user_data_counter(db : Session, user_id:str):
     return db.query(User).filter_by(user_id=user_id).first().data_count
    
 
+
 def get_user_plots(db : Session, user_id: str): 
     user = db.query(User).filter_by(user_id=user_id).first()
     plot_paths = [row.plot_path for row in user.user_plots]
