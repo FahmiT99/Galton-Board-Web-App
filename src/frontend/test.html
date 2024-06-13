@@ -53,8 +53,7 @@
 
         .plots {
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
+            display: block;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -84,7 +83,6 @@
         <div>Filtern:
             <select id="filter-select">
                 <option value="0">Alle</option>
-                <option value="1">1 Reihe</option>
                 <option value="2">2 Reihen</option>
                 <option value="3">3 Reihen</option>
                 <option value="4">4 Reihen</option>
@@ -103,7 +101,7 @@
         </div>
     </div>    
 
-    <div id="plot-container" class="plots"></div>
+    <div id="plot-container" ></div>
 
     <script src="frontend/test.js"></script>
 </body>

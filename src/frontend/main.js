@@ -59,7 +59,7 @@ const user_id = urlParams.get('user_id');
 if (!group_name) {
     group_name =".";
     // document.getElementById("exportData").style.visibility ="hidden";
-    document.getElementById("exportData").style.display ="none";
+    document.getElementById("GroupExportData").style.display ="none";
 }
 
 
@@ -80,7 +80,10 @@ var speed = 0;
 var animate;
 var coordinates = [];
 var statsWatcher = {};
+var prog_coordinates = {};
+var current_bin = 0;
 var simplifiedStats = [];
+var simplifiedPrognosis = [];
 var newRowValue = rows;
 var leftBalls = balls;
 var probabilityRight = 50;
@@ -136,7 +139,10 @@ function resetValues() {
     }
 
     statsWatcher = {};
+    prog_coordinates = {};
     simplifiedStats = [];
+  
+
 }
 
 
@@ -159,7 +165,8 @@ function drawPegs() {
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fill();
-            if (i == rows - 1) {               
+            if (i == rows - 1) { 
+                coordinates.push([x+gap/2 ,y]);
                 drawVerticalLine(x, y);
             }
         }
@@ -180,7 +187,7 @@ function drawHorizontalLine(x, y, width = 3) {
 }
 
 function drawVerticalLine(x, y) {
-    coordinates.push([x,y]);
+    
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x, y + radius);
@@ -200,6 +207,60 @@ function drawball(x_position = canvas.width / 2, y_position = gap) {
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+var prognosis_current_value = 0;
+
+function drawStats2(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "magenta") {
+    ctx.lineWidth = gap *0.9;
+    let startingPoint = y * 2.25 - 2;
+    var length = 1.1 * (y + radius) / n;
+
+    ctx.beginPath();
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop("0", col2);
+    gradient.addColorStop("1.0", col1);
+    ctx.strokeStyle = gradient;
+
+    // if(prognosis_current_value === null && value!= 0)
+    // {   console.log("heyyyyy")
+    //     prognosis_current_value = value;
+    //     console.log(prognosis_current_value);
+    // } else if (stats!= statsWatcher) prognosis_current_value = 0; 
+
+    if (!stats.hasOwnProperty(x)) {
+        stats[x] = [length, 1];
+        ctx.moveTo(x, startingPoint);
+        ctx.lineTo(x, startingPoint - length);
+    } else {
+        ctx.moveTo(x, startingPoint);
+        stats[x][0] = length * (value);
+        stats[x][1] = value;
+        
+        if(value != 0) prognosis_current_value = value;
+
+        reloadCanvas(x - gap / 2+1.5  , startingPoint *0.999 , gap *0.9, -(y + radius*rows));//,-stats[x][0]);// Speicherüberflussvermeidung
+        
+        ctx.lineTo(x, startingPoint - stats[x][0]);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = "black";
+}
+
+function drawStatsCount2(x, y, stats = statsWatcher) {
+    y = y * 2.25 + gap / 2;
+    let fontSize = gap * 0.66;
+    ctx.font = "bold " + fontSize + "px Arial";
+    ctx.fillStyle = "red";
+    ctx.clearRect(x - gap / 2, y - gap / 3, gap, gap * 1.5);
+    if (stats[x][1] < 10)
+        ctx.fillText(stats[x][1], x - gap / 6, y + gap / 6);
+    else if (stats[x][1] < 100) ctx.fillText(stats[x][1], x - gap / 3, y + gap / 6);
+    else {
+        ctx.font = "bold " + fontSize * 0.7 + "px Arial";
+        ctx.fillText(stats[x][1], x - gap / 3, y + gap / 8);
+    }
+}
+
 
 function drawStats(x, y, n, col1 = "red", col2 = "magenta") {
     ctx.lineWidth = gap - 2;
@@ -243,6 +304,8 @@ function drawStatsCount(x, y) {
 }
 
 
+
+
 // mainAnimationLoop is an asynchronous function that repeatedly calls the animate function
 // as long as the animation is active and not paused. This function is responsible for 
 // continuously updating the animation.
@@ -268,7 +331,16 @@ async function mainAnimationLoop() {
     }
 }
 
+function lock_unlock_GUI(value) {
 
+    
+    rowRangeInput.disabled = value;
+    ballsAmountRangeInput.disabled = value;
+    probabilityRangeInput.disabled = value;
+    next.disabled = value;
+    previous.disabled = value;
+    prognosisInput.disabled = value;
+}
 
 // createAnimation is a higher-order function that returns animateOneStep,
 // which uses closures to remember its state between calls so that we can pause the animation
@@ -285,11 +357,12 @@ function createAnimation(n, initial_n, probability) {
             drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // Fixed black line mess in the result
             active = false;
             saveData();
+            lock_unlock_GUI(false);
             submitButton.disabled = false;
-            rowRangeInput.disabled = false;
-            ballsAmountRangeInput.disabled = false;
-            probabilityRangeInput.disabled = false;
-            console.log("finished");
+            prognosisInput.value = 0;
+            prognosisInput.max = balls;
+            prognosisInputDisplay.innerHTML = "<br>"+ balls;
+
             return;
         }
 
@@ -300,6 +373,7 @@ function createAnimation(n, initial_n, probability) {
             cols = 2;
 
             if (i == rows + 1) {
+
                 drawStats(xPos, y, initial_n);
                 drawStatsCount(xPos, y);
                 leftBalls -= 1; 
@@ -334,6 +408,7 @@ function saveData() {
     data.probabilityLeft = probabilityLeft / 100;
     data.probabilityRight = probabilityRight / 100;
     simplifiedStats = filterStats(statsWatcher);
+    //simplifiedPrognosis = filterStats(prog_coordinates);
     data.stats = simplifiedStats;
 }
 
@@ -346,41 +421,46 @@ var startButton = document.getElementById("start");
 var stopButton = document.getElementById("stop");
 var pauseButton = document.getElementById("pause");
 var submitButton = document.getElementById("sendData");
-var exportButton = document.getElementById("exportData");
-var exportButton2 = document.getElementById("exportData2");
-var rowRangeInput = document.getElementById("rangeInput"); // rows adjustment control
-var rowRangeValue = document.getElementById("rangeValue"); // current rows display
-var speedRangeInput = document.getElementById("rangeInput2"); // speed adjusment control
-var speedRangeValue = document.getElementById("rangeValue2"); // current speed display
-var ballsAmountRangeInput = document.getElementById("rangeInput3");
-var ballsAmountRangeValue = document.getElementById("rangeValue3");
-var probabilityRangeInput = document.getElementById("rangeInput4");
-var probabilityRangeValue = document.getElementById("rangeValue4");
+var GroupExportButton = document.getElementById("GroupExportData");
+var UserExportButton = document.getElementById("UserExportData");
+var rowRangeInput = document.getElementById("rowRangeInput"); // rows adjustment control
+var rowRangeDisplay = document.getElementById("rowRangeDisplay"); // current rows display
+var speedRangeInput = document.getElementById("speedRangeInput"); // speed adjusment control
+var speedRangeDisplay = document.getElementById("speedRangeDisplay"); // current speed display
+var ballsAmountRangeInput = document.getElementById("ballsAmountRangeInput");
+var ballsAmoutRangeDisplay = document.getElementById("ballsAmoutRangeDisplay");
+var probabilityRangeInput = document.getElementById("probabilityRangeInput");
+var probabilityRangeDisplay = document.getElementById("probabilityRangeDisplay");
 var statusSymbol = document.getElementById("statusSymbol");
+var prognosisInput = document.getElementById("prognosisInput");
+var prognosisInputDisplay = document.getElementById("prognosisInputDisplay");
+var previous = document.getElementById("previous");
+var next = document.getElementById("next");
+
+
 
 ballsAmountRangeInput.addEventListener("input", () => {
     balls = Number(ballsAmountRangeInput.value);
-    ballsAmountRangeValue.textContent = "Anzahl Bälle = " + Number(balls);
-     
+    ballsAmoutRangeDisplay.textContent = "Anzahl Bälle = " + Number(balls);
+    prognosisInput.max = balls;
+    prognosisInputDisplay.innerHTML = "<br> "+balls;
 });
 
 probabilityRangeInput.addEventListener("input", () => {
     probabilityLeft = Number(probabilityRangeInput.value);
     probabilityRight = 100 - probabilityLeft;
-    probabilityRangeValue.innerHTML = "Wahrscheinlichkeit " + probabilityLeft + " % | " + probabilityRight + " % ";
+    probabilityRangeDisplay.innerHTML = "Wahrscheinlichkeit " + probabilityLeft + " % | " + probabilityRight + " % ";
 });
 
 speedRangeInput.addEventListener("input", () => {
     speed =  speedRangeInput.value;
-    //console.log(speed);
-    // speedRangeValue.textContent = "Fallgeschwindigkeit = " + Math.ceil((speedRangeInput.value * 100) / 7000) + "%"; //((value - min) / (max - min)) * 100;
-    speedRangeValue.textContent = "Fallgeschwindigkeit = " + speed + "%";
+    speedRangeDisplay.textContent = "Fallgeschwindigkeit = " + speed + "%";
 
     
 });
 
 rowRangeInput.addEventListener("input", () => {
-    rowRangeValue.textContent = "Anzahl Reihen = " + rowRangeInput.value;
+    rowRangeDisplay.textContent = "Anzahl Reihen = " + rowRangeInput.value;
     newRowValue = Number(rowRangeInput.value);
     rows = newRowValue;
     resizeGalton();
@@ -400,9 +480,7 @@ startButton.addEventListener("click", () => {
         resetValues();
         active = true;
         submitButton.disabled = true;
-        rowRangeInput.disabled = true;
-        ballsAmountRangeInput.disabled = true;
-        probabilityRangeInput.disabled = true;
+        lock_unlock_GUI(true);
 
         //intialisiere Statswatcher mit Nullen
         var binsArray = generateLastArray(rows);
@@ -424,9 +502,14 @@ pauseButton.addEventListener("click", () => {
 
 stopButton.addEventListener("click", async () => {
     active = false;
-    rowRangeInput.disabled = false;
-    ballsAmountRangeInput.disabled = false;
-    probabilityRangeInput.disabled = false;
+
+    lock_unlock_GUI(false);
+    prognosisInput.value = 0;
+    current_bin = 0;
+    prognosisInputDisplay.innerHTML = "<br>"+balls;
+    prognosisInput.max = balls;
+  
+
     await wait(300);
     statsWatcher = {};
     reloadCanvas();
@@ -475,7 +558,60 @@ submitButton.addEventListener("click", async () => {
 });
 
 
-exportButton.addEventListener("click", async () => {
+
+
+
+
+prognosisInput.addEventListener("input", () => {
+    value = Number(prognosisInput.value);
+    rowRangeInput.disabled = true;
+    ballsAmountRangeInput.disabled = true;
+
+    prognosisInputDisplay.innerHTML = "<br>"+(prognosisInput.max - value);
+    console.log(coordinates);
+    var x = coordinates[current_bin][0];
+    var y = coordinates[current_bin][1];
+
+    // for (let i = 0; i < value; i++ ) {
+        console.log(value);
+        drawStats2(x, y, balls, prog_coordinates, value,);
+        drawStatsCount2(x, y, prog_coordinates);
+    // }
+    // prog_coordinates[current_bin] += value;
+    console.log(prog_coordinates);
+
+
+
+});
+
+
+
+next.addEventListener("click", () => {
+   
+    prognosisInput.max -= prognosisInput.value;
+    prognosisInput.value = 0;
+    if (current_bin < coordinates.length-2) {
+        current_bin += 1;
+        console.log(prognosis_current_value);
+    } 
+    
+    
+
+});
+
+
+previous.addEventListener("click", () => {
+
+    prognosisInput.max -= prognosisInput.value;
+    prognosisInput.value = 0;
+    if (current_bin > 0) {
+        current_bin -= 1;
+    } 
+    
+
+});
+
+GroupExportButton.addEventListener("click", async () => {
     try {
          window.location.href = `/results?group_id=${group_name}&user_id=${user_id}`; 
        
@@ -486,7 +622,7 @@ exportButton.addEventListener("click", async () => {
 
 
 
-exportButton2.addEventListener("click", async () => {
+UserExportButton.addEventListener("click", async () => {
     try {     
 
         window.location.href = `/results?user_id=${user_id}`; 
@@ -512,3 +648,5 @@ window.addEventListener('resize', function(event) {
 drawPegs();
 //drawHorizontalLine(290,200); //  x ist der letzte Punkt, y ist einfach die Höhe
 submitButton.disabled = true;
+prognosisInputDisplay.innerHTML = "<br>"+balls;
+prognosisInput.max = balls;

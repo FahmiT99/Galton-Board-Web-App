@@ -14,7 +14,7 @@ body, html {
 input[type=range][orient=vertical] {
   writing-mode: vertical-lr;
   direction: rtl;
-  appearance: slider-vertical;
+  
   width: 16px;
   height: 40%;
   vertical-align: bottom;
@@ -37,19 +37,20 @@ input[type=range][orient=vertical] {
   flex-direction: row;
 }
 
-#rangeFieldVertical {
+#prognosisInput {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  height: 25vh;
+}
+
+#prognosisInputDisplay {
   margin-left: auto;
   margin-right: auto;
   margin-top: auto;
 }
 
-#rangeFieldVerticalValue {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-}
-
-#prognosis {
+#prognosisButtons {
  
   display: flex;
   flex-direction: row;
@@ -65,12 +66,12 @@ input[type=range][orient=vertical] {
   margin-left: 1%;
   margin-right: auto;
   justify-content: center ;
-  align-self: center;
+  /* align-self: center; */
   padding: 5px;
   background: rgba(255, 255, 255, 0.679);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.204);
-  height: 80%;
+  /* height: 80%; */
 }
 
 .container {
@@ -215,6 +216,15 @@ input[type=range][orient=vertical] {
 
 @media screen and (orientation:portrait)
 {
+
+  #canvas {
+    /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
+    height: 40vh;
+    width: 48vw;  
+    /* border: rgb(143, 243, 11) 2px solid; */
+  }
+
+
   .button {
     margin: 1vw;
     padding: 0.5vh 3vw;
@@ -224,8 +234,9 @@ input[type=range][orient=vertical] {
   .rangeField {
     align-content: left;
     text-align: center;
-    font-size: 3vw;
+    font-size: 2.9vw;
     margin: 10px;
+    width: 44vw;
   }
 
   input[type=range]::-webkit-slider-thumb {
@@ -242,6 +253,20 @@ input[type=range][orient=vertical] {
 @media screen and (orientation:landscape)
 {
 
+  
+  .prognosis{
+    align-self: center; 
+    height: 80%; 
+  }
+  
+  #canvas {
+    /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
+    height: 50vh;
+    width: 50vw;  
+    /* border: black 1px solid; */
+  }
+
+
 
   .button {
     margin: 10px;
@@ -252,8 +277,9 @@ input[type=range][orient=vertical] {
   .rangeField {
     align-content: left;
     text-align: center;
-    font-size: 18px;
+    font-size: 15px;
     margin: 10px;
+    width: 220px;
   }
 
   input[type=range]::-webkit-slider-thumb {
@@ -267,12 +293,6 @@ input[type=range][orient=vertical] {
   }
 }
 
-#canvas {
-  /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
-  height: 50vh;
-  width: 50vw;  
-  /* border: black 1px solid; */
-}
 
 .container canvas {
   border: 1px solid #141212;

@@ -15,22 +15,11 @@ def theoretical_distribution(rows, balls, probability):
 
 
 # Funktion zur Berechnung der Abweichung
-def MSE(actual, theoretical):
-    squared_errors = np.sum((np.array(theoretical) - np.array(actual)) ** 2)
-    mse = squared_errors / len(actual)
-    return mse
-
-def MAE(actual, theoretical):
+def calculate_deviation(actual, theoretical):
     absolute_errors = np.abs(np.array(actual) - np.array(theoretical))
     sum_absolute_errors = np.sum(absolute_errors)
     mae = sum_absolute_errors / np.sum(actual)
     return [mae*100, sum_absolute_errors]
-
-def MAPE(actual, theoretical):
-    actual, theoretical = np.array(actual), np.array(theoretical)
-    # Handle division by zero by setting MAPE to zero where actual is zero
-    mask = actual != 0
-    return np.mean(np.abs((actual[mask] - theoretical[mask]) / actual[mask])) * 100
 
 
 # Funktion zur Erstellung des Plots
@@ -97,7 +86,7 @@ def generate_plots(data, user_data_counter):
     theoretical_stats = theoretical_distribution(data.rows, data.balls,  data.probabilityRight)
     
     # Berechne Abweichung
-    deviation = MAE(data.stats, theoretical_stats)
+    deviation = calculate_deviation(data.stats, theoretical_stats)
     
     # Benenne die Datei mit der Abweichung
     plot_path = os.path.join(plot_dir, f"{data.user_id}_{data.group_id}_{user_data_counter}_{deviation[0]}_{data.rows}.png")

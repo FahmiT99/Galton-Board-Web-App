@@ -17,11 +17,11 @@
         </div>
         
         <div class="prognosis">
-            <p id="rangeFieldVerticalValue"><br>0</p>
-            <input id="rangeFieldVertical" type="range" orient="vertical" min="2" max="10" value="5" step="1"/>
-            <div id="prognosis">
-                <button style="margin-right: 5%; " >&larr;</button>
-                <button style="margin-right: auto; ">&rarr;</button>
+            <p id="prognosisInputDisplay"><br>0</p>
+            <input id="prognosisInput" type="range" orient="vertical" min="0" value="0" step="1"/>
+            <div id="prognosisButtons">
+                <button id="previous" style="margin-right: 5%; " >&larr;</button>
+                <button id="next" style="margin-right: auto; ">&rarr;</button>
             </div>
 
         </div>
@@ -41,30 +41,30 @@
             <button class="button" id="stop">&#9724;</button> <!-- Stop button -->
             <div id="statusSymbol" >&#10007;</div>
             <button class="button" id="sendData">Absenden</button>
-            <button class="button" id="exportData2">Meine<br>Ergebnisse</button>
-            <button class="button" id="exportData">Gruppen<br>Ergebnisse</button>
+            <button class="button" id="UserExportData">Meine<br>Ergebnisse</button>
+            <button class="button" id="GroupExportData">Gruppen<br>Ergebnisse</button>
         </div>
     </div>
     
     <div class="range-container">
         <div class="rangeField">
-            <p id="rangeValue">Anzahl Reihen: 5</p>
-            <input type="range" id="rangeInput" min="2" max="10" value="5" step="1">
+            <p id="rowRangeDisplay">Anzahl Reihen: 5</p>
+            <input type="range" id="rowRangeInput" min="2" max="10" value="5" step="1">
         </div>
         <div class="rangeField">
-            <p id="rangeValue3">Anzahl Bälle = 250</p>
-            <input type="range" id="rangeInput3" min="10" max="1000" value="250" step="10">        
+            <p id="ballsAmoutRangeDisplay">Anzahl Bälle = 250</p>
+            <input type="range" id="ballsAmountRangeInput" min="10" max="1000" value="250" step="10">        
         </div>
     </div>
 
     <div class="range-container">
         <div class="rangeField">
-            <p id="rangeValue2">Fallgeschwindigkeit = 0%</p>
-            <input type="range" id="rangeInput2" min="0" max="100" value="0" step="1">        
+            <p id="speedRangeDisplay">Fallgeschwindigkeit = 0%</p>
+            <input type="range" id="speedRangeInput" min="0" max="100" value="0" step="1">        
         </div>
         <div class="rangeField">
-            <p id="rangeValue4">Wahrscheinlichkeit 50 % | 50 %</p>
-            <input type="range" id="rangeInput4" min="0" max="100" value="50" step="10">        
+            <p id="probabilityRangeDisplay">Wahrscheinlichkeit 50 % | 50 %</p>
+            <input type="range" id="probabilityRangeInput" min="0" max="100" value="50" step="10">        
         </div>
     </div>
 
