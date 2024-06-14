@@ -42,6 +42,8 @@ def get_user_plots(db : Session, user_id: str):
     plot_paths = [row.plot_path for row in user.user_plots]
     return plot_paths
 
+
+
 def get_group_plots(db : Session, group_id: str): 
     group = db.query(Group).filter_by(group_id=group_id).first()
     plot_paths = [row.plot_path for row in group.group_plots]

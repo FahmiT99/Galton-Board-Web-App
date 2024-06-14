@@ -70,25 +70,25 @@ var stop = false;
 var pause = false;
 var active = false;
 var rows = 5;
-var balls = 250;
+var balls = 500;
 var cols = 2;
 var gap = canvas.height / (rows + 2) /galtonSize;
 var radius = gap / 5;
 var bins = [];
 var timer = null;
-var speed = 0;
+var speed = 50;
 var animate;
 var coordinates = [];
 var statsWatcher = {};
-var prog_coordinates = {};
+var prog_statsWathcer = {};
 var current_bin = 0;
 var simplifiedStats = [];
 var simplifiedPrognosis = [];
-var newRowValue = rows;
+var remainedBalls = balls;
 var leftBalls = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
-var data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
+var data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: [], prog_stats: []};
 
 
 /*                                                      Animation
@@ -104,15 +104,16 @@ function generateLastArray(size) {
 }
 
 function filterStats(stats) {
+
     var arr = [];
-    //console.log(stats);
+    console.log(stats);
     var keys = Object.keys(stats).map(Number).sort((a, b) => a - b);
    // console.log("stats= ", keys.length);
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         arr.push(stats[key][1]);
     }
-    //console.log("simplified array ", arr, "array size = ", arr.length);
+    console.log("simplified array ", arr, "array size = ", arr.length);
     return arr;
 }
 
@@ -124,6 +125,14 @@ function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
     } else ctx.clearRect(x1, y1, x2, y2);
 }
 
+function resetProg() {  
+ prog_statsWathcer = {};
+  
+    // Initialize the pro_coordinates array with zeros
+    for (var i = 0; i < coordinates.length-1; i++) {
+     prog_statsWathcer[coordinates[i][0]] = [0,0];
+    }           
+}
 
 function resetValues() {
     pause = false; //stop execution
@@ -133,14 +142,23 @@ function resetValues() {
     radius = gap / 5; // Radius of pegs and balls //standard value = 50/rows  // same
     bins = []; // Array to store the number of balls in each bin
     timer = null;
+    current_bin = 0;
+    prognosis_current_value = 0;
 
     for (var i = 0; i < cols; i++) {
         bins[i] = 0;
     }
 
+    
+
     statsWatcher = {};
-    prog_coordinates = {};
+    simplifiedPrognosis = [];
     simplifiedStats = [];
+
+    prognosisInputDisplay.innerHTML = "<br>"+balls;
+    prognosisInput.max = balls;
+    prognosisInput.value = 0;
+    remainedBalls = balls;
   
 
 }
@@ -150,6 +168,8 @@ function resetValues() {
 for (var i = 0; i < cols; i++) {
     bins[i] = 0;
 }
+
+ 
 
 // Draw the pegs on the canvas
 function drawPegs() {
@@ -187,7 +207,7 @@ function drawHorizontalLine(x, y, width = 3) {
 }
 
 function drawVerticalLine(x, y) {
-    
+
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x, y + radius);
@@ -196,12 +216,16 @@ function drawVerticalLine(x, y) {
     
 }
 
-function drawball(x_position = canvas.width / 2, y_position = gap) {
-    ctx.fillStyle = "red";
+function drawball(x_position = canvas.width / 2, y_position = gap, size=0, col ="red") {
+    ctx.fillStyle = col;
     ctx.beginPath();
-    ctx.arc(x_position, y_position, radius, 0, Math.PI * 2);
+    ctx.arc(x_position, y_position, Math.abs(radius-size), 0, Math.PI*2 );
     ctx.fill();
     
+}
+function clearBall(x_position, y_position ) {
+
+    ctx.clearRect(x_position-4 , y_position-4 , (radius-4)*3, (radius-4) *3);
 }
 
 function wait(ms) {
@@ -220,13 +244,7 @@ function drawStats2(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "m
     gradient.addColorStop("0", col2);
     gradient.addColorStop("1.0", col1);
     ctx.strokeStyle = gradient;
-
-    // if(prognosis_current_value === null && value!= 0)
-    // {   console.log("heyyyyy")
-    //     prognosis_current_value = value;
-    //     console.log(prognosis_current_value);
-    // } else if (stats!= statsWatcher) prognosis_current_value = 0; 
-
+ 
     if (!stats.hasOwnProperty(x)) {
         stats[x] = [length, 1];
         ctx.moveTo(x, startingPoint);
@@ -236,7 +254,7 @@ function drawStats2(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "m
         stats[x][0] = length * (value);
         stats[x][1] = value;
         
-        if(value != 0) prognosis_current_value = value;
+        prognosis_current_value = value;
 
         reloadCanvas(x - gap / 2+1.5  , startingPoint *0.999 , gap *0.9, -(y + radius*rows));//,-stats[x][0]);// Speicherüberflussvermeidung
         
@@ -290,17 +308,18 @@ function drawStats(x, y, n, col1 = "red", col2 = "magenta") {
 
 function drawStatsCount(x, y) {
     y = y * 2.25 + gap / 2;
-    let fontSize = gap * 0.66;
+    let fontSize = gap * 0.462; //0.66 * 0.7;
     ctx.font = "bold " + fontSize + "px Arial";
     ctx.fillStyle = "red";
     ctx.clearRect(x - gap / 2, y - gap / 2, gap, gap * 1.5);
     if (statsWatcher[x][1] < 10)
         ctx.fillText(statsWatcher[x][1], x - gap / 6, y + gap / 6);
-    else if (statsWatcher[x][1] < 100) ctx.fillText(statsWatcher[x][1], x - gap / 3, y + gap / 6);
-    else {
-        ctx.font = "bold " + fontSize * 0.7 + "px Arial";
-        ctx.fillText(statsWatcher[x][1], x - gap / 3, y + gap / 8);
+    else if (statsWatcher[x][1] < 100) ctx.fillText(statsWatcher[x][1], x - gap / 3.5, y + gap / 6);
+    else if (statsWatcher[x][1] < 1000){
+        //ctx.font = "bold " + fontSize * 0.7 + "px Arial";
+        ctx.fillText(statsWatcher[x][1], x - gap / 2.5, y + gap / 6);
     }
+    else{ctx.fillText(statsWatcher[x][1], x - gap / 2, y + gap / 6); }
 }
 
 
@@ -362,7 +381,8 @@ function createAnimation(n, initial_n, probability) {
             prognosisInput.value = 0;
             prognosisInput.max = balls;
             prognosisInputDisplay.innerHTML = "<br>"+ balls;
-
+            resetValues();
+            resetProg();
             return;
         }
 
@@ -408,8 +428,10 @@ function saveData() {
     data.probabilityLeft = probabilityLeft / 100;
     data.probabilityRight = probabilityRight / 100;
     simplifiedStats = filterStats(statsWatcher);
-    //simplifiedPrognosis = filterStats(prog_coordinates);
+    simplifiedPrognosis = filterStats (prog_statsWathcer);
     data.stats = simplifiedStats;
+    data.prog_stats = simplifiedPrognosis;
+
 }
 
 
@@ -442,8 +464,14 @@ var next = document.getElementById("next");
 ballsAmountRangeInput.addEventListener("input", () => {
     balls = Number(ballsAmountRangeInput.value);
     ballsAmoutRangeDisplay.textContent = "Anzahl Bälle = " + Number(balls);
-    prognosisInput.max = balls;
-    prognosisInputDisplay.innerHTML = "<br> "+balls;
+     
+    
+    lock_unlock_GUI(false);
+    reloadCanvas();
+    resetValues();
+    drawPegs();
+    resetProg();
+   
 });
 
 probabilityRangeInput.addEventListener("input", () => {
@@ -461,12 +489,15 @@ speedRangeInput.addEventListener("input", () => {
 
 rowRangeInput.addEventListener("input", () => {
     rowRangeDisplay.textContent = "Anzahl Reihen = " + rowRangeInput.value;
-    newRowValue = Number(rowRangeInput.value);
-    rows = newRowValue;
+    rows = Number(rowRangeInput.value);
+    
+    lock_unlock_GUI(false);
+   
     resizeGalton();
     reloadCanvas();
     resetValues();
     drawPegs();
+    resetProg();
 });
 
 startButton.addEventListener("click", () => {
@@ -475,6 +506,7 @@ startButton.addEventListener("click", () => {
         pause = false;
         mainAnimationLoop();
     } else if (!active) {
+
         // If the animation was not active, start it
         reloadCanvas();
         resetValues();
@@ -491,6 +523,7 @@ startButton.addEventListener("click", () => {
 
         animate = createAnimation(balls - 1, balls - 1, probabilityLeft / 100);
         mainAnimationLoop();
+        
     }
 });
 
@@ -504,10 +537,7 @@ stopButton.addEventListener("click", async () => {
     active = false;
 
     lock_unlock_GUI(false);
-    prognosisInput.value = 0;
-    current_bin = 0;
-    prognosisInputDisplay.innerHTML = "<br>"+balls;
-    prognosisInput.max = balls;
+   
   
 
     await wait(300);
@@ -515,6 +545,7 @@ stopButton.addEventListener("click", async () => {
     reloadCanvas();
     resetValues();
     drawPegs();
+    resetProg();
 });
 
 submitButton.addEventListener("click", async () => {
@@ -531,7 +562,7 @@ submitButton.addEventListener("click", async () => {
 
         if (response.status === 201) {
             submitButton.disabled = true;
-            data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: []};
+            data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: [], prog_stats: []};
 
             statusSymbol.classList.remove("error-style");
             statusSymbol.innerHTML = "&#10003;"; // Checkmark symbol
@@ -547,7 +578,7 @@ submitButton.addEventListener("click", async () => {
             statusSymbol.innerHTML = "&#10007;"; // cross symbol
             statusSymbol.classList.add("error-style");
             statusSymbol.style.visibility = "visible";
-            //console.log(jsonResponse.detail);
+            console.log(jsonResponse.detail);
             throw new Error(jsonResponse.detail);
         }
 
@@ -560,54 +591,83 @@ submitButton.addEventListener("click", async () => {
 
 
 
-
-
 prognosisInput.addEventListener("input", () => {
-    value = Number(prognosisInput.value);
-    rowRangeInput.disabled = true;
-    ballsAmountRangeInput.disabled = true;
+    
+    if (current_bin == 0) {
+        drawball(coordinates[current_bin][0]  ,coordinates[current_bin][1],2 );
+    }
 
-    prognosisInputDisplay.innerHTML = "<br>"+(prognosisInput.max - value);
-    console.log(coordinates);
+    value = Number(prognosisInput.value);
+
+   console.log("value is: "+ value);
+   
     var x = coordinates[current_bin][0];
     var y = coordinates[current_bin][1];
+    
+    currentValue = prog_statsWathcer[coordinates[current_bin][0]][1];
+    prognosisInput.max = remainedBalls +currentValue;
+    console.log("max :" +Number(prognosisInput.max));
+    remainedBalls += currentValue;
+ 
+    drawStats2(x, y, balls, prog_statsWathcer, value);
+    drawStatsCount2(x, y, prog_statsWathcer);
+    
+    
+    console.log("current "+currentValue);
+    console.log("remained" +remainedBalls);
 
-    // for (let i = 0; i < value; i++ ) {
-        console.log(value);
-        drawStats2(x, y, balls, prog_coordinates, value,);
-        drawStatsCount2(x, y, prog_coordinates);
-    // }
-    // prog_coordinates[current_bin] += value;
-    console.log(prog_coordinates);
-
-
+    remainedBalls = (remainedBalls+(-value));
+    prognosisInputDisplay.innerHTML = "<br>"+ remainedBalls;
+    console.log("remained" +remainedBalls);
 
 });
 
 
 
 next.addEventListener("click", () => {
-   
-    prognosisInput.max -= prognosisInput.value;
-    prognosisInput.value = 0;
+    
     if (current_bin < coordinates.length-2) {
+ 
+        drawball(coordinates[current_bin][0]  ,coordinates[current_bin][1],0, "white");
         current_bin += 1;
-        console.log(prognosis_current_value);
+        drawball(coordinates[current_bin][0]  ,coordinates[current_bin][1],2);
+        
     } 
+
+    currentValue = prog_statsWathcer[coordinates[current_bin][0]][1];
     
-    
+    if (remainedBalls!=0) {
+        prognosisInput.max = remainedBalls ;
+    }
+    else {
+        prognosisInput.max = currentValue;
+    }
+    prognosisInput.value = currentValue;
 
 });
 
 
 previous.addEventListener("click", () => {
-
-    prognosisInput.max -= prognosisInput.value;
-    prognosisInput.value = 0;
+    if (current_bin == 0) {
+               
+        drawball(coordinates[current_bin][0] ,coordinates[current_bin][1],2);
+    }
     if (current_bin > 0) {
+         
+        drawball(coordinates[current_bin][0]  ,coordinates[current_bin][1],0, "white");
         current_bin -= 1;
+        drawball(coordinates[current_bin][0] ,coordinates[current_bin][1],2 );
     } 
-    
+
+    currentValue = prog_statsWathcer[coordinates[current_bin][0]][1];
+
+    if (remainedBalls!=0) {
+        prognosisInput.max = remainedBalls ;
+    }
+    else {
+        prognosisInput.max = currentValue;
+    }
+    prognosisInput.value = currentValue;
 
 });
 
@@ -634,9 +694,11 @@ UserExportButton.addEventListener("click", async () => {
 
 //Resizing the window, forces redrawing canvas
 window.addEventListener('resize', function(event) { 
+    console.log("hey");
     resizeCanvas();
     resetValues();
     drawPegs();
+    resetProg();
 }, true);
 
 
@@ -646,7 +708,13 @@ window.addEventListener('resize', function(event) {
 
 //Initialization
 drawPegs();
+// Initialize the pro_coordinates array with zeros
+for (var i = 0; i < coordinates.length-1; i++) {
+ prog_statsWathcer[coordinates[i][0]] = [0,0];
+}  
 //drawHorizontalLine(290,200); //  x ist der letzte Punkt, y ist einfach die Höhe
 submitButton.disabled = true;
 prognosisInputDisplay.innerHTML = "<br>"+balls;
 prognosisInput.max = balls;
+ 
+

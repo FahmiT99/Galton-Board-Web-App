@@ -17,8 +17,10 @@
         </div>
         
         <div class="prognosis">
+            <p style ="font-size: 70%;  margin-left: auto; margin-right: auto;">Prognose</p>
             <p id="prognosisInputDisplay"><br>0</p>
-            <input id="prognosisInput" type="range" orient="vertical" min="0" value="0" step="1"/>
+    
+            <input id="prognosisInput" type="range" orient="vertical" min="0" value="0" step="1" autocomplete="off"/>
             <div id="prognosisButtons">
                 <button id="previous" style="margin-right: 5%; " >&larr;</button>
                 <button id="next" style="margin-right: auto; ">&rarr;</button>
@@ -49,22 +51,22 @@
     <div class="range-container">
         <div class="rangeField">
             <p id="rowRangeDisplay">Anzahl Reihen: 5</p>
-            <input type="range" id="rowRangeInput" min="2" max="10" value="5" step="1">
+            <input type="range" id="rowRangeInput" min="2" max="10" value="5"  step="1" autocomplete="off">
         </div>
         <div class="rangeField">
-            <p id="ballsAmoutRangeDisplay">Anzahl Bälle = 250</p>
-            <input type="range" id="ballsAmountRangeInput" min="10" max="1000" value="250" step="10">        
+            <p id="ballsAmoutRangeDisplay">Anzahl Bälle = 500</p>
+            <input type="range" id="ballsAmountRangeInput" min="0" max="1000" value="499"  step="10" autocomplete="off">        
         </div>
     </div>
 
     <div class="range-container">
         <div class="rangeField">
-            <p id="speedRangeDisplay">Fallgeschwindigkeit = 0%</p>
-            <input type="range" id="speedRangeInput" min="0" max="100" value="0" step="1">        
+            <p id="speedRangeDisplay">Fallgeschwindigkeit = 50%</p>
+            <input type="range" id="speedRangeInput" min="1" max="100" value="50" step="1" autocomplete="off">        
         </div>
         <div class="rangeField">
             <p id="probabilityRangeDisplay">Wahrscheinlichkeit 50 % | 50 %</p>
-            <input type="range" id="probabilityRangeInput" min="0" max="100" value="50" step="10">        
+            <input type="range" id="probabilityRangeInput" min="0" max="100"   step="10" autocomplete="off">        
         </div>
     </div>
 

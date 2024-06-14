@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" sizes="180x180" href="frontend/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="frontend/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="frontend/favicon/favicon-16x16.png">
@@ -72,37 +74,41 @@
             }
         }
     </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Galton Brett Experiment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-    <h1 id="title">Ergebnisse</h1>
-    
-    <div class="container">
-        <div>Filtern:
-            <select id="filter-select">
-                <option value="0">Alle</option>
-                <option value="2">2 Reihen</option>
-                <option value="3">3 Reihen</option>
-                <option value="4">4 Reihen</option>
-                <option value="5">5 Reihen</option>
-                <option value="6">6 Reihen</option>
-                <option value="7">7 Reihen</option>
-                <option value="8">8 Reihen</option>
-                <option value="9">9 Reihen</option>
-                <option value="10">10 Reihen</option>
-            </select>
+    <div id="content">
+        <h1 id="title">Ergebnisse</h1>
+        
+        <div class="container">
+            <div>Filtern:
+                <select id="filter-select">
+                    <option value="0">Alle</option>
+                    <option value="2">2 Reihen</option>
+                    <option value="3">3 Reihen</option>
+                    <option value="4">4 Reihen</option>
+                    <option value="5">5 Reihen</option>
+                    <option value="6">6 Reihen</option>
+                    <option value="7">7 Reihen</option>
+                    <option value="8">8 Reihen</option>
+                    <option value="9">9 Reihen</option>
+                    <option value="10">10 Reihen</option>
+                </select>
+            </div>    
+
+            <div>Sortieren nach Abweichung:
+                <label><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+                <label><input type="radio" name="sort-option"> Absteigend</label>
+            </div>
+            <button id="downloadButton" style="margin-left: 8%;">PDF</button>
+
         </div>    
 
-        <div>Sortieren nach Abweichung:
-            <label><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
-            <label><input type="radio" name="sort-option"> Absteigend</label>
-        </div>
-    </div>    
+        <div id="plot-container" ></div>
 
-    <div id="plot-container" ></div>
-
+    </div>
     <script src="frontend/test.js"></script>
 </body>
 </html>

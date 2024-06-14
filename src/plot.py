@@ -18,12 +18,12 @@ def theoretical_distribution(rows, balls, probability):
 def calculate_deviation(actual, theoretical):
     absolute_errors = np.abs(np.array(actual) - np.array(theoretical))
     sum_absolute_errors = np.sum(absolute_errors)
-    mae = sum_absolute_errors / np.sum(actual)
-    return [mae*100, sum_absolute_errors]
+    result = sum_absolute_errors / np.sum(actual)
+    return [result*100, sum_absolute_errors]
 
 
 # Funktion zur Erstellung des Plots
-def plot_galton_board(rows, balls, probability_left, probability_right, actual_stats, theoretical_stats, deviation, plot_path):
+def plot_galton_board(rows, balls, probability_left, probability_right, actual_stats, prog_stats, theoretical_stats, deviation, plot_path):
    
     deviation_percentage = deviation[0]
     deviation_sum = deviation[1]
@@ -38,7 +38,10 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
 
     #Plot the actual results
     ax.bar(x_labels, actual_stats, width=0.4, edgecolor='black', label='Actual', align='center')
-
+    
+    # Overlay the prognose results
+    ax.bar(x_labels, prog_stats, width=0.2, edgecolor='black', color='orange', alpha=0.5, label='Prognose',
+           align='edge')
 
     # Plot the theoretical distribution as a line plot
     ax.plot(x_labels, theoretical_stats, color='red', marker='o', linestyle='-', linewidth=2, markersize=5,
@@ -49,13 +52,6 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
     ax.set_ylabel('Number of Balls')
     ax.set_title('Galton Board Simulation')
 
-    # Add additional information in the top-right corner
-    # plt.text(rows - 1, max(max(actual_stats), max(theoretical_stats)), additional_info,
-    #          horizontalalignment='right',
-    #          verticalalignment='top',
-    #          bbox=dict(facecolor='white', alpha=0.5))
-    
-
      # Add a legend
     ax.legend(loc='upper left', fontsize=8)
 
@@ -65,14 +61,14 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
     
     # Adjust x-axis and y-axis limits for proper spacing
     ax.set_xlim(-0.5, rows - 0.5)
-    ax.set_ylim(0, max(max(actual_stats), max(theoretical_stats)) * 1.2)
-
+    ax.set_ylim(0, max(max(prog_stats),max(actual_stats), max(theoretical_stats)) * 1.2)
+     
     # Adjust layout to ensure equal margins
     plt.subplots_adjust(left=0.2, right=0.8, top=0.85, bottom=0.15)
 
-    plt.show()
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.1) #>0.5 = 3 in a row
     plt.close()
+
 
 
 
@@ -93,7 +89,7 @@ def generate_plots(data, user_data_counter):
 
 
     # Erstelle Plot
-    plot_galton_board(data.rows, data.balls, data.probabilityLeft, data.probabilityRight, data.stats, theoretical_stats, deviation, plot_path)
+    plot_galton_board(data.rows, data.balls, data.probabilityLeft, data.probabilityRight, data.stats, data.prog_stats, theoretical_stats, deviation, plot_path)
     
     
    

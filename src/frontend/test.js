@@ -140,3 +140,22 @@ if (group_id && user_id) {
     loadUserPlots();
 }
 
+
+const downloadButton = document.getElementById('downloadButton');
+const content = document.getElementById('content');
+
+downloadButton.addEventListener('click', function() {
+    // Options for html2pdf
+    const opt = {
+        margin:       1,
+        filename:     'my-web-page.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'a4' }
+    };
+
+    // Generate the PDF
+    html2pdf().from(content).set(opt).save();
+    listed_plot_paths.reverse();
+});
+
