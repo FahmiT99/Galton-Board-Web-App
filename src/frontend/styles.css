@@ -43,7 +43,7 @@ input[type=range][id="prognosisInput"] {
  
   display: flex;
   flex-direction: row;
-  align-content: space-evenly;
+  align-self: center;
   /* margin-top: auto; */
   margin-left: auto;
   margin-right: auto;
@@ -218,7 +218,7 @@ input[type=range][id="prognosisInput"] {
   input[type=range][id="prognosisInput"] {
      
     width: 16px;
-    height: auto;
+    height: 15vh;
     margin: 2vw; 
   
   }
@@ -417,7 +417,7 @@ input[type=range][id="prognosisInput"] {
   
   display: flex;
   justify-content: center;
-  flex-wrap: nowrap;
+  /* flex-wrap: nowrap; */
   /* gap: -2px; */
 }
 
