@@ -37,7 +37,7 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
 
 
     #Plot the actual results
-    ax.bar(x_labels, actual_stats, width=0.4, edgecolor='black', label='Actual', align='center')
+    ax.bar(x_labels, actual_stats, width=0.2, edgecolor='black', label='Actual', align='center')
     
     # Overlay the prognose results
     ax.bar(x_labels, prog_stats, width=0.2, edgecolor='black', color='orange', alpha=0.5, label='Prognose',

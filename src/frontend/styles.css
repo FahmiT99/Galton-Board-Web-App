@@ -11,17 +11,11 @@ body, html {
   font-family: 'Arial', sans-serif;
 }
 
-input[type=range][orient=vertical] {
+input[type=range][id="prognosisInput"] {
+  -webkit-appearance: none;
   writing-mode: vertical-lr;
   direction: rtl;
-  
-  width: 16px;
-  height: 40%;
   vertical-align: bottom;
-  
-
-  -webkit-appearance: none;
-
   background: #b5fc86cf;
   outline: none;
   opacity: 0.7;
@@ -37,17 +31,12 @@ input[type=range][orient=vertical] {
   flex-direction: row;
 }
 
-#prognosisInput {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-  height: 25vh;
-}
+
 
 #prognosisInputDisplay {
   margin-left: auto;
   margin-right: auto;
-  margin-top: auto;
+  /* margin-top: auto; */
 }
 
 #prognosisButtons {
@@ -55,18 +44,20 @@ input[type=range][orient=vertical] {
   display: flex;
   flex-direction: row;
   align-content: space-evenly;
-  margin-top: auto;
+  /* margin-top: auto; */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .prognosis{
   display: flex;
   flex-direction: column;
-  margin-top: 0.25%;
+  margin-top: 1%;
   position: relative;
-  margin-left: 1%;
+  margin-left: auto;
   margin-right: auto;
   justify-content: center ;
-  /* align-self: center; */
+  align-self: center;
   padding: 5px;
   background: rgba(255, 255, 255, 0.679);
   border-radius: 10px;
@@ -224,11 +215,30 @@ input[type=range][orient=vertical] {
     /* border: rgb(143, 243, 11) 2px solid; */
   }
 
+  input[type=range][id="prognosisInput"] {
+     
+    width: 16px;
+    height: auto;
+    margin: 2vw; 
+  
+  }
+  input[type=range][id="prognosisInput"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 5.5vw;
+    height: 5.5vw;
+    background: #4CAF50;
+    cursor: pointer;
+    border-radius: 0; 
+  }
+ 
+
 
   .button {
+
     margin: 1vw;
     padding: 0.5vh 3vw;
-    font-size: 2vw;
+    font-size: 2.5vw;
   }
 
   .rangeField {
@@ -248,16 +258,32 @@ input[type=range][orient=vertical] {
     cursor: pointer;
     border-radius: 0; 
   }
+
+  input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 7vw;
+    height: 7vw;
+    background: #4CAF50;
+    cursor: pointer;
+    border-radius: 0;
+  }
+  
+  .info-window {
+    margin-left: -40vw;
+    width: 40vw; /* Center the tooltip */
+  }
+
 }
 
 @media screen and (orientation:landscape)
 {
 
   
-  .prognosis{
+  /* .prognosis{
     align-self: center; 
     height: 80%; 
-  }
+  } */
   
   #canvas {
     /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
@@ -266,12 +292,30 @@ input[type=range][orient=vertical] {
     /* border: black 1px solid; */
   }
 
+  input[type=range][id="prognosisInput"] {
+     
+    width: 16px;
+    height: auto;
+    margin: 15px;
+  
+  }
+  input[type=range][id="prognosisInput"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 4vh;
+    height: 4vh;
+    background: #4CAF50;
+    cursor: pointer;
+    border-radius: 0; 
+  }
+
 
 
   .button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 1.5vh;
+    margin: 5px;
+    padding: 6px 17px;
+
+    font-size: auto;
   }
 
   .rangeField {
@@ -291,10 +335,26 @@ input[type=range][orient=vertical] {
     cursor: pointer;
     border-radius: 0; 
   }
+
+  input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 4vh;
+    height: 4vh;
+    background: #4CAF50;
+    cursor: pointer;
+    border-radius: 0; 
+  }
+
+  .info-window {
+    margin-left: -5vw;
+   width: 10vw; /* Center the tooltip */
+  }
+  
 }
 
 
-.container canvas {
+/* .container canvas {
   border: 1px solid #141212;
   padding-left: 0;
   padding-right: 0;
@@ -305,26 +365,35 @@ input[type=range][orient=vertical] {
   height: 100%; 
   max-width: 1000px; 
   border-radius: 10px;
-}
+} */
 
 .button {
  /* margin: 10px;
   padding: 10px 20px;
   font-size: 18px;*/
-  
+  -webkit-appearance: none;
+  appearance: none;
   cursor: pointer;
   text-align: center;
-  /* transform: scale(1.5);
-  height: 30px; 
-  width: 20px;  */
+  /* height: auto;
+  font-size: 1vw;
+  width: auto; */
   white-space: nowrap; /* Prevent text from wrapping */
   outline: none;
-  color: #fff;
+  color: #ffffff;
   background-color: #4CAF50;
   border: none;
   border-radius: 8px;
   box-shadow: 0 4px #999;
   transition: background-color 0.3s, transform 0.3s;
+  
+  
+}
+.button svg {
+  fill: #ffffff; /* Set the color of the SVG icon */
+  width: 0.85em;
+  height: 0.85em;
+  vertical-align: middle;
 }
 
 .button:hover {
@@ -348,7 +417,7 @@ input[type=range][orient=vertical] {
   
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   /* gap: -2px; */
 }
 
@@ -364,24 +433,7 @@ input[type=range] {
   border-radius: 5px;
 }
 
-/*
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 50px;
-  height: 50px;
-  background: #4CAF50;
-  cursor: pointer;
-  border-radius: 0; 
-} */
 
-input[type=range]::-moz-range-thumb {
-  width: 50px;
-  height: 50px;
-  background: #4CAF50;
-  cursor: pointer;
-  border-radius: 0; /* Make it square */
-}
 
 input[type=range]:hover {
   opacity: 1;
@@ -407,3 +459,40 @@ input[type=range]:hover {
   visibility: hidden;
 }
 
+.info-icon {
+  font-size: auto;
+  cursor: pointer;
+  color: #4CAF50;
+}
+.info-container {
+  position: relative;
+  margin-left: 5px;
+  align-self: center;
+
+}
+
+.info-window {
+  visibility: hidden;
+  
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: left;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position the tooltip above the icon */
+  left: 10%;
+  
+  opacity: 0;
+  transition: opacity 0.3s;
+  transform: none;
+}
+
+
+
+.info-container:hover .info-window {
+  visibility: visible;
+  opacity: 1;
+}
