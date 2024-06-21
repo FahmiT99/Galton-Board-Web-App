@@ -71,14 +71,14 @@ var skip = 0;
 var stop = false;
 var pause = false;
 var active = false;
-var rows = 10;
+var rows = 5;
 var balls = 500;
 var cols = 2;
 var gap = canvas.height / (rows + 2) /galtonSize;
 var radius = gap / 5;
 var bins = [];
 var timer = null;
-var speed = 50;
+var speed = 15;
 var animate;
 var coordinates = [];
 var statsWatcher = {};
@@ -128,12 +128,22 @@ function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
 }
 
 function resetProg() {  
- prog_statsWathcer = {};
-  
+
+    simplifiedPrognosis = [];
+    prognosisInputDisplay.innerHTML =  balls;
+    remainedBalls = balls;
+    prog_statsWathcer = {};
+    
     // Initialize the pro_coordinates array with zeros
     for (var i = 0; i < coordinates.length-1; i++) {
-     prog_statsWathcer[coordinates[i][0]] = [0,0];
-    }           
+        prog_statsWathcer[coordinates[i][0]] = [0,0];
+        drawStatsCount2(coordinates[i][0], coordinates[i][1], prog_statsWathcer);
+    }      
+    const progInputs = document.querySelectorAll("#prognosisInput");    
+    progInputs.forEach((input) => {
+            input.max = remainedBalls ;
+            input.value = 0;         
+        });     
 }
 
 function resetValues() {
@@ -144,23 +154,14 @@ function resetValues() {
     radius = gap / 5; // Radius of pegs and balls //standard value = 50/rows  // same
     bins = []; // Array to store the number of balls in each bin
     timer = null;
-    current_bin = 0;
-    prognosis_current_value = 0;
+     
 
     for (var i = 0; i < cols; i++) {
         bins[i] = 0;
     }
 
-    
-
     statsWatcher = {};
-    simplifiedPrognosis = [];
     simplifiedStats = [];
-
-    prognosisInputDisplay.innerHTML = "<br>"+balls;
-    prognosisInput.max = balls;
-    prognosisInput.value = 0;
-    remainedBalls = balls;
   
 
 }
@@ -188,8 +189,7 @@ function drawPegs() {
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fill();
             if (i == rows - 1) { 
-                // coordinates.push([x+gap/2 ,y]);
-                coordinates.push([x ,y]);
+                coordinates.push([x+gap/2 ,y]);
                 drawVerticalLine(x, y);
             }
         }
@@ -359,9 +359,8 @@ function lock_unlock_GUI(value) {
     rowRangeInput.disabled = value;
     ballsAmountRangeInput.disabled = value;
     probabilityRangeInput.disabled = value;
-    next.disabled = value;
-    previous.disabled = value;
-    prognosisInput.disabled = value;
+   
+    // prognosisInput.disabled = value;
 }
 
 // createAnimation is a higher-order function that returns animateOneStep,
@@ -380,12 +379,9 @@ function createAnimation(n, initial_n, probability) {
             active = false;
             saveData();
             lock_unlock_GUI(false);
-            submitButton.disabled = false;
-            prognosisInput.value = 0;
-            prognosisInput.max = balls;
-            prognosisInputDisplay.innerHTML = "<br>"+ balls;
+            submitButton.disabled = false;                    
             resetValues();
-            resetProg();
+             
             return;
         }
 
@@ -437,17 +433,46 @@ function saveData() {
 
 }
 
+function createProgInputs () {
+    const progRangeInputs = document.getElementById('prognosisButtons');
+    while (progRangeInputs.firstChild) {
+        progRangeInputs.removeChild(progRangeInputs.firstChild);
+    }
+    for (var i=0; i<rows; i++ ) {
+
+        const input = document.createElement('input');
+
+        input.id = 'prognosisInput';
+        input.type = 'range';
+        
+        input.max = balls;
+        input.min = '0';
+        input.value = '0';
+        input.step = '1';
+        input.autocomplete = 'off';
+
+
+        progRangeInputs.appendChild(input);
+
+        progInputsEventListener(input, i);
+        
+    }
+}
+
 
 /*                                                     Eventhandlers
 **********************************************************************************************************************************/
 
 
-var startButton = document.getElementById("start");
-var stopButton = document.getElementById("stop");
-var pauseButton = document.getElementById("pause");
-var submitButton = document.getElementById("sendData");
-var GroupExportButton = document.getElementById("GroupExportData");
-var UserExportButton = document.getElementById("UserExportData");
+const startButton = document.getElementById("start");
+const stopButton = document.getElementById("stop");
+const pauseButton = document.getElementById("pause");
+const submitButton = document.getElementById("sendData");
+const GroupExportButton = document.getElementById("GroupExportData");
+const UserExportButton = document.getElementById("UserExportData");
+const continueWithoutProg = document.getElementById("continue-without-prog");
+const continueWithProg = document.getElementById("continue-with-prog");
+const newExperimentButton = document.getElementById("newExperiment");
 var rowRangeInput = document.getElementById("rowRangeInput"); // rows adjustment control
 var rowRangeDisplay = document.getElementById("rowRangeDisplay"); // current rows display
 var speedRangeInput = document.getElementById("speedRangeInput"); // speed adjusment control
@@ -457,41 +482,44 @@ var ballsAmoutRangeDisplay = document.getElementById("ballsAmoutRangeDisplay");
 var probabilityRangeInput = document.getElementById("probabilityRangeInput");
 var probabilityRangeDisplay = document.getElementById("probabilityRangeDisplay");
 var statusSymbol = document.getElementById("statusSymbol");
-var prognosisInput = document.getElementById("prognosisInput");
 var prognosisInputDisplay = document.getElementById("prognosisInputDisplay");
-var previous = document.getElementById("previous");
-var next = document.getElementById("next");
+const probabilityInfoIcon = document.querySelector('.info-container');
+const probabilityInfoWindow = document.querySelector('.info-window');
+const continueInfoWindow = document.querySelector(".continue-info-window"); 
+
 
 
 
 ballsAmountRangeInput.addEventListener("input", () => {
+
     balls = Number(ballsAmountRangeInput.value);
-    ballsAmoutRangeDisplay.textContent = "Anzahl Bälle = " + Number(balls);
-     
-    
+    ballsAmoutRangeDisplay.innerHTML = "Anzahl Bälle<br>" + Number(balls);
+
+      
+
     lock_unlock_GUI(false);
     reloadCanvas();
     resetValues();
     drawPegs();
     resetProg();
+  
+    
    
 });
 
 probabilityRangeInput.addEventListener("input", () => {
     probabilityLeft = Number(probabilityRangeInput.value);
     probabilityRight = 100 - probabilityLeft;
-    probabilityRangeDisplay.innerHTML = "Wahrscheinlichkeit " + probabilityLeft + " % | " + probabilityRight + " % ";
+    probabilityRangeDisplay.innerHTML = "Wahrscheinlichkeit<br> " + probabilityLeft + " % | " + probabilityRight + " % ";
 });
 
 speedRangeInput.addEventListener("input", () => {
     speed =  speedRangeInput.value;
-    speedRangeDisplay.textContent = "Fallgeschwindigkeit = " + speed + "%";
-
-    
+      
 });
 
 rowRangeInput.addEventListener("input", () => {
-    rowRangeDisplay.textContent = "Anzahl Reihen = " + rowRangeInput.value;
+    rowRangeDisplay.innerHTML = "Anzahl Reihen<br>" + rowRangeInput.value;
     rows = Number(rowRangeInput.value);
     
     lock_unlock_GUI(false);
@@ -499,8 +527,11 @@ rowRangeInput.addEventListener("input", () => {
     resizeGalton();
     reloadCanvas();
     resetValues();
+  
     drawPegs();
     resetProg();
+    createProgInputs();
+    
 });
 
 startButton.addEventListener("click", () => {
@@ -513,6 +544,7 @@ startButton.addEventListener("click", () => {
         // If the animation was not active, start it
         reloadCanvas();
         resetValues();
+  
         active = true;
         submitButton.disabled = true;
         lock_unlock_GUI(true);
@@ -541,14 +573,11 @@ stopButton.addEventListener("click", async () => {
 
     lock_unlock_GUI(false);
    
-  
-
     await wait(300);
-    statsWatcher = {};
     reloadCanvas();
     resetValues();
     drawPegs();
-    resetProg();
+    
 });
 
 submitButton.addEventListener("click", async () => {
@@ -594,50 +623,103 @@ submitButton.addEventListener("click", async () => {
 
 
 
-// prognosisInput.addEventListener("input", () => {
-    
- 
+function progInputsEventListener(progInput, index) {
+    progInput.addEventListener("input", () => {
+        
 
+        var x = coordinates[index][0];
+        var y = coordinates[index][1];
+        var value = Number(progInput.value);
+
+        var currentValue = prog_statsWathcer[coordinates[index][0]][1];
+        progInput.max = remainedBalls +currentValue;
+        remainedBalls += currentValue;
+
+        drawStats2(x, y, balls, prog_statsWathcer, value);
+        drawStatsCount2(x, y, prog_statsWathcer);
+    
+        remainedBalls = (remainedBalls-value);
+        prognosisInputDisplay.innerHTML =  remainedBalls;
+       
+
+        const progInputs = document.querySelectorAll("#prognosisInput");
+         
+        progInputs.forEach((input, index) => {
+            
+            var binValue = prog_statsWathcer[coordinates[index][0]][1];
+            input.max = remainedBalls + binValue;
+               
+        });      
+    });
+}
   
    
-//     var x = coordinates[current_bin][0];
-//     var y = coordinates[current_bin][1];
+
+
+if (window.matchMedia("(orientation: portrait)").matches) {
+    probabilityInfoIcon.addEventListener('click', function() {
     
-//     currentValue = prog_statsWathcer[coordinates[current_bin][0]][1];
-//     prognosisInput.max = remainedBalls +currentValue;
-  
-//     remainedBalls += currentValue;
- 
-//     drawStats2(x, y, balls, prog_statsWathcer, value);
-//     drawStatsCount2(x, y, prog_statsWathcer);
+        if (probabilityInfoWindow.style.visibility === 'visible') {
+            probabilityInfoWindow.style.visibility = 'hidden';
+            probabilityInfoWindow.style.opacity = '0';
+        } else {
+            probabilityInfoWindow.style.visibility = 'visible';
+            probabilityInfoWindow.style.opacity = '1';
+        }
+    });
     
+    // Close the info window when clicking outside of it
+    document.addEventListener('click', function(event) {
+        if (!probabilityInfoIcon.contains(event.target)) {
+            probabilityInfoWindow.style.visibility = 'hidden';
+            probabilityInfoWindow.style.opacity = '0';
+        }
+    });
+ }
+
+
+
+continueWithProg.addEventListener("click", async () => {
     
-//     console.log("current "+currentValue);
-//     console.log("remained" +remainedBalls);
-
-//     remainedBalls = (remainedBalls+(-value));
-//     prognosisInputDisplay.innerHTML = "<br>"+ remainedBalls;
-//     console.log("remained" +remainedBalls);
-
-// });
+    if(remainedBalls == 0) {
 
 
-
-
-
-
-// previous.addEventListener("click", () => {
+        document.getElementById("settings-container").style.display = "none";
+        document.querySelector(".prognosis").style.display = "none";
    
+        document.getElementById("button-container").style.display ="";
+        document.getElementById("speed-container").style.display="";
+        newExperimentButton.style.display="";
 
-//     if (remainedBalls!=0) {
-//         prognosisInput.max = remainedBalls ;
-//     }
-//     else {
-//         prognosisInput.max = currentValue;
-//     }
+    }
+    else {
+
+        continueInfoWindow.style.visibility = 'visible';
+        continueInfoWindow.style.opacity = '1';
+
+        await wait(2000);
+
+        continueInfoWindow.style.visibility = 'hidden';
+        continueInfoWindow.style.opacity = '0';
+         
+        
+    }
+});
+
+continueWithoutProg.addEventListener("click", function() {
+    // reset progwatcher 
+    document.getElementById("settings-container").style.display = "none";
+    document.querySelector(".prognosis").style.display = "none";
    
+    document.getElementById("button-container").style.display ="";
+    document.getElementById("speed-container").style.display="";
+    newExperimentButton.style.display="";
+});
 
-// });
+newExperimentButton.addEventListener("click", function() {
+     
+    location.reload();
+});
 
 GroupExportButton.addEventListener("click", async () => {
     try {
@@ -660,6 +742,7 @@ UserExportButton.addEventListener("click", async () => {
     }
 });
 
+
 //Resizing the window, forces redrawing canvas
 window.addEventListener('resize', function(event) { 
     console.log("hey");
@@ -674,80 +757,24 @@ window.addEventListener('resize', function(event) {
 ************************************************************************************************************************************/
 
 
+
+
+
+
+
+
+ 
 //Initialization
+
+resizeGalton();
 resizeCanvas();
 drawPegs();
-
+createProgInputs();
 
 // Initialize the pro_coordinates array with zeros
 for (var i = 0; i < coordinates.length-1; i++) {
  prog_statsWathcer[coordinates[i][0]] = [0,0];
+ drawStatsCount2(coordinates[i][0], coordinates[i][1], prog_statsWathcer);
 }  
-
-
-
-
-
-
-//drawHorizontalLine(290,200); //  x ist der letzte Punkt, y ist einfach die Höhe
-
-
-
-const infoIcon = document.querySelector('.info-container');
-const infoWindow = document.querySelector('.info-window');
-
-if (window.matchMedia("(orientation: portrait)").matches) {
-infoIcon.addEventListener('click', function() {
-
-    if (infoWindow.style.visibility === 'visible') {
-        infoWindow.style.visibility = 'hidden';
-        infoWindow.style.opacity = '0';
-    } else {
-        infoWindow.style.visibility = 'visible';
-        infoWindow.style.opacity = '1';
-    }
-});
-
-// Close the info window when clicking outside of it
-document.addEventListener('click', function(event) {
-    if (!infoIcon.contains(event.target)) {
-        infoWindow.style.visibility = 'hidden';
-        infoWindow.style.opacity = '0';
-    }
-});
-}
-
-
-
-document.querySelector(".container").style.display ="none";
-const rangeInputs = document.querySelectorAll(".range-container");
-// document.querySelector(".prognosis").style.display ="none";
-
-rangeInputs.forEach((item) => {
-    item.style.display ="none";
- });
- 
-const progRangeInputs = document.getElementById('prognosisButtons');
- for (var i=0; i<rows; i++ ) {
-
-    const input = document.createElement('input');
-
-    input.id = 'prognosisInput';
-    input.type = 'range';
-     
-    input.max = balls;
-    input.min = '0';
-    input.value = '0';
-    input.step = '1';
-    input.autocomplete = 'off';
-
-
-    progRangeInputs.appendChild(input);
-     
- }
-
-
- submitButton.disabled = true;
- prognosisInputDisplay.innerHTML = "<br>"+balls;
- 
-  
+submitButton.disabled = true;
+prognosisInputDisplay.innerHTML =  balls;

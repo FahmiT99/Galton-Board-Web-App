@@ -34,19 +34,17 @@ input[type=range][id="prognosisInput"] {
 
 
 #prognosisInputDisplay {
-  margin-left: auto;
-  margin-right: auto;
-  /* margin-top: auto; */
+  align-self: center;
+  
+  margin-bottom: 10px;
+  margin-top: 0px;
 }
 
 #prognosisButtons {
  
   display: flex;
   flex-direction: row;
-  align-self: center;
-  /* margin-top: auto; */
-  margin-left: auto;
-  margin-right: auto;
+  justify-content: center;
 }
 
 .prognosis{
@@ -54,18 +52,15 @@ input[type=range][id="prognosisInput"] {
   flex-direction: column;
   margin-top: 1%;
   position: relative;
-  margin-left: auto;
-  margin-right: auto;
   justify-content: center ;
-  align-self: center;
   padding: 5px;
-  background: rgba(255, 255, 255, 0.679);
+  background: rgba(255, 255, 255, 0.396);
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.204);
-  /* height: 80%; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.204); 
+
 }
 
-.container {
+/* .container {
   margin-top: 0.25%;
   position: relative;
   margin-left: auto;
@@ -74,7 +69,7 @@ input[type=range][id="prognosisInput"] {
   background: rgba(255, 255, 255, 0.679);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
+} */
 
 
 .containerCanvas {
@@ -219,7 +214,8 @@ input[type=range][id="prognosisInput"] {
      
     width: 16px;
     height: 15vh;
-    margin: 2vw; 
+    margin-left: 2vw;
+    margin-right: 2vw; 
   
   }
   input[type=range][id="prognosisInput"]::-webkit-slider-thumb {
@@ -232,7 +228,10 @@ input[type=range][id="prognosisInput"] {
     border-radius: 0; 
   }
  
-
+  .prognosis{
+    
+    width: 85vw;
+  }
 
   .button {
 
@@ -240,14 +239,31 @@ input[type=range][id="prognosisInput"] {
     padding: 0.5vh 3vw;
     font-size: 2.5vw;
   }
+  #continue-without-prog {
+
+    margin-top: 0px;
+    padding: 0.5vh 1.5vw; 
+    font-size: 2vw;
+  }
+
+  #continue-with-prog {
+
+    margin-top: 0px;
+    padding: 1.5vh 2.5vw; 
+    font-size: 2vw;
+  }
 
   .rangeField {
+    display: flex;
+    flex-direction: column;
     align-content: left;
     text-align: center;
-    font-size: 2.9vw;
+    font-size:2.8vw;
     margin: 10px;
-    width: 44vw;
-  }
+     
+   } 
+
+  
 
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -271,7 +287,20 @@ input[type=range][id="prognosisInput"] {
   
   .info-window {
     margin-left: -40vw;
-    width: 40vw; /* Center the tooltip */
+    width: 40vw; 
+    font-size: small;
+  }
+
+  .prog-info-window {
+    margin-left: -10vw;
+    width: 40vw; 
+    font-size: small;
+  }
+
+  .continue-info-window {
+    margin-left: -40vw;
+    width: 40vw; 
+    font-size: small;
   }
 
 }
@@ -287,8 +316,8 @@ input[type=range][id="prognosisInput"] {
   
   #canvas {
     /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
-    height: 50vh;
-    width: 50vw;  
+    height: 45vh;
+    width: 45vw;  
     /* border: black 1px solid; */
   }
 
@@ -296,7 +325,8 @@ input[type=range][id="prognosisInput"] {
      
     width: 16px;
     height: auto;
-    margin: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
   
   }
   input[type=range][id="prognosisInput"]::-webkit-slider-thumb {
@@ -309,7 +339,10 @@ input[type=range][id="prognosisInput"] {
     border-radius: 0; 
   }
 
-
+  .prognosis{
+    
+    width: 470px;
+  }
 
   .button {
     margin: 5px;
@@ -317,14 +350,26 @@ input[type=range][id="prognosisInput"] {
 
     font-size: auto;
   }
+  #continue-with-prog {
+    margin-top: 0px;
+    padding: 1.2vh 1.8vw; 
+    font-size: auto;
+  }
+  #continue-without-prog {
+    margin-top: 0px;
+    padding: 0.2vh 0.8vw; 
+    font-size: auto;
+  }
 
   .rangeField {
+    display: flex;
+    flex-direction: column;
     align-content: left;
     text-align: center;
-    font-size: 15px;
+    font-size: 90%;
     margin: 10px;
-    width: 220px;
-  }
+     
+   } 
 
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -348,7 +393,18 @@ input[type=range][id="prognosisInput"] {
 
   .info-window {
     margin-left: -5vw;
-   width: 10vw; /* Center the tooltip */
+    width: 10vw; 
+  }
+
+  .prog-info-window {
+    margin-left: -5vw;
+    width: 20vw; 
+  }
+  
+  .continue-info-window {
+    margin-left: -10vw;
+    width: 15vw; 
+    font-size: small;
   }
   
 }
@@ -405,26 +461,38 @@ input[type=range][id="prognosisInput"] {
   box-shadow: 0 2px #666;
   transform: translateY(2px);
 }
-/*
-.rangeField {
-  align-content: left;
-  text-align: center;
-  font-size: 18px;
-  margin: 10px;
-}*/
 
-.button-container, .range-container {
+
+
+.button-container  {
   
   display: flex;
   justify-content: center;
-  /* flex-wrap: nowrap; */
-  /* gap: -2px; */
+   
+  margin-top: 0.25%;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.396);
+  
+  /* background: rgba(255, 255, 255, 0.679); */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.range-container {
+  
+  display: flex;
+  justify-content: center;
+   
+  
 }
 
 input[type=range] {
   -webkit-appearance: none;
-  width: 100%;
   height: 10px;
+  width: 100%;
   background: #def4cf;
   outline: none;
   opacity: 0.7;
@@ -464,10 +532,28 @@ input[type=range]:hover {
   cursor: pointer;
   color: #4CAF50;
 }
+
+.prog-info-icon {
+  font-size: auto;
+  cursor: pointer;
+  color: #4CAF50;
+}
+
 .info-container {
   position: relative;
   margin-left: 5px;
   align-self: center;
+
+}
+.prog-info-container {
+  position: relative;
+  margin-left: 5px;
+ 
+}
+
+.continue-info-container {
+  position: relative;
+  margin-left: 5px;
 
 }
 
@@ -489,10 +575,52 @@ input[type=range]:hover {
   transition: opacity 0.3s;
   transform: none;
 }
+.prog-info-window {
+  visibility: hidden;
+  
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: left;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position the tooltip above the icon */
+  left: 10%;
+  
+  opacity: 0;
+  transition: opacity 0.3s;
+  transform: none;
+}
+
+.continue-info-window {
+  visibility: hidden;
+  
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: left;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position the tooltip above the icon */
+  left: 10%;
+  
+  opacity: 0;
+  transition: opacity 0.3s;
+  transform: none;
+}
 
 
 
 .info-container:hover .info-window {
+  visibility: visible;
+  opacity: 1;
+}
+
+.prog-info-container:hover .prog-info-window {
   visibility: visible;
   opacity: 1;
 }
