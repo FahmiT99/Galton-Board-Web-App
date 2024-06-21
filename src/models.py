@@ -47,12 +47,13 @@ class Data(Base):
     probabilityLeft = Column(Float)
     probabilityRight = Column(Float)
     stats = Column(JSON)
+    prog_stats = Column(JSON)
 
 
     def __repr__(self) -> str:
         return (f"<Data(id={self.id}, group_id={self.group_id}, user_id={self.user_id}, rows={self.rows}, "
                 f"balls={self.balls}, probabilityLeft={self.probabilityLeft}, "
-                f"probabilityRight={self.probabilityRight}, stats={self.stats})>")
+                f"probabilityRight={self.probabilityRight}, stats={self.stats}, prog_stats={self.prog_stats})>")
 
 
 class UserPlots(Base):

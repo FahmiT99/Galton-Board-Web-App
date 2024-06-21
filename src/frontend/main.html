@@ -4,51 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galton Brett Experiment</title>
-    <link rel="stylesheet" href="frontend/styles.css"> 
+    <link rel="stylesheet" href="frontend/styles.css?v=2"> 
     <link rel="apple-touch-icon" sizes="180x180" href="frontend/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="frontend/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="frontend/favicon/favicon-16x16.png">
     <link rel="manifest" href="frontend/favicon/site.webmanifest"> 
 </head>
 <body>
-    <div class="containerCanvas">
-        <canvas id="canvas"></canvas>
+    <div class="mainContainer" >
+        <div class="containerCanvas" id="mainContainer">
+            <canvas id="canvas" style=" z-index: 0;"> </canvas> 
+        </div>
+       
+    </div>
+     
+    <div class="range-container" id="settings-container">
+
+        <div class="rangeField">
+            <p id="rowRangeDisplay">Anzahl Reihen<br> 5</p>
+            <input type="range" id="rowRangeInput" min="2" max="10" value="5"  step="1" autocomplete="off">
+        </div>
+
+        <div class="rangeField">
+            <p id="ballsAmoutRangeDisplay">Anzahl Bälle<br> 500</p>
+            <input type="range" id="ballsAmountRangeInput" min="0" max="1000" value="499"  step="10" autocomplete="off">        
+        </div>
+
+        <div class="rangeField">
+            <div style="display: inline-flex; align-self: center;">
+                <p id="probabilityRangeDisplay" >Wahrscheinlichkeit<br> 50 % | 50 %</p>
+                <div class="info-container">
+                    <span class="info-icon">ⓘ</span>
+                    <div class="info-window">
+                        This is the additional information that appears on hover.
+                    </div>
+                </div> 
+            </div>
+
+            <input type="range" id="probabilityRangeInput" min="0" max="100"   step="10" autocomplete="off" style="width:90.44%; align-self:center;">  
+        </div>
+
+
     </div>
 
-    <div class="container">
-        <div class="button-container">
-            <button class="button" id="start">&#9658;</button> <!-- Play button -->
-            <button class="button" id="pause">&#10074;&#10074;</button> <!-- Pause button -->
-            <button class="button" id="stop">&#9724;</button> <!-- Stop button -->
-            <div id="statusSymbol">&#10007;</div>
-            <button class="button" id="sendData">Absenden</button>
-            <button class="button" id="exportData2">Meine<br>Ergebnisse</button>
-            <button class="button" id="exportData">Gruppen<br>Ergebnisse</button>
+    
+    <div class="prognosis">
+        <div style =" margin-bottom: 0px;margin-top: 0px; display: flex;  ">
+
+            <div style="display: inline-flex; ">
+                <p style =" font-size:80%; margin-bottom: 0px;margin-top: 0px; ">Prognose:</p>
+                <div class="prog-info-container" >
+                    <span class="prog-info-icon" >ⓘ</span>
+                    <div class="prog-info-window">
+                        This is the additional information that appears on hover.
+                    </div>
+                 </div> 
+            </div>
+
+            <!-- <div > -->
+            <button id="continue-with-prog" class="button" style="margin-left:auto; "   >Weiter</button>
+            <div class="continue-info-container" >
+                <div class="continue-info-window">
+                    Deine Prognose muss alle Bälle enthalten 
+                </div>
+            </div>
+            <!-- </div> -->
+
+            <button id="continue-without-prog" class="button" >Prognose<br>überspringen</button>
         </div>
+        <p id="prognosisInputDisplay">0</p>
+
+        <div id="prognosisButtons">
+            
+        </div>
+                            
+    </div>
+   
+
+
+    
+        <div style="display: none;" class="button-container" id="button-container">
+
+            <button class="button" id="start">
+                <svg viewBox="0 0 100 100" class="icon">
+                    <polygon points="0,0 100,50 0,100"></polygon>
+                </svg>
+            </button> <!-- Play button -->
+
+            <button class="button" id="pause">
+                <svg viewBox="0 0 100 100" class="icon">
+                    <rect x="0" y="0" width="30" height="100"></rect>
+                    <rect x="65" y="0" width="30" height="100"></rect>
+                </svg>
+            </button> <!-- Pause button -->
+            
+            <button class="button" id="stop">
+                <svg viewBox="0 0 100 100">
+                <rect width="100" height="100"></rect>
+                </svg>
+            </button> <!-- Stop button -->
+            
+                <div id="statusSymbol" >&#10007;</div>
+            <button class="button" id="sendData">Ergebnisse<br>Absenden</button>
+            <button class="button" id="UserExportData">Meine<br>Ergebnisse</button>
+            <button class="button" id="GroupExportData">Gruppen<br>Ergebnisse</button>
+        </div>
+   
+    
+    
+
+
+
+
+
+    <div style="display: none;" class="range-container" id="speed-container">
+
+        <div  class="rangeField">
+            <p id="speedRangeDisplay">Fallgeschwindigkeit<br>langsam&emsp;&emsp;&emsp;  mittel&emsp;&emsp;&emsp;  schnell</p>
+            <input type="range" id="speedRangeInput" min="1" max="100" value="15" step="1" autocomplete="off">        
+        </div>
+        
+    </div>
+
+    <div>
+        <button id="newExperiment" class="button" style="display: none; margin:30px;" >Neues Experiment</button>
     </div>
     
-    <div class="range-container">
-        <div class="rangeField">
-            <p id="rangeValue">Anzahl Reihen: 5</p>
-            <input type="range" id="rangeInput" min="2" max="10" value="5" step="1">
-        </div>
-        <div class="rangeField">
-            <p id="rangeValue3">Anzahl Bälle = 250</p>
-            <input type="range" id="rangeInput3" min="10" max="1000" value="250" step="10">        
-        </div>
-    </div>
-
-    <div class="range-container">
-        <div class="rangeField">
-            <p id="rangeValue2">Fallgeschwindigkeit = 1%</p>
-            <input type="range" id="rangeInput2" min="900" max="1000" value="900" step="1">        
-        </div>
-        <div class="rangeField">
-            <p id="rangeValue4">Wahrscheinlichkeit 50 % | 50 %</p>
-            <input type="range" id="rangeInput4" min="0" max="100" value="50" step="10">        
-        </div>
-    </div>
-
-    <script src="frontend/main.js"></script>
+    <script type="module" src="frontend/main.js?v=2"></script>
 </body>
 </html>

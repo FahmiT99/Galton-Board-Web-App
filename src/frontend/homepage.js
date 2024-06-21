@@ -30,7 +30,7 @@ async function generateUUID() {
 
 async function createUserId(userId) {
     try {    
-        const response = await fetch(`http://localhost:8000/create_userID/`, {
+        const response = await fetch(`/create_userID/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ async function createUserId(userId) {
 
 async function check_userId(userId) {
     try {    
-        const response = await fetch(`http://localhost:8000/check_userID/?user_id=${userId}`, {
+        const response = await fetch(`/check_userID/?user_id=${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -152,7 +152,7 @@ function attachEventListeners() {
     createGroupButton.addEventListener('click', async () => {
         if (groupIdInput.value) {
             try {
-                const response = await fetch('http://localhost:8000/create_groupID/', {
+                const response = await fetch('/create_groupID/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -180,7 +180,7 @@ function attachEventListeners() {
     withoutGrouptButton.addEventListener('click', async () => {
 
         if (userId) {
-            window.location.href = `http://localhost:8000/main?user_id=${userId}`;
+            window.location.href = `/main?user_id=${userId}`;
         }
         
     });
@@ -189,7 +189,7 @@ function attachEventListeners() {
         //check if groupID entered, if it exists on the server + save it as users groupID
         if(groupID.value) {
             try {    
-                const response = await fetch(`http://localhost:8000/check_groupID/?group_id=${groupID.value}`, {
+                const response = await fetch(`/check_groupID/?group_id=${groupID.value}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -197,7 +197,7 @@ function attachEventListeners() {
                 });
                 const jsonResponse = await response.json();
                 if (response.ok) {
-                    window.location.href = `http://localhost:8000/main/?group_id=${groupID.value}&user_id=${userId}`;
+                    window.location.href = `/main/?group_id=${groupID.value}&user_id=${userId}`;
                     return;
                 } 
                 else if (response.status === 404) {

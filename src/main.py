@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
-import os, plot, crud, models, schemas
+import os, plot, crud, models, schemas, uvicorn
 from database import SessionLocal, engine
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -188,6 +188,9 @@ def create_group_id(group_create: schemas.GroupCreate, db: Session = Depends(get
 
 if __name__ == "__main__":
      os.system("uvicorn main:app --reload")
+
+# if __name__ == '__main__':
+#     uvicorn.run(app, host='0.0.0.0', port=8000)
 
 
  

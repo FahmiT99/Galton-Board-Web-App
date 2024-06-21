@@ -22,3 +22,4 @@ class DataCreate(BaseModel):
     probabilityLeft: float
     probabilityRight: float
     stats: list
+    prog_stats: list
