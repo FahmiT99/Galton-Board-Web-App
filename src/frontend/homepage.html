@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galton Brett Experiment</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="frontend/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="frontend/favicon/favicon-32x32.png">
@@ -22,7 +23,11 @@
                 font-size: 1.125rem; /* Increase text size for base text */
             }
         }
-
+        body, html {
+             
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+             
+            }
         .section {
             height: 100vh;
             display: flex;
@@ -35,7 +40,7 @@
         }
 
         .text-container {
-            background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            background: rgba(45, 45, 45, 0.971); /* Semi-transparent background */
             padding: 2rem;
             border-radius: 0.5rem;
         }
@@ -67,7 +72,7 @@
     </nav>
 
     <!-- Section 1: Introduction -->
-    <div id="section-1" class="section text-white" style="background-image: url('frontend/Images/1.jpg');">
+    <div id="section-1" class="section text-white" >
         <div class="text-container">
             <h1 class="text-4xl font-bold mb-6 portrait-text-lg">Erlebe das Galtonbrett auf eine völlig neue Art!</h1>
             <p class="text-xl portrait-text-base">Entdecke ein vielseitiges Tool, das dir ermöglicht, das Galtonbrett unter zahlreichen selbstgewählten Bedingungen zu simulieren.
@@ -76,7 +81,7 @@
     </div>
 
     <!-- Section 2: Feature 1 -->
-    <div id="section-2" class="section text-white" style="background-image: url('frontend/Images/2.jpg');">
+    <div id="section-2" class="section text-white" >
         <div class="text-container">
             <h2 class="text-3xl font-bold mb-4 portrait-text-lg">Meistere die Binomialverteilung!</h2>
             <p class="text-xl portrait-text-base">Bringe Theorie und Praxis zusammen. Vertiefe dein Verständnis, 
@@ -86,7 +91,7 @@
     </div>
 
     <!-- Section 3: Feature 2 -->
-    <div id="section-3" class="section text-white" style="background-image: url('frontend/Images/3.jpg');">
+    <div id="section-3" class="section text-white" >
         <div class="text-container">
             <h2 class="text-3xl font-bold mb-4 portrait-text-lg">Prognostiziere das Ergebnis!</h2>
             <p class="text-xl portrait-text-base">Gib deine Vorhersage ab und vergleiche sie anschließend mit den tatsächlichen Ergebnissen.<br>
@@ -95,7 +100,7 @@
     </div>
 
     <!-- Section 4: Call to Action -->
-    <div id="section-4" class="section text-white" style="background-image: url('frontend/Images/4.png');">
+    <div id="section-4" class="section text-white" >
         <div class="text-container" id="cta-container">
             <h2 class="text-3xl font-bold mb-4 portrait-text-lg">Bereit zum Start?</h2>
             <p class="text-xl portrait-text-base">Tauche ein und entdecke die faszinierende Welt der Wahrscheinlichkeiten!</p>
