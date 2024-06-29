@@ -3,6 +3,7 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
+
 var galtonSize = 1.73; // On start with rows = 5
 
 function resizeGalton(r = rows)
@@ -79,6 +80,8 @@ var radius = gap / 5;
 var bins = [];
 var timer = null;
 var speed = 15;
+var horizontalLineWidth = 3;
+var verticalLineWidth = 2;
 var animate;
 var coordinates = [];
 var statsWatcher = {};
@@ -120,11 +123,11 @@ function filterStats(stats) {
 }
 
 function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
+    ctx.clearRect(x1, y1, x2, y2);
     if (x1 == y1 == 0 & x2 == canvas.width & y2 == canvas.height) {
-        ctx.clearRect(x1, y1, x2, y2);
         resetValues();
         drawPegs();
-    } else ctx.clearRect(x1, y1, x2, y2);
+    }
 }
 
 function resetProg() {  
@@ -175,7 +178,8 @@ for (var i = 0; i < cols; i++) {
  
 
 // Draw the pegs on the canvas
-function drawPegs() {
+function drawPegs(only_vertical_Lines = false) {
+    if (!only_vertical_Lines)
     coordinates = [];
     // Loop through the rows and columns of pegs
     for (var i = 0; i < rows; i++) {
@@ -197,12 +201,13 @@ function drawPegs() {
         //console.log("j: ", j, " i:", i );
     }
     //console.log("rows: ", rows, ", cols: ", cols);
+    if(!only_vertical_Lines)
     drawHorizontalLine(x, y);
     //console.log(coordinates);
 }
 
-function drawHorizontalLine(x, y, width = 3) {
-    ctx.lineWidth = width;
+function drawHorizontalLine(x, y) {
+    ctx.lineWidth = horizontalLineWidth;
     ctx.beginPath();
     ctx.moveTo((canvas.width - gap) / 2 + gap * (-(rows - 1) / 2), y * 2.25);
     ctx.lineTo(x, y * 2.25);
@@ -211,7 +216,7 @@ function drawHorizontalLine(x, y, width = 3) {
 
 function drawVerticalLine(x, y) {
 
-    ctx.lineWidth = 2;
+    ctx.lineWidth = verticalLineWidth;
     ctx.beginPath();
     ctx.moveTo(x, y +radius);
     ctx.lineTo(x, y * 2.25);
@@ -235,12 +240,25 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
 var prognosis_current_value = 0;
 
-function drawStats2(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "magenta") {
-    ctx.lineWidth = gap *0.9;
-    let startingPoint = y * 2.25 - 2;
+function drawStatsPrognosis(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "magenta") {
+    ctx.lineWidth = gap *0.85;
+    let startingPoint = y * 2.25 - horizontalLineWidth/2; 
     var length = 1.1 * (y + radius) / n;
+    if (rows == 2) length *= 0.94;
+
+    //ctx.clearRect(x -ctx.lineWidth / 2 , startingPoint - stats[x][0] - 1, ctx.lineWidth + 0.5 , stats[x][0] + horizontalLineWidth/2 - horizontalLineWidth/6);
+    if (stats.hasOwnProperty(x)) {
+        //ctx.lineWidth+= 0.1;
+        ctx.beginPath();
+        ctx.strokeStyle = "#f5f7fa"; // Assuming the canvas background is white
+        ctx.moveTo(x, startingPoint);
+        ctx.lineTo(x, startingPoint - stats[x][0]-1);
+        ctx.stroke();
+    }
+    ctx.lineWidth-= 1.25;
 
     ctx.beginPath();
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
@@ -259,12 +277,18 @@ function drawStats2(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "m
         
         prognosis_current_value = value;
 
-        reloadCanvas(x - gap / 2+1.5  , startingPoint *0.999 , gap *0.9, -(y + radius*rows));//,-stats[x][0]);// Speicherüberflussvermeidung
+        //reloadCanvas(x - gap / 2+1.5  , startingPoint *0.999 , gap *0.9, -(y + radius*rows));//,-stats[x][0]);// Speicherüberflussvermeidung
+        // remove current drawing
+        //ctx.clearRect(x - ctx.lineWidth / 2, startingPoint - stats[x][0], ctx.lineWidth, stats[x][0]);
         
+
+        
+        ctx.strokeStyle = gradient;
         ctx.lineTo(x, startingPoint - stats[x][0]);
     }
     ctx.stroke();
     ctx.strokeStyle = "black";
+    drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // ensure no differences between bins
 }
 
 function drawStatsCount2(x, y, stats = statsWatcher) {
@@ -276,10 +300,21 @@ function drawStatsCount2(x, y, stats = statsWatcher) {
     if (stats[x][1] < 10)
         ctx.fillText(stats[x][1], x - gap / 6, y + gap / 6);
     else if (stats[x][1] < 100) ctx.fillText(stats[x][1], x - gap / 3, y + gap / 6);
-    else {
+    else
+    {
         ctx.font = "bold " + fontSize * 0.7 + "px Arial";
-        ctx.fillText(stats[x][1], x - gap / 3, y + gap / 8);
+        if (stats[x][1] < 1000)
+        {
+            ctx.fillText(stats[x][1], x - gap / 3, y + gap / 8);
+        }
+        else 
+        {
+            ctx.font = "bold " + fontSize * 0.65 + "px Arial";
+            ctx.fillText(stats[x][1], x - gap / 2, y + gap / 8);
+        }
     }
+
+  
 }
 
 
@@ -310,7 +345,8 @@ function drawStats(x, y, n, col1 = "red", col2 = "magenta") {
 }
 
 function drawStatsCount(x, y) {
-    y = y * 2.25 + gap / 2;
+    //y = y * 2.25 + gap / 1.75;
+    y = y * 2.25 + 1.5 + gap/2;
     let fontSize = gap * 0.462; //0.66 * 0.7;
     ctx.font = "bold " + fontSize + "px Arial";
     ctx.fillStyle = "red";
@@ -375,7 +411,7 @@ function createAnimation(n, initial_n, probability) {
 
     return async function animateOneStep() {
         if (n < 0) {
-            drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // Fixed black line mess in the result
+            //drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // Fixed black line mess in the result
             active = false;
             saveData();
             lock_unlock_GUI(false);
@@ -635,7 +671,7 @@ function progInputsEventListener(progInput, index) {
         progInput.max = remainedBalls +currentValue;
         remainedBalls += currentValue;
 
-        drawStats2(x, y, balls, prog_statsWathcer, value);
+        drawStatsPrognosis(x, y, balls, prog_statsWathcer, value);
         drawStatsCount2(x, y, prog_statsWathcer);
     
         remainedBalls = (remainedBalls-value);
