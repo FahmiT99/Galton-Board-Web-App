@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
+            background-color: #eef4f0;
             margin: 0;
             padding: 0;
             color: #333;
@@ -19,25 +19,77 @@
         h1 {
             color: #333;
             text-align: center;
+            text-shadow: #333;
+            text-decoration: solid;
             margin-top: 20px;
             font-size: 2.5em;
             font-weight: 300;
+            appearance: none;
+            white-space: nowrap;
+            outline: none;
+            min-height: 1.5em;
+            max-width: auto;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .container {
-            display: flex;
+            display: grid;
+            grid-template-areas: "filter . download"
+                                 "desc desc sort"
+                                 "desc desc sort";
+            grid-gap: 5px;
             justify-content: center;
             align-items: center;
             margin: 20px 0;
-            padding: 20px;
+            padding: 10px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .container div {
-            margin: 0 20px;
-            font-size: 1.1em;
+        #filter-select{
+            grid-area: filter;
+            padding-left: 3vw;
+            background-color: #4CAF50; /* Lime background */
+            color: #FFFFFF; /* White text */
+            border: 2px solid #030303; /* Lime green border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; 
+            font-size: 14px; /* Font size */
+            box-shadow: 0 4px #999;
+        }
+        #filter-select option {
+            background-color: #202320; /* Lime green background for options */
+            color: #FFFFFF; /* White text for options */
+        }
+
+
+        #downloadButton{
+            grid-area: download;
+            /* margin-right: 5vw; */
+            -webkit-appearance: none;
+            appearance: none;
+            text-align: center;
+            font-size: 14px; /* Font size */
+            padding: 10px;
+            color: #ffffff;
+            background-color: #4CAF50;
+            border: 2px solid #030303; /* Lime green border */
+            border-radius: 5px;
+            box-shadow: 0 4px #999;
+        }
+
+        #sort-option{
+            grid-area: sort;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #sort-description{
+            grid-area: desc;
         }
 
         select, input[type="radio"] {
@@ -53,26 +105,62 @@
             font-size: 1em;
         }
 
-        .plots {
-            margin: 0 auto;
-            display: block;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        #plot-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            overflow-x: auto;
+        }
+
+        .plot-row {
+            display: flex;
+            gap: 10px;
+            height: auto;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            flex-direction: row;
+        }
+
+
+        .plot-row img {
+            width: 100%;
+            height: auto;
+            flex: 1;
         }
 
         @media screen and (orientation:portrait) {
-            .plots {
-                width: 60vw;
+
+            
+            #sort-option label{
+                font-size: medium;
             }
+
+            #sort-description {
+                font-size: small;
+            }
+
+            .plot-row{
+                flex-direction: row;
+            }
+
+            .plot-row img {
+                max-width: calc(100% / 2 - 10px);
+            }
+            
         }
 
         @media screen and (orientation:landscape) {
-            .plots {
-                width: 40vw;
-            }
+             .plot-row img{
+                max-width: calc(100% / 4 - 10px);
+                margin: auto;
+             }
+             .plot-row{
+
+             }
         }
+
     </style>
     
     <title>Galton Brett Experiment</title>
@@ -96,15 +184,15 @@
                     <option value="9">9 Reihen</option>
                     <option value="10">10 Reihen</option>
                 </select>
-            </div>    
-
-            <div>Sortieren nach Abweichung:
-                <label><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
-                <label><input type="radio" name="sort-option"> Absteigend</label>
             </div>
-            <button id="downloadButton" style="margin-left: 8%;">PDF</button>
+            <p id="sort-description">Sortieren nach Abweichung:</p>
+            <div id="sort-option">  
+                <label style="display: flex;"><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+                <label style="display: flex;"><input type="radio" name="sort-option"> Absteigend</label>
+            </div>        
+            <button id="downloadButton">PDF Download</button>
+        </div>
 
-        </div>    
 
         <div id="plot-container" ></div>
 

@@ -24,21 +24,29 @@ function sort_plots(plotPaths) {
 
     
 }
-function list_plots(PlotPaths) {
 
+function list_plots(PlotPaths) {
     const plotContainer = document.getElementById('plot-container');
     plotContainer.innerHTML = ''; // Clear previous plots
 
-    // Füge sortierte Bilder zum plotContainer hinzu
-    PlotPaths.forEach(plotPath => {
+    // Determine the number of images per row based on orientation
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    const imagesPerRow = isPortrait ? 2 : 4;
+
+    let rowContainer = null;
+    PlotPaths.forEach((plotPath, index) => {
+        if (index % imagesPerRow === 0) {
+            rowContainer = document.createElement('div');
+            rowContainer.className = 'plot-row';
+            plotContainer.appendChild(rowContainer);
+        }
         const img = document.createElement('img');
         img.src = plotPath;
         img.alt = 'Plot Image';
-        plotContainer.appendChild(img);
+        rowContainer.appendChild(img);
     });
 
     return PlotPaths;
-
 }
 
 // Event listener für den Sortieren-Button
@@ -133,7 +141,7 @@ const user_id = urlParams.get('user_id');
 var title = document.getElementById("title");
 
 if (group_id && user_id) {
-    title.innerHTML = "Gruppen_Ergebnisse";
+    title.innerHTML = "Gruppen Ergebnisse";
     loadGroupPlots();
 } else if (!group_id && user_id) {
     title.innerHTML = "Meine Ergebnisse";
@@ -151,7 +159,8 @@ downloadButton.addEventListener('click', function() {
         filename:     'my-web-page.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4' }
+        jsPDF:        { unit: 'in', format: 'a4' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     // Generate the PDF
