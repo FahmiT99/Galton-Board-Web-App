@@ -88,24 +88,28 @@ const userId = await generateUUID();
 
     
     const getStartedButton = document.getElementById('get-started');
+    const skipButton = document.getElementById("skip-button");
     const hiddenElements = document.getElementById('hidden-elements');
     const ctaContainer = document.getElementById('cta-container');
     // const navToggle = document.getElementById('nav-toggle');
     // const navContent = document.getElementById('nav-content');
-    
-    getStartedButton.addEventListener('click', function() {
+
+    function handleClick() {
         ctaContainer.innerHTML = hiddenElements.innerHTML;
-        console.log('Get Started button clicked');
+        console.log('Button clicked');
         console.log('Hidden elements class list:', hiddenElements.classList);
         ctaContainer.scrollIntoView({ behavior: 'smooth' });
-
+    
         // Re-attach event listeners to the new elements
         attachEventListeners();
-    });
+    }
 
-    navToggle.addEventListener('click', function() {
-        navContent.classList.toggle('hidden');
-    });
+    getStartedButton.addEventListener('click', handleClick);
+    skipButton.addEventListener('click', handleClick);
+
+    // navToggle.addEventListener('click', function() {
+    //     navContent.classList.toggle('hidden');
+    // });
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('nav a').forEach(anchor => {
@@ -213,3 +217,41 @@ function attachEventListeners() {
         }
     });
 }
+
+
+// function generateRandomSymbols() {
+//     console.log('generateRandomSymbols function called'); // Debug log
+//     const container = document.getElementById('symbol-container');
+//     if (!container) {
+//         console.error('Symbol container not found');
+//         return;
+//     }
+//     const symbolCount = 46;
+//     const symbolSize = 50; // Adjust size as needed
+
+//     for (let i = 0; i < symbolCount; i++) {
+//         const symbol = document.createElement('img');
+//         symbol.src = `frontend/Background Elements/Ebene ${i % 46 + 1}.jpg`; // Adjust the path and naming convention as needed
+//         symbol.classList.add('symbol');
+
+//         // Add error handling to check if the image loads correctly
+//         symbol.onerror = function() {
+//             console.error(`Failed to load image: $${symbol.src}`);
+//         };
+
+//         // Random position
+//         const randomX = Math.random() * (window.innerWidth - symbolSize);
+//         const randomY = Math.random() * (window.innerHeight - symbolSize);
+//         symbol.style.left = `$${randomX}px`;
+//         symbol.style.top = `$${randomY}px`;
+
+//         // Random rotation
+//         const randomRotation = Math.random() * 360;
+//         symbol.style.transform = `rotate($${randomRotation}deg)`;
+
+//         container.appendChild(symbol);
+//     }
+// }
+
+// // Ensure the function runs after the DOM is fully loaded
+// generateRandomSymbols();
