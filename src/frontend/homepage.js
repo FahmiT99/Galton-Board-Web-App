@@ -96,15 +96,14 @@ const userId = await generateUUID();
 
     function handleClick() {
         ctaContainer.innerHTML = hiddenElements.innerHTML;
-        console.log('Button clicked');
-        console.log('Hidden elements class list:', hiddenElements.classList);
+    
         ctaContainer.scrollIntoView({ behavior: 'smooth' });
     
         // Re-attach event listeners to the new elements
         attachEventListeners();
     }
 
-    getStartedButton.addEventListener('click', handleClick);
+    // getStartedButton.addEventListener('click', handleClick);
     skipButton.addEventListener('click', handleClick);
 
     // navToggle.addEventListener('click', function() {

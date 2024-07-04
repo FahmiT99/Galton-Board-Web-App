@@ -13,34 +13,37 @@
     <style>
         @media (orientation: portrait) {
             .portrait-container {
-                width: 90%;
+                width: 80%;
                 padding: 2rem;
             }
             .portrait-text-lg {
                 font-size: 1.5rem; /* Increase text size for large text */
             }
             .portrait-text-base {
-                font-size: 1.125rem; /* Increase text size for base text */
+                font-size: 1rem; /* Increase text size for base text */
+            }
+            .text-xl {
+                line-height: 1.2rem;
             }
         }
 
         #section-1 {
-            background-image: url('/frontend/Images/page 1.jpg');
-            background-size: cover;
-            background-position: center;
-        }
-        #section-2 {
             background-image: url('/frontend/Images/page 2.jpg');
             background-size: cover;
             background-position: center;
         }
-        #section-3 {
-            background-image: url('/frontend/Images/page 3.jpg');
+        /* #section-2 {
+            background-image: url('/frontend/Images/page 1.jpg');
             background-size: cover;
             background-position: center;
         }
+        #section-3 {
+            background-image: url('/frontend/Images/page 1.jpg');
+            background-size: cover;
+            background-position: center;
+        } */
         #section-4 {
-            background-image: url('/frontend/Images/page 4.jpg');
+            background-image: url('/frontend/Images/page 2.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -61,10 +64,11 @@
             transition: background-image 1s ease-in-out;
             background-position: center;
             background-size: cover; /* Ensure the image covers the entire section */
+            /* background-color: rgba(0, 0, 0, 0); Adjust the alpha (opacity) value as needed */
         }
 
         .text-container {
-            background: rgba(45, 45, 45, 0.971); /* Semi-transparent background */
+            background: rgba(45, 45, 45, 0.922); /* Semi-transparent background */
             padding: 2rem;
             border-radius: 0.5rem;
         }
@@ -80,6 +84,10 @@
 
         .hidden {
             display: none;
+        }
+
+        #skip-button {
+            margin: 100px;
         }
 
         /* #symbol-container {
@@ -110,8 +118,8 @@
         <nav class="sticky-nav flex justify-between items-center p-5 shadow-md">
             <div class="text-xl font-bold"><a href="#section-1">Galton Brett Experiment</a></div>
             <div class="flex space-x-2 text-sm sm:text-base">
-                <a href="#section-2" class="px-2 py-1 text-gray-700 hover:text-blue-500">Warum</a>
-                <a href="#section-3" class="px-2 py-1 text-gray-700 hover:text-blue-500">Features</a>
+                <!-- <a href="#section-2" class="px-2 py-1 text-gray-700 hover:text-blue-500">Warum</a>
+                <a href="#section-3" class="px-2 py-1 text-gray-700 hover:text-blue-500">Features</a> -->
                 <a href="#section-4" class="px-2 py-1 text-gray-700 hover:text-blue-500">Loslegen</a>
             </div>
         </nav>
@@ -120,16 +128,20 @@
         
         <div id="section-1" class="section text-white">
             <div class="text-container">
-                <h1 class="text-4xl font-bold mb-6 portrait-text-lg">Erlebe das Galtonbrett auf eine völlig neue Art!</h1>
-                <p class="text-xl mb-4 portrait-text-base">Entdecke ein vielseitiges Tool, das dir ermöglicht, das Galtonbrett unter zahlreichen selbstgewählten Bedingungen zu simulieren.
+                <h1 class="text-4xl font-bold mb-6 portrait-text-lg">Willkommen bei der Galton-Brett-Simulation</h1>
+                <p class="text-xl mb-4 portrait-text-base">Entdecke  die faszinierende Welt der Statistik und Wahrscheinlichkeitstheorie durch eine interaktive Simulation des berühmten Galton-Bretts!
+                    <br><br>Das Galton-Brett besteht aus einem dreieckigen Gitter von Hindernissen, an denen Kugeln zufällig nach links oder rechts geleitet werden.
+                    Beim Erreichen der unteren Fächer ordnen sich die Kugeln entsprechend der Anzahl der Richtungswechsel, wobei die Verteilung der Kugeln einer Binomialverteilung folgt.
+                    <br><br>bevor du mit der Simulation startest, kannst du eine Vorhersage abgeben und sie anschließend mit den tatsächlichen Ergebnissen vergleichen.
                     <br>Experimentiere alleine oder gemeinsam mit Freunden für noch mehr Spaß und spannende Erkenntnisse.</p>
                         <!-- New Button to Skip to Section 4 -->
+                    <div><br></div>
                     <a href="#section-4" class="button mt-4 bg-blue-500 text-white py-3 px-6 rounded-full shadow hover:bg-blue-600 active:bg-blue-700 transition transform active:translate-y-1" id="skip-button">Zum Start</a>
                 </div>
             </div>
         </div>
 
-        <div id="section-2" class="section text-white">
+        <!-- <div id="section-2" class="section text-white">
             <div class="text-container">
                 <h2 class="text-3xl font-bold mb-4 portrait-text-lg">Meistere die Binomialverteilung!</h2>
                 <p class="text-xl portrait-text-base">Bringe Theorie und Praxis zusammen. Vertiefe dein Verständnis, 
@@ -144,33 +156,35 @@
                 <p class="text-xl portrait-text-base">Gib deine Vorhersage ab und vergleiche sie anschließend mit den tatsächlichen Ergebnissen.<br>
                     Alle Resultate sind sichtbar, sodass ihr gemeinsam die Genauigkeit eurer Prognosen bewerten und diskutieren könnt!</p>
             </div>
-        </div>
+        </div> -->
 
-        <div id="section-4" class="section text-white">
+        <!-- <div id="section-4" class="section text-white">
             <div class="text-container" id="cta-container">
                 <h2 class="text-3xl font-bold mb-4 portrait-text-lg">Bereit zum Start?</h2>
                 <p class="text-xl portrait-text-base">Tauche ein und entdecke die faszinierende Welt der Wahrscheinlichkeiten!</p>
                 <button class="button mt-4 bg-blue-500 text-white py-3 px-6 rounded-full shadow hover:bg-blue-600 active:bg-blue-700 transition transform active:translate-y-1" id="get-started">Loslegen!</button>
             </div>
-        </div>
+        </div> -->
 
-        <div id="hidden-elements" class="hidden">
-            <div class="text-container">
-                <div>
-                    <h1 class="text-3xl font-bold mb-6 portrait-text-lg">Erstellen Sie eine Gruppe</h1>
-                    <input class="inputField border text-black border-gray-300 rounded p-3 mb-4 w-full" type="text" id="groupID_input" placeholder="Gruppenname eingeben">
-                    <button class="button bg-green-500 text-white py-3 px-6 rounded-full shadow hover:bg-green-600 active:bg-green-700 transition transform active:translate-y-1" id="create-group">Gruppe erstellen</button>
-                    <p class="inputField mt-4" id="id-display"></p>
-                </div>
+        <div id="section-4" class="section text-white">
+            <div class="text-container" id="cta-container">
+                <div class="text-container">
+                    <div>
+                        <h1 class="text-3xl font-bold mb-6 portrait-text-lg">Erstelle eine Gruppe</h1>
+                        <input class="inputField border text-black border-gray-300 rounded p-3 mb-4 w-full" type="text" id="groupID_input" placeholder="Gruppenname eingeben">
+                        <button class="button bg-green-500 text-white py-3 px-6 rounded-full shadow hover:bg-green-600 active:bg-green-700 transition transform active:translate-y-1" id="create-group">Gruppe erstellen</button>
+                        <p class="inputField mt-4" id="id-display"></p>
+                    </div>
 
-                <div>
-                    <h1 class="text-3xl font-bold mb-6 portrait-text-lg">Zum Experiment</h1>
-                    <button class="button bg-green-500 text-white py-3 px-6 rounded-full shadow hover:bg-green-600 active:bg-green-700 transition transform active:translate-y-1 mb-4" id="continue-without-group">Ohne Gruppe fortfahren</button>
-                    <input class="inputField border text-black border-gray-300 rounded p-3 mb-4 w-full" type="text" id="group-id" placeholder="Gruppenname eingeben">
-                    <button class="button bg-green-500 text-white py-3 px-6 rounded-full shadow hover:bg-green-600 active:bg-green-700 transition transform active:translate-y-1" id="continue">Fortfahren</button>
-                    <p class="inputField mt-4" id="id-display2"></p>
+                    <div>
+                        <h1 class="text-3xl font-bold mb-6 portrait-text-lg">Zum Experiment</h1>
+                        <button class="button bg-green-500 text-white py-3 px-6 rounded-full shadow hover:bg-green-600 active:bg-green-700 transition transform active:translate-y-1 mb-4" id="continue-without-group">Ohne Gruppe fortfahren</button>
+                        <input class="inputField border text-black border-gray-300 rounded p-3 mb-4 w-full" type="text" id="group-id" placeholder="Gruppenname eingeben">
+                        <button class="button bg-green-500 text-white py-3 px-6 rounded-full shadow hover:bg-green-600 active:bg-green-700 transition transform active:translate-y-1" id="continue">Fortfahren</button>
+                        <p class="inputField mt-4" id="id-display2"></p>
+                    </div>
                 </div>
-            </div>
+            </div> 
         </div>    
 
     <script type="module" src="frontend/homepage.js"></script>
