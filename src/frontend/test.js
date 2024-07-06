@@ -61,29 +61,69 @@ sortRadioButtons.forEach(button => {
 
 
 // Event listener für das Filtern nach Anzahl der Reihen
-const filterSelect = document.getElementById('filter-select');
-filterSelect.addEventListener('change', () => {
-    var filteredPlotPaths = []
-    const selectedRows = parseInt(filterSelect.value); // Ausgewählte Anzahl der Reihen
-    plot_paths = sort_plots(plot_paths);
-    document.getElementById('ascending').checked = true;
+// const filterSelect = document.getElementById('filter-select');
+// filterSelect.addEventListener('change', () => {
+//     var filteredPlotPaths = []
+//     const selectedRows = parseInt(filterSelect.value); // Ausgewählte Anzahl der Reihen
+//     plot_paths = sort_plots(plot_paths);
+//     document.getElementById('ascending').checked = true;
 
-    if (selectedRows === 0) {
-        filteredPlotPaths = plot_paths;
-    }
-    else {
-    // Filtere Bilder nach der Anzahl der Reihen
-    filteredPlotPaths = plot_paths.filter(plotPath => {
-        const parts = plotPath.split('_');
-        const rows = parseInt(parts.pop().replace('.png', '')); // Extract the number of rows
-        return rows === selectedRows;
-        });
-    }
+//     if (selectedRows === 0) {
+//         filteredPlotPaths = plot_paths;
+//     }
+//     else {
+//     // Filtere Bilder nach der Anzahl der Reihen
+//     filteredPlotPaths = plot_paths.filter(plotPath => {
+//         const parts = plotPath.split('_');
+//         const rows = parseInt(parts.pop().replace('.png', '')); // Extract the number of rows
+//         return rows === selectedRows;
+//         });
+//     }
 
-    // Liste die gefilterten Bilder
-    listed_plot_paths = list_plots(filteredPlotPaths);
+//     // Liste die gefilterten Bilder
+//     listed_plot_paths = list_plots(filteredPlotPaths);
 
+// });
+
+const filterSelectElements = document.querySelectorAll('#filter-select');
+
+filterSelectElements.forEach(filterSelect => {
+    filterSelect.addEventListener('change', () => {
+        var filteredPlotPaths = [];
+        const selectedRows = parseInt(filterSelect.value); // Ausgewählte Anzahl der Reihen
+        plot_paths = sort_plots(plot_paths);
+        document.getElementById('ascending').checked = true;
+
+        if (selectedRows === 0) {
+            filteredPlotPaths = plot_paths;
+        } else {
+            // Filtere Bilder nach der Anzahl der Reihen
+            filteredPlotPaths = plot_paths.filter(plotPath => {
+                const parts = plotPath.split('_');
+                const rows = parseInt(parts.pop().replace('.png', '')); // Extract the number of rows
+                return rows === selectedRows;
+            });
+        }
+
+        // Liste die gefilterten Bilder
+        listed_plot_paths = list_plots(filteredPlotPaths);
+    });
 });
+
+
+
+document.querySelectorAll('[id=return-button]').forEach(button => {
+    button.addEventListener("click", () => {
+        if(!group_id && user_id) {
+            window.location.href = `/main?user_id=${user_id}`;
+        } else if (group_id && user_id) {
+            window.location.href = `/main?group_id=${group_id}&user_id=${user_id}`;
+        } else {
+            window.location.href = `/main`;
+        }
+    });
+});
+
 
 async function loadGroupPlots() {
     try {
@@ -149,22 +189,82 @@ if (group_id && user_id) {
 }
 
 
-const downloadButton = document.getElementById('downloadButton');
+// const downloadButton = document.getElementById('downloadButton');
+// const content = document.getElementById('content');
+
+// const excludeIds = ['downloadButton', 'return-button'];
+
+// downloadButton.addEventListener('click', function() {
+//     // Options for html2pdf
+
+//     excludeIds.forEach(id => {
+//         const el = document.getElementById(id);
+//         if (el) el.classList.add('exclude-from-pdf');
+//     });
+
+
+//     const opt = {
+//         margin:       1,
+//         filename:     'my-web-page.pdf',
+//         image:        { type: 'jpeg', quality: 0.98 },
+//         html2canvas:  { scale: 2 },
+//         jsPDF:        { unit: 'in', format: 'a4' },
+//         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+//     };
+
+//     // Generate the PDF
+//     // html2pdf().from(content).set(opt).save();
+
+//     html2pdf().from(content).set(opt).save().then(() => {
+//         // Restore the display of the elements
+//         excludeIds.forEach(id => {
+//             const el = document.getElementById(id);
+//             if (el) el.classList.remove('exclude-from-pdf');
+//         });
+//     });
+
+//     listed_plot_paths.reverse();
+// });
+
+const downloadButtons = document.querySelectorAll('#downloadButton');
 const content = document.getElementById('content');
 
-downloadButton.addEventListener('click', function() {
-    // Options for html2pdf
-    const opt = {
-        margin:       1,
-        filename:     'my-web-page.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-    };
+const excludeIds = ['downloadButton', 'return-button'];
 
-    // Generate the PDF
-    html2pdf().from(content).set(opt).save();
-    listed_plot_paths.reverse();
+downloadButtons.forEach(downloadButton => {
+    downloadButton.addEventListener('click', function() {
+        // Add exclusion class to all elements with the specified IDs
+        excludeIds.forEach(id => {
+            document.querySelectorAll(`#${id}`).forEach(el => {
+                el.classList.add('exclude-from-pdf');
+            });
+        });
+
+        const opt = {
+            margin:       1,
+            filename:     'my-web-page.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'a4' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+
+        // Generate the PDF
+        // html2pdf().from(content).set(opt).save();
+
+        html2pdf().from(content).set(opt).save().then(() => {
+            // Restore the display of the elements
+            excludeIds.forEach(id => {
+                document.querySelectorAll(`#${id}`).forEach(el => {
+                    el.classList.remove('exclude-from-pdf');
+                });
+            });
+        });
+
+        listed_plot_paths.reverse();
+    });
 });
+
+
+
 
