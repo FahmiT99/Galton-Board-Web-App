@@ -16,6 +16,10 @@
             color: #333;
         }
 
+        .exclude-from-pdf {
+            display: none;
+        }
+
         h1 {
             color: #333;
             text-align: center;
@@ -33,14 +37,12 @@
             margin-right: auto;
         }
 
-        .container {
-            display: grid;
-            grid-template-areas: "filter . download"
-                                 "desc desc sort"
-                                 "desc desc sort";
-            grid-gap: 5px;
+        .container-landscape{
+            display: flex;
+            flex-direction: row;
             justify-content: center;
             align-items: center;
+            gap: 3vw;
             margin: 20px 0;
             padding: 10px;
             background-color: #fff;
@@ -48,15 +50,49 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        #filter-select{
-            grid-area: filter;
-            padding-left: 3vw;
-            background-color: #4CAF50; /* Lime background */
-            color: #FFFFFF; /* White text */
+        .container-portrait {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 3vw;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sub-container{
+            display: flex;
+            gap: 5px;
+        }
+        #return-button{
+            background-color: #4CAF50;
             border: 2px solid #030303; /* Lime green border */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px; 
+            box-shadow: 0 4px #999;
+            transition: transform .7s ease-in-out;
+            border-radius: 5px;
+        }
+
+        #return-button img{
+            background-color: #4CAF50; /* Lime background */
+            border: none;
+            cursor: pointer;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+        }
+
+        #filter-select{
+            justify-self: center;
+            align-self: center;
+            text-align: center;
             font-size: 14px; /* Font size */
+            padding: 10px;
+            color: #ffffff;
+            background-color: #4CAF50;
+            border: 2px solid #030303; /* Lime green border */
+            border-radius: 5px;
             box-shadow: 0 4px #999;
         }
         #filter-select option {
@@ -66,7 +102,6 @@
 
 
         #downloadButton{
-            grid-area: download;
             /* margin-right: 5vw; */
             -webkit-appearance: none;
             appearance: none;
@@ -81,7 +116,6 @@
         }
 
         #sort-option{
-            grid-area: sort;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -89,7 +123,7 @@
         }
 
         #sort-description{
-            grid-area: desc;
+
         }
 
         select, input[type="radio"] {
@@ -148,17 +182,30 @@
             .plot-row img {
                 max-width: calc(100% / 2 - 10px);
             }
+
+
+            .container-landscape{
+                display:none
+            }
+
             
         }
 
         @media screen and (orientation:landscape) {
-             .plot-row img{
+            .plot-row img{
                 max-width: calc(100% / 4 - 10px);
                 margin: auto;
-             }
-             .plot-row{
+            }
+            .plot-row{
 
-             }
+            }
+
+
+            .container-portrait{
+                display:none
+            }
+
+
         }
 
     </style>
@@ -168,29 +215,71 @@
 </head>
 <body>
     <div id="content">
-        <h1 id="title">Ergebnisse</h1>
-        
-        <div class="container">
-            <div>Filtern:
-                <select id="filter-select">
-                    <option value="0">Alle</option>
-                    <option value="2">2 Reihen</option>
-                    <option value="3">3 Reihen</option>
-                    <option value="4">4 Reihen</option>
-                    <option value="5">5 Reihen</option>
-                    <option value="6">6 Reihen</option>
-                    <option value="7">7 Reihen</option>
-                    <option value="8">8 Reihen</option>
-                    <option value="9">9 Reihen</option>
-                    <option value="10">10 Reihen</option>
-                </select>
+            <h1 id="title">Ergebnisse</h1>
+
+
+        <div class="container-portrait">
+            <div class="sub-container" id="first-sub-container">
+                <button id="return-button">
+                    <img src="frontend/favicon/return-button.png" alt="return">
+                </button>
+                <div class="filter">Filtern:
+                    <select id="filter-select">
+                        <option value="0">Alle</option>
+                        <option value="2">2 Reihen</option>
+                        <option value="3">3 Reihen</option>
+                        <option value="4">4 Reihen</option>
+                        <option value="5">5 Reihen</option>
+                        <option value="6">6 Reihen</option>
+                        <option value="7">7 Reihen</option>
+                        <option value="8">8 Reihen</option>
+                        <option value="9">9 Reihen</option>
+                        <option value="10">10 Reihen</option>
+                    </select>
+                </div>
+                <button id="downloadButton">PDF Download</button>
             </div>
-            <p id="sort-description">Sortieren nach Abweichung:</p>
-            <div id="sort-option">  
-                <label style="display: flex;"><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
-                <label style="display: flex;"><input type="radio" name="sort-option"> Absteigend</label>
-            </div>        
-            <button id="downloadButton">PDF Download</button>
+            <div class="sub-container">
+                <p id="sort-description">Sortieren nach Abweichung:</p>
+                <div id="sort-option">  
+                    <label style="display: flex;"><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+                    <label style="display: flex;"><input type="radio" name="sort-option"> Absteigend</label>
+                </div>   
+            </div>
+        </div>
+
+        <div class="container-landscape">
+            <div class="sub-container">
+            <button id="return-button">
+                <img src="frontend/favicon/return-button.png" alt="return">
+            </button>
+            </div>
+            <div class="sub-container" id="first-sub-container">
+                <div class="filter">Filtern:
+                    <select id="filter-select">
+                        <option value="0">Alle</option>
+                        <option value="2">2 Reihen</option>
+                        <option value="3">3 Reihen</option>
+                        <option value="4">4 Reihen</option>
+                        <option value="5">5 Reihen</option>
+                        <option value="6">6 Reihen</option>
+                        <option value="7">7 Reihen</option>
+                        <option value="8">8 Reihen</option>
+                        <option value="9">9 Reihen</option>
+                        <option value="10">10 Reihen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="sub-container">
+                <p id="sort-description">Sortieren nach Abweichung:</p>
+                <div id="sort-option">  
+                    <label style="display: flex;"><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+                    <label style="display: flex;"><input type="radio" name="sort-option"> Absteigend</label>
+                </div>
+            </div>
+            <div class="sub-container">
+                <button id="downloadButton">PDF Download</button>   
+            </div>
         </div>
 
 
