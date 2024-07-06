@@ -87,7 +87,7 @@
         }
 
         #skip-button {
-            margin: 100px;
+            margin: 20px;
         }
 
         /* #symbol-container {
@@ -127,18 +127,20 @@
  
         
         <div id="section-1" class="section text-white">
-            <div class="text-container">
-                <h1 class="text-4xl font-bold mb-6 portrait-text-lg">Willkommen bei der Galton-Brett-Simulation</h1>
-                <p class="text-xl mb-4 portrait-text-base">Entdecke  die faszinierende Welt der Statistik und Wahrscheinlichkeitstheorie durch eine interaktive Simulation des berühmten Galton-Bretts!
+            <div class="text-container flex-col">
+                <h1 class="text-3xl font-bold mb-6 portrait-text-lg">Willkommen bei der Galton-Brett-Simulation</h1>
+                <p class="text-xl portrait-text-base">Entdecke  die faszinierende Welt der Statistik und Wahrscheinlichkeitstheorie durch eine interaktive Simulation des berühmten Galton-Bretts!
                     <br><br>Das Galton-Brett besteht aus einem dreieckigen Gitter von Hindernissen, an denen Kugeln zufällig nach links oder rechts geleitet werden.
                     Beim Erreichen der unteren Fächer ordnen sich die Kugeln entsprechend der Anzahl der Richtungswechsel, wobei die Verteilung der Kugeln einer Binomialverteilung folgt.
                     <br><br>bevor du mit der Simulation startest, kannst du eine Vorhersage abgeben und sie anschließend mit den tatsächlichen Ergebnissen vergleichen.
-                    <br>Experimentiere alleine oder gemeinsam mit Freunden für noch mehr Spaß und spannende Erkenntnisse.</p>
+                    <br>Experimentiere alleine oder gemeinsam mit Freunden für noch mehr Spaß und spannende Erkenntnisse.
+                </p>
                         <!-- New Button to Skip to Section 4 -->
-                    <div><br></div>
-                    <a href="#section-4" class="button mt-4 bg-blue-500 text-white py-3 px-6 rounded-full shadow hover:bg-blue-600 active:bg-blue-700 transition transform active:translate-y-1" id="skip-button">Zum Start</a>
-                </div>
+                <a href="#section-4" class="button bg-blue-500 text-white text-l inline-block py-3 px-6 rounded-full shadow hover:bg-blue-600 active:bg-blue-700 transition transform active:translate-y-1" id="skip-button">
+                    Zum Start
+                </a>
             </div>
+
         </div>
 
         <!-- <div id="section-2" class="section text-white">

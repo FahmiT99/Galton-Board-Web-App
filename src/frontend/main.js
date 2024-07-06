@@ -253,7 +253,8 @@ function drawStatsPrognosis(x, y, n,stats = statsWatcher, value, col1 = "red", c
     if (stats.hasOwnProperty(x)) {
         //ctx.lineWidth+= 0.1;
         ctx.beginPath();
-        ctx.strokeStyle = "#f5f7fa"; // Assuming the canvas background is white
+        // ctx.strokeStyle = "#f5f7fa"; // Assuming the canvas background is white
+        ctx.strokeStyle = "#ffffff"; // Assuming the canvas background is white
         ctx.moveTo(x, startingPoint);
         ctx.lineTo(x, startingPoint - stats[x][0]-1);
         ctx.stroke();
