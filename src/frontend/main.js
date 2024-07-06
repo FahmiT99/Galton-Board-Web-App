@@ -175,10 +175,21 @@ for (var i = 0; i < cols; i++) {
     bins[i] = 0;
 }
 
+
+function drawLine(x1, y1, x2, y2){
+
+    ctx.lineWidth = verticalLineWidth;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+
  
 
 // Draw the pegs on the canvas
 function drawPegs(only_vertical_Lines = false) {
+    var lines = [];
     if (!only_vertical_Lines)
     coordinates = [];
     // Loop through the rows and columns of pegs
@@ -186,12 +197,18 @@ function drawPegs(only_vertical_Lines = false) {
         for (var j = 0; j < cols; j++) {
             var x = (canvas.width - gap) / 2 + gap * (j - i / 2); 
             var y = gap * (i + 1);
+            
+            if(i == 0 && (j == 0 ||  j == cols-1)) lines.push([x,y]);
 
             // Draw a circle with the peg color
-            ctx.fillStyle = "green";
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fill();
+            if (j > 0 && j < cols-1)
+            {
+                ctx.fillStyle = "green";
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
             if (i == rows - 1) { 
                 coordinates.push([x+gap/2 ,y]);
                 drawVerticalLine(x, y);
@@ -202,8 +219,14 @@ function drawPegs(only_vertical_Lines = false) {
     }
     //console.log("rows: ", rows, ", cols: ", cols);
     if(!only_vertical_Lines)
-    drawHorizontalLine(x, y);
-    //console.log(coordinates);
+    {
+        var cl = coordinates.length-1;
+        drawLine(lines[0][0], lines[0][1], coordinates[0][0]-gap/2, coordinates[0][1]);
+        drawLine(coordinates[cl][0]-gap/2, coordinates[cl][1], lines[1][0], lines[1][1]);
+        drawHorizontalLine(x, y);
+    }
+
+    //console.log("coordinates are: ",coordinates);
 }
 
 function drawHorizontalLine(x, y) {
