@@ -10,7 +10,7 @@ body, html {
   background: linear-gradient(135deg, #f5f7fa 0%, #f5f7fa 100%);
   font-family: 'Arial', sans-serif;
   overflow: hidden; /*disable scrolling*/
-  background-image: url('/frontend/Images/page 2.jpg');
+  background-image: url('/frontend/Images/sample 5.jpg');
   background-size: cover;
   background-position: center;
 }
