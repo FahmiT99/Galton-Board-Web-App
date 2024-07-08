@@ -267,6 +267,7 @@ input[type=range][id="prognosisInput"] {
     text-align: center;
     font-size:2.8vw;
     margin: 10px;
+    margin-bottom: 2vh;
      
    } 
 
@@ -375,6 +376,7 @@ input[type=range][id="prognosisInput"] {
     text-align: center;
     font-size: 90%;
     margin: 10px;
+    margin-bottom: 2vh;
      
    } 
 
@@ -412,6 +414,10 @@ input[type=range][id="prognosisInput"] {
     margin-left: -10vw;
     width: 10vw; 
     font-size: small;
+  }
+
+  #settings-container{
+    max-height: 14vh;
   }
   
 }
@@ -496,6 +502,13 @@ input[type=range][id="prognosisInput"] {
   
 }
 
+#settings-container, #speed-container{
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 input[type=range] {
   -webkit-appearance: none;
   height: 10px;
@@ -547,12 +560,10 @@ input[type=range]:hover {
 }
 
 .info-container {
-  position: relative;
-  margin-left: 5px;
   align-self: center;
 
 }
-.prog-info-container {
+.prog-info-container, .info-container {
   position: relative;
   margin-left: 5px;
  
@@ -564,44 +575,7 @@ input[type=range]:hover {
 
 }
 
-.info-window {
-  visibility: hidden;
-  
-  background-color: #f9f9f9;
-  color: #333;
-  text-align: left;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  z-index: 1;
-  bottom: 125%; /* Position the tooltip above the icon */
-  left: 10%;
-  
-  opacity: 0;
-  transition: opacity 0.3s;
-  transform: none;
-}
-.prog-info-window {
-  visibility: hidden;
-  
-  background-color: #f9f9f9;
-  color: #333;
-  text-align: left;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  z-index: 1;
-  bottom: 125%; /* Position the tooltip above the icon */
-  left: 10%;
-  
-  opacity: 0;
-  transition: opacity 0.3s;
-  transform: none;
-}
-
-.continue-info-window {
+.info-window, .prog-info-window, .continue-info-window {
   visibility: hidden;
   
   background-color: #f9f9f9;
@@ -622,12 +596,15 @@ input[type=range]:hover {
 
 
 
-.info-container:hover .info-window {
+.info-container:hover .info-window,
+.info-window.visible {
   visibility: visible;
   opacity: 1;
 }
 
-.prog-info-container:hover .prog-info-window {
+.prog-info-container:hover .prog-info-window,
+.prog-info-window.visible {
   visibility: visible;
   opacity: 1;
 }
+
