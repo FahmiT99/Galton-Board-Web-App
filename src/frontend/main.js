@@ -548,8 +548,24 @@ const probabilityInfoWindow = document.querySelector('.info-window');
 const continueInfoWindow = document.querySelector(".continue-info-window"); 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleVisibility = (event) => {
+      const target = event.target.closest('.info-container, .prog-info-container');
+      if (target) {
+        event.stopPropagation();
+        const infoWindow = target.querySelector('.info-window, .prog-info-window');
+        infoWindow.classList.toggle('visible');
+      } else {
+        document.querySelectorAll('.info-window.visible, .prog-info-window.visible').forEach(window => {
+          window.classList.remove('visible');
+        });
+      }
+    };
+  
+    document.addEventListener('click', toggleVisibility);
+  });
 
-
+  
 ballsAmountRangeInput.addEventListener("input", () => {
 
     balls = Number(ballsAmountRangeInput.value);
