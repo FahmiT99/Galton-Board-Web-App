@@ -114,15 +114,23 @@ filterSelectElements.forEach(filterSelect => {
 
 document.querySelectorAll('[id=return-button]').forEach(button => {
     button.addEventListener("click", () => {
-        if(!group_id && user_id) {
-            window.location.href = `/main?user_id=${user_id}`;
-        } else if (group_id && user_id) {
-            window.location.href = `/main?group_id=${group_id}&user_id=${user_id}`;
-        } else {
-            window.location.href = `/main`;
-        }
+        window.history.back();
     });
 });
+
+//alternative:
+
+// document.querySelectorAll('[id=return-button]').forEach(button => {
+//     button.addEventListener("click", () => {
+//         if(!group_id && user_id) {
+//             window.location.href = `/main?user_id=${user_id}`;
+//         } else if (group_id && user_id) {
+//             window.location.href = `/main?group_id=${group_id}&user_id=${user_id}`;
+//         } else {
+//             window.location.href = `/main`;
+//         }
+//     });
+// });
 
 
 async function loadGroupPlots() {
