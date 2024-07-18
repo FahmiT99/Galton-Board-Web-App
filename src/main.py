@@ -76,7 +76,7 @@ def load_main():
 
 @app.get("/results")
 def load_test():
-    return FileResponse('frontend/test.html')
+    return FileResponse('frontend/results.html')
 
 
 
@@ -108,8 +108,6 @@ def list_plots(user_id: str, db: Session = Depends(get_db)):
 
     try:
         plot_paths = crud.get_user_plots(db, user_id)
-        print(plot_paths)
-        print(type(plot_paths))
         if plot_paths:
             return JSONResponse(content={"plot_paths": plot_paths})
         else:
@@ -186,11 +184,11 @@ def create_group_id(group_create: schemas.GroupCreate, db: Session = Depends(get
 
 
 
-# if __name__ == "__main__":
-#      os.system("uvicorn main:app --reload")
+if __name__ == "__main__":
+     os.system("uvicorn main:app --reload")
 
-if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+# if __name__ == '__main__':
+#     uvicorn.run(app, host='0.0.0.0', port=8000)
 
 
  

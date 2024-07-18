@@ -61,7 +61,6 @@ var group_name = urlParams.get('group_id');
 const user_id = urlParams.get('user_id');
 if (!group_name) {
     group_name =".";
-    // document.getElementById("exportData").style.visibility ="hidden";
     document.getElementById("GroupExportData").style.display ="none";
 }
 
@@ -111,14 +110,11 @@ function generateLastArray(size) {
 function filterStats(stats) {
 
     var arr = [];
-    console.log(stats);
     var keys = Object.keys(stats).map(Number).sort((a, b) => a - b);
-   // console.log("stats= ", keys.length);
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
         arr.push(stats[key][1]);
     }
-    console.log("simplified array ", arr, "array size = ", arr.length);
     return arr;
 }
 
@@ -215,9 +211,8 @@ function drawPegs(only_vertical_Lines = false) {
             }
         }
         cols += 1;
-        //console.log("j: ", j, " i:", i );
     }
-    //console.log("rows: ", rows, ", cols: ", cols);
+
     if(!only_vertical_Lines)
     {
         var cl = coordinates.length-1;
@@ -226,7 +221,6 @@ function drawPegs(only_vertical_Lines = false) {
         drawHorizontalLine(x, y);
     }
 
-    //console.log("coordinates are: ",coordinates);
 }
 
 function drawHorizontalLine(x, y) {
@@ -492,30 +486,28 @@ function saveData() {
     data.prog_stats = simplifiedPrognosis;
 
 }
-
-function createProgInputs () {
+function createProgInputs() {
+    // Clear existing inputs
     const progRangeInputs = document.getElementById('prognosisButtons');
     while (progRangeInputs.firstChild) {
         progRangeInputs.removeChild(progRangeInputs.firstChild);
     }
-    for (var i=0; i<rows; i++ ) {
 
+    // Create new range inputs
+    for (let i = 0; i < rows; i++) {
         const input = document.createElement('input');
-
         input.id = 'prognosisInput';
         input.type = 'range';
-        
         input.max = balls;
         input.min = '0';
         input.value = '0';
         input.step = '1';
         input.autocomplete = 'off';
 
-
         progRangeInputs.appendChild(input);
 
+        // Add event listener to the input
         progInputsEventListener(input, i);
-        
     }
 }
 
@@ -630,7 +622,6 @@ startButton.addEventListener("click", () => {
         for (let s = 0; s < binsArray.length; s++) {
             statsWatcher[canvas.width / 2 - 0.5 * gap * binsArray[s]] = [null, 0];
         }
-        //console.log(statsWatcher);
 
         animate = createAnimation(balls - 1, balls - 1, probabilityLeft / 100);
         mainAnimationLoop();
@@ -678,7 +669,7 @@ submitButton.addEventListener("click", async () => {
             statusSymbol.style.visibility = "visible";
             // Remove the symbol after 5 seconds (5000 milliseconds)
             setTimeout(() => { statusSymbol.style.visibility = "hidden"; }, 1000);
-            return;
+            
 
         } else {        
             // Display error symbol (cross)
@@ -686,7 +677,6 @@ submitButton.addEventListener("click", async () => {
             statusSymbol.innerHTML = "&#10007;"; // cross symbol
             statusSymbol.classList.add("error-style");
             statusSymbol.style.visibility = "visible";
-            console.log(jsonResponse.detail);
             throw new Error(jsonResponse.detail);
         }
 
@@ -698,34 +688,30 @@ submitButton.addEventListener("click", async () => {
 
 
 
-
 function progInputsEventListener(progInput, index) {
     progInput.addEventListener("input", () => {
-        
+        const x = coordinates[index][0];
+        const y = coordinates[index][1];
+        let value = Number(progInput.value);
+        const currentValue = prog_statsWathcer[x][1];
 
-        var x = coordinates[index][0];
-        var y = coordinates[index][1];
-        var value = Number(progInput.value);
+        const currentTotal = Array.from(document.querySelectorAll("#prognosisInput"))
+            .reduce((total, input) => total + Number(input.value), 0);
 
-        var currentValue = prog_statsWathcer[coordinates[index][0]][1];
-        progInput.max = remainedBalls +currentValue;
-        remainedBalls += currentValue;
+        const newRemainedBalls = balls - currentTotal + value;
+
+        // If the new total exceeds the limit or would result in negative remaining balls
+        if (currentTotal > balls || newRemainedBalls < 0) {
+            value = Math.min(balls - (currentTotal - value), balls);
+            progInput.value = value;
+        }
 
         drawStatsPrognosis(x, y, balls, prog_statsWathcer, value);
         drawStatsCount2(x, y, prog_statsWathcer);
-    
-        remainedBalls = (remainedBalls-value);
-        prognosisInputDisplay.innerHTML =  remainedBalls;
-       
 
-        const progInputs = document.querySelectorAll("#prognosisInput");
-         
-        progInputs.forEach((input, index) => {
-            
-            var binValue = prog_statsWathcer[coordinates[index][0]][1];
-            input.max = remainedBalls + binValue;
-               
-        });      
+        remainedBalls = balls - Array.from(document.querySelectorAll("#prognosisInput"))
+            .reduce((total, input) => total + Number(input.value), 0);
+        prognosisInputDisplay.innerHTML = remainedBalls;
     });
 }
   
@@ -821,7 +807,6 @@ UserExportButton.addEventListener("click", async () => {
 
 //Resizing the window, forces redrawing canvas
 window.addEventListener('resize', function(event) { 
-    console.log("hey");
     resizeCanvas();
     resetValues();
     drawPegs();

@@ -10,7 +10,7 @@ body, html {
   background: linear-gradient(135deg, #f5f7fa 0%, #f5f7fa 100%);
   font-family: 'Arial', sans-serif;
   overflow: hidden; /*disable scrolling*/
-  background-image: url('/frontend/Images/sample 5.jpg');
+  background-image: url('/frontend/Images/page 2.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -66,17 +66,6 @@ input[type=range][id="prognosisInput"] {
 
 }
 
-/* .container {
-  margin-top: 0.25%;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 5px;
-  background: rgba(255, 255, 255, 0.679);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-} */
-
 
 .containerCanvas {
   position: relative;
@@ -89,135 +78,18 @@ input[type=range][id="prognosisInput"] {
 }
 
 
-/* @media only screen and (min-width: 1601px) {
-
-
-  .containerCanvas{
-    margin-top: 2vh;
-  }
-
-  .button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 18px;
-  }
-
-  .rangeField {
-    align-content: left;
-    text-align: center;
-    font-size: 18px;
-    margin: 10px;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 4vh;
-    height: 4vh;
-    background: #069f0b;
-    cursor: pointer;
-    border-radius: 0; 
-  }
-
-}
-
-
-@media only screen and (min-width: 1024px) and (max-width: 1600px)  {
-  .button {
-    margin: 3vh;
-    padding: 1vw 2vw;
-    font-size: 1vw;
-  }
-
-  .rangeField {
-    align-content: left;
-    text-align: center;
-    font-size: 18px;
-    margin: 2px;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 4vh;
-    height: 4vh;
-    background: #069f0b;
-    cursor: pointer;
-    border-radius: 0; 
-  }
-
-}
-
-
-@media only screen and (min-width: 786px) and (max-width: 1023px) {
-  .containerCanvas{
-    margin-top: 2vh;
-  }
-
-  .button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 18px;
-  }
-
-  .rangeField {
-    align-content: left;
-    text-align: center;
-    font-size: 18px;
-    margin: 10px;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 4vh;
-    height: 4vh;
-    background: #069f0b;
-    cursor: pointer;
-    border-radius: 0; 
-  }
-
-}
-
-
-@media (max-width: 785px) {
-  .button {
-    margin: 1vw;
-    padding: 1vw 3vw;
-    font-size: 3vw;
-  }
-
-  .rangeField {
-    align-content: left;
-    text-align: center;
-    font-size: 3vw;
-    margin: 10px;
-  }
-
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 7vw;
-    height: 7vw;
-    background: #069f0b;
-    cursor: pointer;
-    border-radius: 0; 
-  }
-
-} */
-
 @media screen and (orientation:portrait)
 {
 
   #canvas {
-    /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
     height: 40vh;
     width: 48vw;  
-    /* border: rgb(143, 243, 11) 2px solid; */
   }
 
   input[type=range][id="prognosisInput"] {
-     
+    -webkit-appearance: none;
+    appearance: none;
+
     width: 16px;
     height: 15vh;
     margin-left: 2vw;
@@ -227,6 +99,7 @@ input[type=range][id="prognosisInput"] {
   input[type=range][id="prognosisInput"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
+
     width: 5vw;
     height: 5vw;
     background: #069f0b;
@@ -243,7 +116,6 @@ input[type=range][id="prognosisInput"] {
 
     margin: 1vw;
     padding: 0.1vh 2vw;
-    /* padding: 1vh 2vw; */
     font-size: 2.5vw;
   }
   #continue-without-prog {
@@ -267,15 +139,16 @@ input[type=range][id="prognosisInput"] {
     text-align: center;
     font-size:2.8vw;
     margin: 10px;
+    margin-top: auto;
     margin-bottom: 2vh;
      
    } 
 
-  
 
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
+
     width: 5vw;
     height: 5vw;
     background: #069f0b;
@@ -315,21 +188,15 @@ input[type=range][id="prognosisInput"] {
 
 @media screen and (orientation:landscape)
 {
-
-  
-  /* .prognosis{
-    align-self: center; 
-    height: 80%; 
-  } */
   
   #canvas {
-    /* background: linear-gradient(to bottom, #e0ffc02a, #b4f5bb25, #9df5cb27); */
     height: 45vh;
     width: 45vw;  
-    /* border: black 1px solid; */
   }
 
   input[type=range][id="prognosisInput"] {
+    -webkit-appearance: none;
+    appearance: none;
      
     width: 16px;
     height: 13vh;
@@ -376,6 +243,7 @@ input[type=range][id="prognosisInput"] {
     text-align: center;
     font-size: 90%;
     margin: 10px;
+    margin-top: auto;
     margin-bottom: 2vh;
      
    } 
@@ -423,31 +291,13 @@ input[type=range][id="prognosisInput"] {
 }
 
 
-/* .container canvas {
-  border: 1px solid #141212;
-  padding-left: 0;
-  padding-right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  width: 100%;
-  height: 100%; 
-  max-width: 1000px; 
-  border-radius: 10px;
-} */
 
 .button {
- /* margin: 10px;
-  padding: 10px 20px;
-  font-size: 18px;*/
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
   text-align: center;
-  /* height: auto;
-  font-size: 1vw;
-  width: auto; */
-  white-space: nowrap; /* Prevent text from wrapping */
+  white-space: nowrap; 
   outline: none;
   color: #ffffff;
   background-color: #4CAF50;
@@ -459,7 +309,7 @@ input[type=range][id="prognosisInput"] {
   
 }
 .button svg {
-  fill: #ffffff; /* Set the color of the SVG icon */
+  fill: #ffffff; 
   width: 0.85em;
   height: 0.85em;
   vertical-align: middle;
@@ -481,25 +331,19 @@ input[type=range][id="prognosisInput"] {
   
   display: flex;
   justify-content: center;
-   
   margin-top: 0.25%;
   position: relative;
   margin-left: auto;
   margin-right: auto;
   padding: 5px;
   background: rgb(255, 255, 255);
-  
-  /* background: rgba(255, 255, 255, 0.679); */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .range-container {
-  
   display: flex;
   justify-content: center;
-   
-  
 }
 
 #settings-container, #speed-container{
@@ -510,7 +354,8 @@ input[type=range][id="prognosisInput"] {
 }
 
 input[type=range] {
-  -webkit-appearance: none;
+  --webkit-appearance: none;
+  appearance: none;
   height: 10px;
   width: 100%;
   background: #adfc78;
@@ -586,7 +431,7 @@ input[type=range]:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: absolute;
   z-index: 1;
-  bottom: 125%; /* Position the tooltip above the icon */
+  bottom: 125%; 
   left: 10%;
   
   opacity: 0;

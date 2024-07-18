@@ -9,25 +9,26 @@ import os
 
 def theoretical_distribution(rows, balls, probability):
 
-    bins = np.arange(rows) #K Versuche
+    bins = np.arange(rows) 
     probs = [round(round(binom.pmf(k, rows-1, probability) * balls, 1)) for k in bins]
     return probs
 
 
-# Funktion zur Berechnung der Abweichung
+
 def calculate_deviation(actual, theoretical):
+    
     absolute_errors = np.abs(np.array(actual) - np.array(theoretical))
     sum_absolute_errors = np.sum(absolute_errors)
     result = sum_absolute_errors / np.sum(actual)
     return [result*100, sum_absolute_errors]
 
 
-# Funktion zur Erstellung des Plots
+
 def plot_galton_board(rows, balls, probability_left, probability_right, actual_stats, prog_stats, theoretical_stats, deviation, plot_path):
    
     deviation_percentage = deviation[0]
     deviation_sum = deviation[1]
-    x_labels = range(rows)
+    x_labels = range(1, rows + 1)
 
     additional_info = f" {int(probability_left*100)} %  |  {int(probability_right*100)} % " \
                       f"\nBälle gesamt = {balls} \nAbweichung  =  {round(deviation_sum)}\nin %  =  {round(deviation_percentage,4)}"
@@ -37,20 +38,21 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
 
 
     #Plot the actual results
-    ax.bar(x_labels, actual_stats, width=0.2, edgecolor='black', label='Ergebnis', align='center')
+    ax.bar(x_labels, actual_stats, width=0.3, edgecolor='black', label='Ergebnis', align='center')
     
     # Overlay the prognose results
-    ax.bar(x_labels, prog_stats, width=0.2, edgecolor='black', color='orange', alpha=0.5, label='Prognose',
+    ax.bar(x_labels, prog_stats, width=0.3, edgecolor='black', color='orange', alpha=0.5, label='Prognose',
            align='edge')
 
     # Plot the theoretical distribution as a line plot
     ax.plot(x_labels, theoretical_stats, color='red', marker='o', linestyle='-', linewidth=2, markersize=5,
             label='Theoretische Verteilung')
 
-    ax.set_xticks(x_labels)  # Set x-axis labels to show both even and odd number
+    ax.set_xticks(x_labels)  # Set x-axis ticks to match the labels
+    ax.set_xticklabels(x_labels)  # Set x-axis labels to start from 1 to rows
     ax.set_xlabel('Behälter')
     ax.set_ylabel('Anzahl Bälle')
-    ax.set_title('Galton Board Simulation')
+    ax.set_title('Galton Brett Simulation')
 
      # Add a legend
     ax.legend(loc='upper left', fontsize=8)
@@ -60,7 +62,7 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
         bbox=dict(facecolor='white', alpha=0.5))
     
     # Adjust x-axis and y-axis limits for proper spacing
-    ax.set_xlim(-0.5, rows - 0.5)
+    ax.set_xlim(0.5, rows + 0.5)   
     ax.set_ylim(0, max(max(prog_stats),max(actual_stats), max(theoretical_stats)) * 1.2)
      
     # Adjust layout to ensure equal margins
@@ -91,8 +93,6 @@ def generate_plots(data, user_data_counter):
     # Erstelle Plot
     plot_galton_board(data.rows, data.balls, data.probabilityLeft, data.probabilityRight, data.stats, data.prog_stats, theoretical_stats, deviation, plot_path)
     
-    
-   
     
     return plot_path
 

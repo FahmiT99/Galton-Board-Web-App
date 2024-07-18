@@ -76,10 +76,11 @@ def create_user(db: Session, user_create: UserCreate) -> bool:
             db.add(new_user)
             db.commit()
             db.refresh(new_user)    
+            return True 
         except:
             db.rollback()
             raise 
-        return True 
+        
     else:
         # If the user ID already exists, return False
         return False
@@ -95,11 +96,12 @@ def create_group(db: Session, group_create: GroupCreate) -> bool:
         try:
             db.add(new_group)
             db.commit()
-            db.refresh(new_group)    
+            db.refresh(new_group)  
+            return True   
         except:
             db.rollback()
             raise 
-        return True 
+        
     else:
         # If the group ID already exists, return False
         return False
@@ -119,10 +121,10 @@ def save_data(db: Session, data_create: DataCreate) -> bool:
             user = db.query(User).filter_by(user_id=data_create.user_id).first()
             user.data_count += 1
             db.commit()   
+            return True
         except:
             db.rollback()          
             raise
-        return True
     else:
         return False                                 
 
