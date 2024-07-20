@@ -19,8 +19,12 @@ body, html {
 
 input[type=range][id="prognosisInput"] {
   -webkit-appearance: none;
-  writing-mode: vertical-lr;
-  direction: rtl;
+  appearance: none;
+
+  
+
+  /* transform: rotate(270deg); */
+
   vertical-align: bottom;
   background: #b5fc86cf;
   outline: none;
@@ -89,7 +93,8 @@ input[type=range][id="prognosisInput"] {
   input[type=range][id="prognosisInput"] {
     -webkit-appearance: none;
     appearance: none;
-
+    writing-mode: vertical-lr;
+    direction: rtl;
     width: 16px;
     height: 15vh;
     margin-left: 2vw;
@@ -197,7 +202,8 @@ input[type=range][id="prognosisInput"] {
   input[type=range][id="prognosisInput"] {
     -webkit-appearance: none;
     appearance: none;
-     
+    writing-mode: vertical-lr;
+    direction: rtl;
     width: 16px;
     height: 13vh;
     margin-left: 15px;

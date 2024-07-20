@@ -96,6 +96,8 @@ def check_groupID(user_id: str, db: Session = Depends(get_db)):
 def check_groupID(group_id: str, db: Session = Depends(get_db)):
 
     try:
+        if (group_id == "."):
+            return JSONResponse(status_code=404, content={"detail": "Bitte eine andere Gruppe eingeben"})
         if not crud.group_id_exists(db, group_id): 
             return JSONResponse(status_code=404, content={"detail":"Gruppe exisitiert nicht"})
     except Exception as e:
