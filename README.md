@@ -31,6 +31,7 @@ Experience the Galton Board experiment in a digital environment and enhance your
 
 ## Installation
  
+**Important**: Make sure you have Node.js including Node package manager installed in your system: `https://nodejs.org/`
 
 1. Clone the repository: `git clone https://gitlab.ruhr-uni-bochum.de/studienprojekt-ai-sose-2024/galton.git`
 2. Navigate to the project directory: `cd project`
@@ -39,7 +40,10 @@ Experience the Galton Board experiment in a digital environment and enhance your
     - On Windows: `.\env\Scripts\activate`
     - On MacOS/Linux: `source env/bin/activate`
 5. Install the requirements: `pip install -r requirements.txt`
-6. Navigate to the src folder: `cd src`
-7. Simply run main python script: `python main.py`
+6. Navigate to the src folder `cd src`
+7. Navigate to the frontend folder `cd frontend`
+8. Run the following command to install package.json dependencies `npm install`
+9. Navigate back to the src folder: `cd ..`
+10. Simply run main python script: `python main.py`
 
  
