@@ -1,6 +1,12 @@
 {
+  "scripts": {
+    "build": "tailwindcss -i ./input.css -o ./output.css --watch"
+  },
   "dependencies": {
+    "autoprefixer": "^10.4.20",
     "html2pdf.js": "^0.10.2",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.9",
     "uuid": "^10.0.0"
   }
 }

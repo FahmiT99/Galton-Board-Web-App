@@ -74,23 +74,21 @@ def plot_galton_board(rows, balls, probability_left, probability_right, actual_s
 
 
 
-# Funktion zur Generierung und Benennung der Plots
+# generates and names plots
 def generate_plots(data, user_data_counter):
     
     plot_dir = "frontend/plots"
     os.makedirs(plot_dir, exist_ok=True)
     
-    # Berechne theoretische Verteilung
     theoretical_stats = theoretical_distribution(data.rows, data.balls,  data.probabilityRight)
     
-    # Berechne Abweichung
     deviation = calculate_deviation(data.stats, theoretical_stats)
     
-    # Benenne die Datei mit der Abweichung
+    # add deviation to the plot name with along with user id and other informations
     plot_path = os.path.join(plot_dir, f"{data.user_id}_{data.group_id}_{user_data_counter}_{deviation[0]}_{data.rows}.png")
 
 
-    # Erstelle Plot
+    # render the plot
     plot_galton_board(data.rows, data.balls, data.probabilityLeft, data.probabilityRight, data.stats, data.prog_stats, theoretical_stats, deviation, plot_path)
     
     

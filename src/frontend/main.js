@@ -1,49 +1,31 @@
 
-
+// Get canvas and context
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
+var galtonSize = 1.73; 
 
-var galtonSize = 1.73; // On start with rows = 5
-
+//resize Galton board based on the amount of bins
 function resizeGalton(r = rows)
 {
     switch(r)
     {
-        case 1:
-            galtonSize = 1;
-            break;
-        case 2 :
-            galtonSize = 1.3;
-            break;
-        case 3:
-            galtonSize = 1.5;
-            break;
-        case 4: 
-            galtonSize = 1.65;
-            break;
-        case 5 :
-            galtonSize = 1.73;
-            break;
-        case 6:
-            galtonSize = 1.8;
-            break;
-        case 7: 
-            galtonSize = 1.9;
-            break;
-        case 8: 
-            galtonSize = 1.9;
-            break;
-        case 9: 
-            galtonSize = 1.95;
-            break;
-        case 10: 
-            galtonSize = 2;
-            break;
+        case 1: galtonSize = 1; break;
+        case 2: galtonSize = 1.3; break;
+        case 3: galtonSize = 1.5; break;
+        case 4: galtonSize = 1.65; break;
+        case 5: galtonSize = 1.73; break;
+        case 6: galtonSize = 1.8; break;
+        case 7: galtonSize = 1.9; break;
+        case 8: galtonSize = 1.9; break;
+        case 9: galtonSize = 1.95; break;
+        case 10: galtonSize = 2; break;
     }
     return;
 }
 
+
+// Will be called on load and when the browser window being resized
 function resizeCanvas() {
     canvas.width = window.innerWidth * 0.6;
     canvas.height = window.innerHeight * 0.6;
@@ -52,30 +34,30 @@ function resizeCanvas() {
     reloadCanvas();
 }
 
-//window.addEventListener('resize', resizeCanvas);
 
 
 // Extract 'group_id, user_id' from the current URL
 const urlParams = new URLSearchParams(window.location.search);
 var group_name = urlParams.get('group_id');
 const user_id = urlParams.get('user_id');
+
+// Hide group export button if no group_id
 if (!group_name) {
     group_name =".";
     document.getElementById("GroupExportData").style.display ="none";
 }
 
 
-
-var superSpeed = false;
-var skip = 0;
+// Animation and simulation variables
+var skip = 0; // used to skip Frames of the Animation for more speed 
 var stop = false;
 var pause = false;
 var active = false;
-var rows = 5;
+var rows = 5; 
 var balls = 500;
-var cols = 2;
-var gap = canvas.height / (rows + 2) /galtonSize;
-var radius = gap / 5;
+var cols = 2; //Constant used to make the shape of galton
+var gap = canvas.height / (rows + 2) /galtonSize; // distance between pegs
+var radius = gap / 5; 
 var bins = [];
 var timer = null;
 var speed = 15;
@@ -85,20 +67,20 @@ var animate;
 var coordinates = [];
 var statsWatcher = {};
 var prog_statsWathcer = {};
-var current_bin = 0;
 var simplifiedStats = [];
 var simplifiedPrognosis = [];
 var remainedBalls = balls;
-var leftBalls = balls;
+var BallsRemaining = balls;
 var probabilityRight = 50;
 var probabilityLeft = 50;
+var prognosis_current_value = 0;
 var data = {user_id: user_id, group_id: group_name, rows: 0, balls: 0, probabilityLeft: 0, probabilityRight: 0, stats: [], prog_stats: []};
 
 
 /*                                                      Animation
 ********************************************************************************************************************************** */
 
-
+//Generate Array for the last row of the pegs
 function generateLastArray(size) {
     let array = [];
     for (let i = -size + 1; i < size; i += 2) {
@@ -107,6 +89,7 @@ function generateLastArray(size) {
     return array;
 }
 
+//simplifies the statistics, making them easy to analyse in the backend
 function filterStats(stats) {
 
     var arr = [];
@@ -118,6 +101,7 @@ function filterStats(stats) {
     return arr;
 }
 
+
 function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
     ctx.clearRect(x1, y1, x2, y2);
     if (x1 == y1 == 0 & x2 == canvas.width & y2 == canvas.height) {
@@ -126,6 +110,7 @@ function reloadCanvas(x1 = 0, y1 = 0, x2 = canvas.width, y2 = canvas.height) {
     }
 }
 
+// Reset the prognose for a new experiment
 function resetProg() {  
 
     simplifiedPrognosis = [];
@@ -136,7 +121,7 @@ function resetProg() {
     // Initialize the pro_coordinates array with zeros
     for (var i = 0; i < coordinates.length-1; i++) {
         prog_statsWathcer[coordinates[i][0]] = [0,0];
-        drawStatsCount2(coordinates[i][0], coordinates[i][1], prog_statsWathcer);
+        drawStatsCountPrognosis(coordinates[i][0], coordinates[i][1], prog_statsWathcer);
     }      
     const progInputs = document.querySelectorAll("#prognosisInput");    
     progInputs.forEach((input) => {
@@ -145,6 +130,8 @@ function resetProg() {
         });     
 }
 
+
+// Reset the values for a new experiment
 function resetValues() {
     pause = false; //stop execution
     active = false;  //animation is not active 
@@ -171,7 +158,7 @@ for (var i = 0; i < cols; i++) {
     bins[i] = 0;
 }
 
-
+// Draw Line on the canvas
 function drawLine(x1, y1, x2, y2){
 
     ctx.lineWidth = verticalLineWidth;
@@ -213,6 +200,7 @@ function drawPegs(only_vertical_Lines = false) {
         cols += 1;
     }
 
+    //draw diagonal borders from left and right side
     if(!only_vertical_Lines)
     {
         var cl = coordinates.length-1;
@@ -241,6 +229,7 @@ function drawVerticalLine(x, y) {
     
 }
 
+// Draw a red ball on the canvas
 function drawball(x_position = canvas.width / 2, y_position = gap, size=0, col ="red") {
     ctx.fillStyle = col;
     ctx.beginPath();
@@ -248,30 +237,31 @@ function drawball(x_position = canvas.width / 2, y_position = gap, size=0, col =
     ctx.fill();
     
 }
+
 function clearBall(x_position, y_position ) {
 
     ctx.clearRect(x_position-4 , y_position-4 , (radius-4)*3, (radius-4) *3);
 }
 
+// Wait for a specified amount of time
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
-var prognosis_current_value = 0;
 
+
+
+// Draw the statistics for prognosis section
 function drawStatsPrognosis(x, y, n,stats = statsWatcher, value, col1 = "red", col2 = "magenta") {
     ctx.lineWidth = gap *0.85;
     let startingPoint = y * 2.25 - horizontalLineWidth/2; 
     var length = 1.1 * (y + radius) / n;
     if (rows == 2) length *= 0.94;
 
-    //ctx.clearRect(x -ctx.lineWidth / 2 , startingPoint - stats[x][0] - 1, ctx.lineWidth + 0.5 , stats[x][0] + horizontalLineWidth/2 - horizontalLineWidth/6);
     if (stats.hasOwnProperty(x)) {
-        //ctx.lineWidth+= 0.1;
         ctx.beginPath();
-        // ctx.strokeStyle = "#f5f7fa"; // Assuming the canvas background is white
-        ctx.strokeStyle = "#ffffff"; // Assuming the canvas background is white
+        ctx.strokeStyle = "#ffffff"; // match background color
         ctx.moveTo(x, startingPoint);
         ctx.lineTo(x, startingPoint - stats[x][0]-1);
         ctx.stroke();
@@ -292,15 +282,7 @@ function drawStatsPrognosis(x, y, n,stats = statsWatcher, value, col1 = "red", c
         ctx.moveTo(x, startingPoint);
         stats[x][0] = length * (value);
         stats[x][1] = value;
-        
         prognosis_current_value = value;
-
-        //reloadCanvas(x - gap / 2+1.5  , startingPoint *0.999 , gap *0.9, -(y + radius*rows));//,-stats[x][0]);// Speicherüberflussvermeidung
-        // remove current drawing
-        //ctx.clearRect(x - ctx.lineWidth / 2, startingPoint - stats[x][0], ctx.lineWidth, stats[x][0]);
-        
-
-        
         ctx.strokeStyle = gradient;
         ctx.lineTo(x, startingPoint - stats[x][0]);
     }
@@ -309,7 +291,8 @@ function drawStatsPrognosis(x, y, n,stats = statsWatcher, value, col1 = "red", c
     drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // ensure no differences between bins
 }
 
-function drawStatsCount2(x, y, stats = statsWatcher) {
+// Draw the count of statistics for prognosis
+function drawStatsCountPrognosis(x, y, stats = statsWatcher) {
     y = y * 2.25 + gap / 2;
     let fontSize = gap * 0.66;
     ctx.font = "bold " + fontSize + "px Arial";
@@ -335,7 +318,7 @@ function drawStatsCount2(x, y, stats = statsWatcher) {
   
 }
 
-
+// Draw the statistics on the canvas
 function drawStats(x, y, n, col1 = "red", col2 = "magenta") {
     ctx.lineWidth = gap - 2;
     let startingPoint = y * 2.25 - 2;
@@ -362,18 +345,17 @@ function drawStats(x, y, n, col1 = "red", col2 = "magenta") {
     ctx.strokeStyle = "black";
 }
 
+// Draw the count of statistics on the canvas
 function drawStatsCount(x, y) {
-    //y = y * 2.25 + gap / 1.75;
     y = y * 2.25 + 1.5 + gap/2;
-    let fontSize = gap * 0.462; //0.66 * 0.7;
+    let fontSize = gap * 0.462; 
     ctx.font = "bold " + fontSize + "px Arial";
     ctx.fillStyle = "red";
-    ctx.clearRect(x - gap / 2, y - gap / 2, gap, gap * 1.5);
+    ctx.clearRect(x - gap / 2, y - gap / 2, gap, gap * 1.5);10
     if (statsWatcher[x][1] < 10)
         ctx.fillText(statsWatcher[x][1], x - gap / 6, y + gap / 6);
     else if (statsWatcher[x][1] < 100) ctx.fillText(statsWatcher[x][1], x - gap / 3.5, y + gap / 6);
     else if (statsWatcher[x][1] < 1000){
-        //ctx.font = "bold " + fontSize * 0.7 + "px Arial";
         ctx.fillText(statsWatcher[x][1], x - gap / 2.5, y + gap / 6);
     }
     else{ctx.fillText(statsWatcher[x][1], x - gap / 2, y + gap / 6); }
@@ -386,42 +368,37 @@ function drawStatsCount(x, y) {
 // as long as the animation is active and not paused. This function is responsible for 
 // continuously updating the animation.
 async function mainAnimationLoop() {
-    leftBalls = balls;
+    BallsRemaining = balls;
+
+    
     while (active && !pause) {
         await animate();
-        
+
         if (skip > 0) {
             skip--;
         }   
         if (skip <= 0 && speed==0) {
-
             await wait(200);
-
         }
         if (skip <= 0 && speed!=100 && speed!=0) {
-
             await wait((100-speed)/5);
-            skip = (speed/100) * (leftBalls/10);
-
+            skip = (speed/100) * (BallsRemaining/10);
         }
     }
 }
 
+// Lock or unlock the GUI controls
 function lock_unlock_GUI(value) {
-
-    
     rowRangeInput.disabled = value;
     ballsAmountRangeInput.disabled = value;
     probabilityRangeInput.disabled = value;
-   
-    // prognosisInput.disabled = value;
 }
 
 // createAnimation is a higher-order function that returns animateOneStep,
 // which uses closures to remember its state between calls so that we can pause the animation
 function createAnimation(n, initial_n, probability) {  
-    var j = 0; // Platz zwischen pegs //standard Value: 0, also Mitte 
-    var i = 1; //j gerade falls i ungerade und umgekehrt //Höhenebene
+    var j = 0; // space between pegs; default=0, which is middle
+    var i = 1; // j is odd if i is even and vice versa
     var xPos = canvas.width / 2 - 0.5 * gap * j;
     var yPos = gap * i;
     var arr = [];
@@ -429,13 +406,11 @@ function createAnimation(n, initial_n, probability) {
 
     return async function animateOneStep() {
         if (n < 0) {
-            //drawHorizontalLine((canvas.width + gap * rows) / 2 , gap * rows, 4); // Fixed black line mess in the result
             active = false;
             saveData();
             lock_unlock_GUI(false);
             submitButton.disabled = false;                    
             resetValues();
-             
             return;
         }
 
@@ -449,7 +424,7 @@ function createAnimation(n, initial_n, probability) {
 
                 drawStats(xPos, y, initial_n);
                 drawStatsCount(xPos, y);
-                leftBalls -= 1; 
+                BallsRemaining -= 1; 
             }
 
             xPos = canvas.width / 2 - 0.5 * gap * j;
@@ -475,6 +450,7 @@ function createAnimation(n, initial_n, probability) {
     }
 }
 
+//temporal data save for exportation to the server
 function saveData() {
     data.balls = balls;
     data.rows = rows;
@@ -486,6 +462,8 @@ function saveData() {
     data.prog_stats = simplifiedPrognosis;
 
 }
+
+// Create the prognosis input elements
 function createProgInputs() {
     // Clear existing inputs
     const progRangeInputs = document.getElementById('prognosisButtons');
@@ -525,10 +503,10 @@ const UserExportButton = document.getElementById("UserExportData");
 const continueWithoutProg = document.getElementById("continue-without-prog");
 const continueWithProg = document.getElementById("continue-with-prog");
 const newExperimentButton = document.getElementById("newExperiment");
-var rowRangeInput = document.getElementById("rowRangeInput"); // rows adjustment control
-var rowRangeDisplay = document.getElementById("rowRangeDisplay"); // current rows display
-var speedRangeInput = document.getElementById("speedRangeInput"); // speed adjusment control
-var speedRangeDisplay = document.getElementById("speedRangeDisplay"); // current speed display
+var rowRangeInput = document.getElementById("rowRangeInput"); 
+var rowRangeDisplay = document.getElementById("rowRangeDisplay"); 
+var speedRangeInput = document.getElementById("speedRangeInput"); 
+var speedRangeDisplay = document.getElementById("speedRangeDisplay"); 
 var ballsAmountRangeInput = document.getElementById("ballsAmountRangeInput");
 var ballsAmoutRangeDisplay = document.getElementById("ballsAmoutRangeDisplay");
 var probabilityRangeInput = document.getElementById("probabilityRangeInput");
@@ -563,16 +541,12 @@ ballsAmountRangeInput.addEventListener("input", () => {
     balls = Number(ballsAmountRangeInput.value);
     ballsAmoutRangeDisplay.innerHTML = "Anzahl Bälle<br>" + Number(balls);
 
-      
-
     lock_unlock_GUI(false);
     reloadCanvas();
     resetValues();
     drawPegs();
-    resetProg();
-  
-    
-   
+    resetProg();  
+
 });
 
 probabilityRangeInput.addEventListener("input", () => {
@@ -649,7 +623,7 @@ stopButton.addEventListener("click", async () => {
 
 submitButton.addEventListener("click", async () => {
     try {
-        const response = await fetch("/", {
+        const response = await fetch("/", {  
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -707,7 +681,7 @@ function progInputsEventListener(progInput, index) {
         }
 
         drawStatsPrognosis(x, y, balls, prog_statsWathcer, value);
-        drawStatsCount2(x, y, prog_statsWathcer);
+        drawStatsCountPrognosis(x, y, prog_statsWathcer);
 
         remainedBalls = balls - Array.from(document.querySelectorAll("#prognosisInput"))
             .reduce((total, input) => total + Number(input.value), 0);
@@ -769,7 +743,7 @@ continueWithProg.addEventListener("click", async () => {
 });
 
 continueWithoutProg.addEventListener("click", function() {
-    // reset progwatcher 
+    // reset prog_watcher 
     document.getElementById("settings-container").style.display = "none";
     document.querySelector(".prognosis").style.display = "none";
    
@@ -835,7 +809,7 @@ createProgInputs();
 // Initialize the pro_coordinates array with zeros
 for (var i = 0; i < coordinates.length-1; i++) {
  prog_statsWathcer[coordinates[i][0]] = [0,0];
- drawStatsCount2(coordinates[i][0], coordinates[i][1], prog_statsWathcer);
+ drawStatsCountPrognosis(coordinates[i][0], coordinates[i][1], prog_statsWathcer);
 }  
 submitButton.disabled = true;
 prognosisInputDisplay.innerHTML =  balls;

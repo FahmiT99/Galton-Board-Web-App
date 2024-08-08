@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from './node_modules/uuid/dist/esm-browser/index.js';
 
+
+// Function to generate a UUID and ensure it's unique
 async function generateUUID() {
     const urlParams = new URLSearchParams(window.location.search);
     let userId = urlParams.get('user_id');
@@ -26,7 +28,7 @@ async function generateUUID() {
     return userId;
 }
 
-
+// Function to create a new user ID in the database
 async function createUserId(userId) {
     try {    
         const response = await fetch(`/create_userID/`, {
@@ -53,6 +55,7 @@ async function createUserId(userId) {
     }
 }
 
+// Function to check if a user ID exists in the database
 async function check_userId(userId) {
     try {    
         const response = await fetch(`/check_userID/?user_id=${userId}`, {
@@ -79,67 +82,53 @@ async function check_userId(userId) {
     }
 }
 
-
+// Generate a UUID for the user on load
 const userId = await generateUUID();
 
- 
-    
+// Event listeners and UI interactions
+const skipButton = document.getElementById("skip-button");
+const ctaContainer = document.getElementById('cta-container');
 
-    
-    // const getStartedButton = document.getElementById('get-started');
-    const skipButton = document.getElementById("skip-button");
-    // const hiddenElements = document.getElementById('hidden-elements');
-    const ctaContainer = document.getElementById('cta-container');
-    // const navToggle = document.getElementById('nav-toggle');
-    // const navContent = document.getElementById('nav-content');
-
-    function handleClick() {
-        
-    
-        ctaContainer.scrollIntoView({ behavior: 'smooth' });
-    
-        // Re-attach event listeners to the new elements
-        attachEventListeners();
-    }
+function handleClick() {
+    ctaContainer.scrollIntoView({ behavior: 'smooth' });
+    attachEventListeners(); // Re-attach event listeners to the new elements
+}
 
     // getStartedButton.addEventListener('click', handleClick);
-    skipButton.addEventListener('click', handleClick);
+skipButton.addEventListener('click', handleClick);
 
-    // navToggle.addEventListener('click', function() {
-    //     navContent.classList.toggle('hidden');
-    // });
 
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('nav a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+// Smooth scrolling for navigation links
+document.querySelectorAll('nav a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
         });
     });
+});
 
-    // Dynamic background transitions
-    const sections = document.querySelectorAll('.section');
-    const options = {
-        threshold: 0.5
-    };
+// Dynamic background transitions
+const sections = document.querySelectorAll('.section');
+const options = {
+    threshold: 0.5
+};
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.backgroundImage = entry.target.dataset.backgroundImage;
-            }
-        });
-    }, options);
-
-    sections.forEach(section => {
-        section.dataset.backgroundImage = section.style.backgroundImage;
-        observer.observe(section);
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.backgroundImage = entry.target.dataset.backgroundImage;
+        }
     });
+}, options);
 
-    // Initial attachment of event listeners
-    attachEventListeners();
+sections.forEach(section => {
+    section.dataset.backgroundImage = section.style.backgroundImage;
+    observer.observe(section);
+});
+
+// Initial attachment of event listeners
+attachEventListeners();
  
 
 function attachEventListeners() {
@@ -151,6 +140,8 @@ function attachEventListeners() {
     const idDisplay = document.getElementById('id-display');
     const idDisplay2 = document.getElementById('id-display2');
 
+
+    // Event listener for creating a group
     createGroupButton.addEventListener('click', async () => {
         if (groupIdInput.value) {
             try {
@@ -179,6 +170,7 @@ function attachEventListeners() {
         }
     });
 
+    // Event listener for continuing without a group
     withoutGrouptButton.addEventListener('click', async () => {
 
         if (userId) {
@@ -187,6 +179,7 @@ function attachEventListeners() {
         
     });
 
+    // Event listener for continuing with a group
     withGroupButton.addEventListener('click', async () => {
         //check if groupID entered, if it exists on the server + save it as users groupID
         if(groupID.value) {

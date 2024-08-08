@@ -3,18 +3,17 @@ import "./node_modules/html2pdf.js/dist/html2pdf.bundle.min.js"
 var plot_paths = [];
 var listed_plot_paths = [];
  
-// src/static/js/test.js
 
 // Function to list plots in the plot container
 function sort_plots(plotPaths) {
 
    
-    // Funktion zur Extraktion der Abweichung aus dem Dateinamen
+    // Function to extract deviation from the filename
     function extractDeviation(plotPath) {
-        const fileName = plotPath.split('/').pop(); // Extrahiere den Dateinamen
+        const fileName = plotPath.split('/').pop(); // Extract the filename
         const parts = fileName.split('_');
-        const deviationStr = parts[parts.length - 2].replace('.png', ''); // Extrahiere die Abweichung
-        return parseFloat(deviationStr); // Umwandeln in Zahl
+        const deviationStr = parts[parts.length - 2].replace('.png', ''); // Extract the deviation
+        return parseFloat(deviationStr); // Convert to number
     }
 
     // Sort plotPaths based on deviation in descending order
@@ -27,6 +26,7 @@ function sort_plots(plotPaths) {
     
 }
 
+// Function to list plots in the plot container
 function list_plots(PlotPaths) {
     const plotContainer = document.getElementById('plot-container');
     plotContainer.innerHTML = ''; // Clear previous plots
@@ -51,55 +51,30 @@ function list_plots(PlotPaths) {
     return PlotPaths;
 }
 
-// Event listener für den Sortieren-Button
+// Event listener for the sort radio buttons
 const sortRadioButtons = document.getElementsByName('sort-option');
 sortRadioButtons.forEach(button => {
     button.addEventListener('click', () => {
      
-        // Sortiere Bilder in umgekehrter Reihenfolge
+        // Sort images in reverse order
         list_plots(listed_plot_paths.reverse());
     });
 });
 
-
-// Event listener für das Filtern nach Anzahl der Reihen
-// const filterSelect = document.getElementById('filter-select');
-// filterSelect.addEventListener('change', () => {
-//     var filteredPlotPaths = []
-//     const selectedRows = parseInt(filterSelect.value); // Ausgewählte Anzahl der Reihen
-//     plot_paths = sort_plots(plot_paths);
-//     document.getElementById('ascending').checked = true;
-
-//     if (selectedRows === 0) {
-//         filteredPlotPaths = plot_paths;
-//     }
-//     else {
-//     // Filtere Bilder nach der Anzahl der Reihen
-//     filteredPlotPaths = plot_paths.filter(plotPath => {
-//         const parts = plotPath.split('_');
-//         const rows = parseInt(parts.pop().replace('.png', '')); // Extract the number of rows
-//         return rows === selectedRows;
-//         });
-//     }
-
-//     // Liste die gefilterten Bilder
-//     listed_plot_paths = list_plots(filteredPlotPaths);
-
-// });
-
+// Event listener for filtering by number of rows
 const filterSelectElements = document.querySelectorAll('#filter-select');
 
 filterSelectElements.forEach(filterSelect => {
     filterSelect.addEventListener('change', () => {
         var filteredPlotPaths = [];
-        const selectedRows = parseInt(filterSelect.value); // Ausgewählte Anzahl der Reihen
+        const selectedRows = parseInt(filterSelect.value); // Selected number of rows
         plot_paths = sort_plots(plot_paths);
         document.getElementById('ascending').checked = true;
 
         if (selectedRows === 0) {
             filteredPlotPaths = plot_paths;
         } else {
-            // Filtere Bilder nach der Anzahl der Reihen
+            // Filter images by the number of rows
             filteredPlotPaths = plot_paths.filter(plotPath => {
                 const parts = plotPath.split('_');
                 const rows = parseInt(parts.pop().replace('.png', '')); // Extract the number of rows
@@ -107,32 +82,18 @@ filterSelectElements.forEach(filterSelect => {
             });
         }
 
-        // Liste die gefilterten Bilder
+        // List the filtered images
         listed_plot_paths = list_plots(filteredPlotPaths);
     });
 });
 
 
-
+// Event listener for the return button
 document.querySelectorAll('[id=return-button]').forEach(button => {
     button.addEventListener("click", () => {
         window.history.back();
     });
 });
-
-//alternative:
-
-// document.querySelectorAll('[id=return-button]').forEach(button => {
-//     button.addEventListener("click", () => {
-//         if(!group_id && user_id) {
-//             window.location.href = `/main?user_id=${user_id}`;
-//         } else if (group_id && user_id) {
-//             window.location.href = `/main?group_id=${group_id}&user_id=${user_id}`;
-//         } else {
-//             window.location.href = `/main`;
-//         }
-//     });
-// });
 
 
 async function loadGroupPlots() {
@@ -190,6 +151,7 @@ const group_id = urlParams.get('group_id');
 const user_id = urlParams.get('user_id');
 var title = document.getElementById("title");
 
+//load plots based on the information provided in the URL
 if (group_id && user_id) {
     title.innerHTML = "Gruppen Ergebnisse";
     loadGroupPlots();
@@ -199,43 +161,7 @@ if (group_id && user_id) {
 }
 
 
-// const downloadButton = document.getElementById('downloadButton');
-// const content = document.getElementById('content');
-
-// const excludeIds = ['downloadButton', 'return-button'];
-
-// downloadButton.addEventListener('click', function() {
-//     // Options for html2pdf
-
-//     excludeIds.forEach(id => {
-//         const el = document.getElementById(id);
-//         if (el) el.classList.add('exclude-from-pdf');
-//     });
-
-
-//     const opt = {
-//         margin:       1,
-//         filename:     'my-web-page.pdf',
-//         image:        { type: 'jpeg', quality: 0.98 },
-//         html2canvas:  { scale: 2 },
-//         jsPDF:        { unit: 'in', format: 'a4' },
-//         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-//     };
-
-//     // Generate the PDF
-//     // html2pdf().from(content).set(opt).save();
-
-//     html2pdf().from(content).set(opt).save().then(() => {
-//         // Restore the display of the elements
-//         excludeIds.forEach(id => {
-//             const el = document.getElementById(id);
-//             if (el) el.classList.remove('exclude-from-pdf');
-//         });
-//     });
-
-//     listed_plot_paths.reverse();
-// });
-
+// Event listener for the pdf download button
 const downloadButtons = document.querySelectorAll('#downloadButton');
 const content = document.getElementById('content');
 
@@ -256,11 +182,7 @@ downloadButtons.forEach(downloadButton => {
             image:        { type: 'jpeg', quality: 1.0 },
             html2canvas:  { scale: 4 },
             jsPDF:        { unit: 'mm', format: 'a4',  orientation: 'portrait'  },
-            // pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
         };
-
-        // Generate the PDF
-        // html2pdf().from(content).set(opt).save();
 
         html2pdf().from(content).set(opt).save().then(() => {
             // Restore the display of the elements

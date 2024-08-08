@@ -4,3 +4,4 @@ src/__pycache__/
 database.db
 .vscode/
 src/frontend/plots/*.png
+src/frontend/node_modules/
