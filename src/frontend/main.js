@@ -35,7 +35,6 @@ function resizeCanvas() {
 }
 
 
-
 // Extract 'group_id, user_id' from the current URL
 const urlParams = new URLSearchParams(window.location.search);
 var group_name = urlParams.get('group_id');
@@ -140,7 +139,6 @@ function resetValues() {
     radius = gap / 5; // Radius of pegs and balls //standard value = 50/rows  // same
     bins = []; // Array to store the number of balls in each bin
     timer = null;
-     
 
     for (var i = 0; i < cols; i++) {
         bins[i] = 0;
@@ -148,8 +146,6 @@ function resetValues() {
 
     statsWatcher = {};
     simplifiedStats = [];
-  
-
 }
 
 
@@ -623,7 +619,7 @@ stopButton.addEventListener("click", async () => {
 
 submitButton.addEventListener("click", async () => {
     try {
-        const response = await fetch("/", {  
+        const response = await fetch("/submit_data", {  
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -788,18 +784,9 @@ window.addEventListener('resize', function(event) {
 }, true);
 
 
- /*                                                       Main
+ /*                                                       Initialization
 ************************************************************************************************************************************/
 
-
-
-
-
-
-
-
- 
-//Initialization
 
 resizeGalton();
 resizeCanvas();

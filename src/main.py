@@ -3,11 +3,10 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
-import os, plot, crud, models, schemas, uvicorn
-from database import SessionLocal, engine
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.background import BackgroundScheduler
-
+from database import SessionLocal, engine
+import os, plot, crud, models, schemas
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -45,8 +44,6 @@ async def lifespan(app:FastAPI):
     
    
 
-    
-
 
 app = FastAPI(lifespan=lifespan)
 
@@ -56,7 +53,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"], #TODO write necessary ones
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -142,11 +139,11 @@ def list_plots(group_id: str, db: Session = Depends(get_db)):
 
 
 
-@app.post("/", status_code=201)
+@app.post("/submit_data/", status_code=201)
 def submit_data(data_create: schemas.DataCreate, db: Session = Depends(get_db)):
 
     try:
-        if not crud.save_data(db, data_create):
+        if not crud.update_data_count(db, data_create):
             return JSONResponse(status_code=404, content={"detail":"Gruppe oder Benutzer nicht gefunden. Bitte zur Startseite kehren!"})
         
         plot_path = plot.generate_plots(data_create, crud.get_user_data_counter(db, data_create.user_id))

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, JSON, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -15,7 +15,6 @@ class User(Base):
     user_id = Column(String, index=True, unique=True)
     data_count = Column(Integer, default=0)
 
-    data = relationship('Data', backref='users')
     user_plots = relationship('UserPlots', backref='users')
 
     def __repr__(self) -> str:
@@ -28,32 +27,10 @@ class Group(Base):
     id = Column(Integer, primary_key=True)
     group_id = Column(String, index=True, unique=True)
 
-    data = relationship('Data', backref='groups')
     group_plots = relationship('GroupPlots', backref='groups')
     
-
     def __repr__(self) -> str:
         return f"<Group(id={self.id}, group_id={self.group_id})>"
-
-
-class Data(Base):
-    __tablename__ = "data"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('users.user_id'), index=True)  
-    group_id = Column(String, ForeignKey('groups.group_id'), index=True, nullable=True)
-    rows = Column(Integer)
-    balls = Column(Integer)
-    probabilityLeft = Column(Float)
-    probabilityRight = Column(Float)
-    stats = Column(JSON)
-    prog_stats = Column(JSON)
-
-
-    def __repr__(self) -> str:
-        return (f"<Data(id={self.id}, group_id={self.group_id}, user_id={self.user_id}, rows={self.rows}, "
-                f"balls={self.balls}, probabilityLeft={self.probabilityLeft}, "
-                f"probabilityRight={self.probabilityRight}, stats={self.stats}, prog_stats={self.prog_stats})>")
 
 
 class UserPlots(Base):

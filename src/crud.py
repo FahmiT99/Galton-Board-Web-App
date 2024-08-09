@@ -1,15 +1,12 @@
 from sqlalchemy.orm import Session
 from models import *
 from schemas import *
-import os, shutil, json
-from sqlalchemy import update, select
+import os, shutil
 
 """
 This module includes reusable CRUD functions
 to interact with the data in the database.
-
 """
-
 
 
 def user_id_exists(db : Session, user_id: str) -> bool:
@@ -19,16 +16,6 @@ def user_id_exists(db : Session, user_id: str) -> bool:
 
 def group_id_exists(db : Session, group_id: str) -> bool:
     return db.query(Group).filter_by(group_id=group_id).first() is not None
-
-
-
-def get_group_data(db : Session, group_id: str): 
-    return db.query(Group).filter_by(group_id=group_id).first().data
-
-
-
-def get_user_data(db : Session, user_id: str): 
-    return db.query(User).filter_by(user_id=user_id).first().data 
 
 
 
@@ -108,15 +95,10 @@ def create_group(db: Session, group_create: GroupCreate) -> bool:
 
 
 
-def save_data(db: Session, data_create: DataCreate) -> bool:
+def update_data_count(db: Session, data_create: DataCreate) -> bool:
 
     if  group_id_exists(db, data_create.group_id) and user_id_exists(db, data_create.user_id):
-        new_data = Data(**data_create.model_dump())
         try:
-            db.add(new_data)          
-            db.commit()              
-            db.refresh(new_data)  
-
              # Update the data count for the user
             user = db.query(User).filter_by(user_id=data_create.user_id).first()
             user.data_count += 1
@@ -132,7 +114,6 @@ def save_data(db: Session, data_create: DataCreate) -> bool:
     
 def reset_db_entries(db : Session):
     try:
-        db.query(Data).delete()
         db.query(Group).delete()
         db.query(User).delete()
         db.commit()
