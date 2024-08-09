@@ -5,3 +5,5 @@ database.db
 .vscode/
 src/frontend/plots/*.png
 src/frontend/node_modules/
+src/frontend/package-lock.json
+package-lock.json

@@ -187,10 +187,9 @@ def create_group_id(group_create: schemas.GroupCreate, db: Session = Depends(get
 
 
 if __name__ == "__main__":
-     os.system("uvicorn main:app --reload")
+    os.system("uvicorn main:app --reload")
 
-# if __name__ == '__main__':
-#     uvicorn.run(app, host='0.0.0.0', port=8000)
+
 
 
  
