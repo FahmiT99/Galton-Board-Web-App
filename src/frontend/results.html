@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="frontend/ResultsPageStyles.css?v=2"> 
+    <link rel="apple-touch-icon" sizes="180x180" href="frontend/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="frontend/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="frontend/favicon/favicon-16x16.png">
+    <link rel="manifest" href="frontend/favicon/site.webmanifest"> 
+
+    <title>Galton Brett Experiment</title>
+
+</head>
+<body>
+    <div id="content">
+            <h1 id="title">Ergebnisse</h1>
+
+
+        <div class="container-portrait">
+            <div class="sub-container" id="first-sub-container">
+                <button id="return-button">
+                    <img src="frontend/favicon/return-button.png" alt="return">
+                </button>
+                <div class="filter">Filtern:
+                    <select id="filter-select">
+                        <option value="0">Alle</option>
+                        <option value="2">2 Reihen</option>
+                        <option value="3">3 Reihen</option>
+                        <option value="4">4 Reihen</option>
+                        <option value="5">5 Reihen</option>
+                        <option value="6">6 Reihen</option>
+                        <option value="7">7 Reihen</option>
+                        <option value="8">8 Reihen</option>
+                        <option value="9">9 Reihen</option>
+                        <option value="10">10 Reihen</option>
+                    </select>
+                </div>
+                <button id="downloadButton">PDF Download</button>
+            </div>
+            <div class="sub-container">
+                <p id="sort-description">Sortieren nach Abweichung:</p>
+                <div id="sort-option">  
+                    <label style="display: flex;"><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+                    <label style="display: flex;"><input type="radio" name="sort-option"> Absteigend</label>
+                </div>   
+            </div>
+        </div>
+
+        <div class="container-landscape">
+            <div class="sub-container">
+            <button id="return-button">
+                <img src="frontend/favicon/return-button.png" alt="return">
+            </button>
+            </div>
+            <div class="sub-container" id="first-sub-container">
+                <div class="filter">Filtern:
+                    <select id="filter-select">
+                        <option value="0">Alle</option>
+                        <option value="2">2 Reihen</option>
+                        <option value="3">3 Reihen</option>
+                        <option value="4">4 Reihen</option>
+                        <option value="5">5 Reihen</option>
+                        <option value="6">6 Reihen</option>
+                        <option value="7">7 Reihen</option>
+                        <option value="8">8 Reihen</option>
+                        <option value="9">9 Reihen</option>
+                        <option value="10">10 Reihen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="sub-container">
+                <p id="sort-description">Sortieren nach Abweichung:</p>
+                <div id="sort-option">  
+                    <label style="display: flex;"><input type="radio" name="sort-option" id="ascending" checked> Aufsteigend</label>
+                    <label style="display: flex;"><input type="radio" name="sort-option"> Absteigend</label>
+                </div>
+            </div>
+            <div class="sub-container">
+                <button id="downloadButton">PDF Download</button>   
+            </div>
+        </div>
+
+
+        <div id="plot-container" ></div>
+
+    </div>
+    <script type="module" src="frontend/results.js"></script>
+</body>
+</html>
